@@ -3,6 +3,7 @@ from pathlib import Path
 import sqlite3
 
 import pandas as pd
+import numpy as np
 
 from util import column
 
@@ -426,11 +427,21 @@ class DatabaseManager:
 
 
     # Good
-    def list_categories(self):
+    def list_categories(self) -> list[str]:
         ''' Return a list of all categories in the database. '''
         command = "SELECT DISTINCT Category FROM " + self.table_name
         res = self.cur.execute(command)
         return [category[0] for category in res.fetchall()]
+
+
+    def totals_by_category(self, date_range=[]) -> tuple[list[str], np.array]:
+        categories = self.list_categories()
+        totals = []
+        for category in categories:
+            self.cur.execute(f'SELECT SUM("Amount") FROM {self.table_name} WHERE Category = ?', (category,))
+            totals.append(self.cur.fetchone()[0])
+
+        return categories, np.array(totals)
 
 
     # Good for now

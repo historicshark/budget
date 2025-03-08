@@ -1,15 +1,11 @@
 #!/home/historicshark/Documents/budget/venv_budget/bin/python
 
 import argparse
-import numpy as np
-import matplotlib.pyplot as plt
-from pathlib import Path
-
-import easygui
 
 from database import DatabaseManager
 from import_csv import import_file
 from categorize import categorize_manual
+from plotting import plot_main
 
 def main():
     parser=argparse.ArgumentParser()
@@ -24,15 +20,18 @@ def main():
             data = import_file(args.rest)
             data = categorize_manual(data)
             db.insert(array=data)
-            db.select_and_print()
+            # db.select_and_print()
 
+        case 'plot':
+            plot_main(args.rest, db)
 
     return
 
 
 def main_commands_help():
     return '''Available commands:
-    import'''
+    import
+    plot'''
 
 if __name__ == '__main__':
     main()

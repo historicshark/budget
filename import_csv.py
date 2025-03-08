@@ -4,6 +4,7 @@ from pathlib import Path
 
 import util
 
+
 def import_file(rest):
     if rest:
         try:
@@ -24,6 +25,7 @@ def import_file(rest):
     else:
         raise Exception('Input credit or debit!')
     return data
+
 
 # df with Date, Location, Amount
 def import_debit(file):
@@ -49,6 +51,7 @@ def import_debit(file):
     # debit_data.Amount = debit_data.Amount.map(lambda x: -x)
 
     return debit_data
+
 
 # df with Date, Name, Amount
 def import_credit(file):
