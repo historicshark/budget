@@ -6,6 +6,7 @@ from database import DatabaseManager
 from import_csv import import_file
 from categorize import categorize_manual
 from plotting import plot_main
+from list_transactions import list_main
 
 def main():
     parser=argparse.ArgumentParser()
@@ -25,13 +26,17 @@ def main():
         case 'plot':
             plot_main(args.rest, db)
 
+        case 'list':
+            list_main(args.rest, db)
+
     return
 
 
 def main_commands_help():
     return '''Available commands:
     import
-    plot'''
+    plot
+    list'''
 
 if __name__ == '__main__':
     main()

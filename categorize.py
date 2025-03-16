@@ -19,7 +19,7 @@ def categorize_manual(data: pd.DataFrame):
 
     for row, date, location, amount in data.itertuples(name=None):
         print(f'Categorize transaction {location} on {date} for amount {amount}')
-        print(f'Categories are:\n{options_print}')
+        print(f'Categories are:\n0: quit | {options_print}')
 
         keepgoing = True
         while keepgoing:
