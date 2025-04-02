@@ -247,8 +247,8 @@ class DatabaseManager:
 
 
     # Good for now?
-    def select(self, date=None, location=None, category=None, amount=None, columns=None, order_by=None):
-        ''' Return a list of tuples, each tuple is a record in the database. Any or none of the arguments can be provided.
+    def select(self, date=None, location=None, category=None, amount=None, columns=None, order_by=None, take_sum=False):
+        """ Return a list of tuples, each tuple is a record in the database. Any or none of the arguments can be provided.
             Also sets db.where for future use.
 
             Date: eiter str (YYYY-MM-DD) or list of str for a range (YYYY-MM-DD YYYY-MM-DD)
@@ -256,25 +256,28 @@ class DatabaseManager:
             Category: str matching a category in the database
             Amount: float or list of 2 floats for a range
             columns: str or list of str of data columns to select. ['Date', 'Location', 'Category', 'Amount']
-            order_by: str selecting column to order entries. Choose one of 'Date', 'Location', 'Category', 'Amount'. '''
+            order_by: str selecting column to order entries. Choose one of 'Date', 'Location', 'Category', 'Amount'. 
+            take_sum: bool to take the total amount of the selection
+        """
 
         # Input checks
         use_date         = isinstance(date, str)
-        use_date_range   = isinstance(date, list)
+        use_date_range   = isinstance(date, list) and len(date) > 0
         use_location     = isinstance(location, str)
         use_old_category = isinstance(category, str)
         use_amount       = isinstance(amount, float) or isinstance(amount, int)
         use_amount_range = isinstance(amount, list)
-        use_columns      = [isinstance(columns, list), isinstance(columns, str)]
         use_order        = isinstance(order_by, str)
+        use_columns      = isinstance(columns, list)
+        use_one_column   = isinstance(columns, str)
 
         if use_order and order_by not in ['Date', 'Location', 'Category', 'Amount']:
-            print('In dbmgr.Select, order_by must be one of [\'Date\', \'Location\', \'Category\', \'Amount\']. Order ignored.')
+            print('In DatabaseManager.select, order_by must be one of [\'Date\', \'Location\', \'Category\', \'Amount\']. Order ignored.')
             use_order = False
 
-        if use_columns[0]: # list of columns provided
+        if use_columns: # list of columns provided
             if not all([column in ['Date', 'Location', 'Category', 'Amount'] for column in columns]):
-                raise ValueError('In dbmgr.Select, columns to be selected must be one of [\'Date\', \'Location\', \'Category\', \'Amount\']!') # Probably can't ignore this error.
+                raise ValueError('In DatabaseManager.select, columns to be selected must be one of [\'Date\', \'Location\', \'Category\', \'Amount\']!') # Probably can't ignore this error.
 
         if use_date_range:
             if len(date) != 2: raise ValueError('Provide date range as a list of two strings!')
@@ -283,11 +286,17 @@ class DatabaseManager:
         if use_amount_range:
             if len(amount) != 2: raise ValueError('Provide amount range as a list of two numbers!')
             if not all(isinstance(elem, float) or isinstance(elem, int) for elem in amount): raise ValueError('Provide amount range as a list of two numbers!')
+        
+        if not isinstance(take_sum, bool): raise ValueError('take_sum must be a boolean!')
+        if take_sum and (use_columns or use_one_column):
+            raise ValueError('take_sum with columns is not tested!')
 
         # Build SELECT command. use_and is a flag set to true if AND needs to be added between WHERE conditions.
-        if use_columns[0]:
+        if take_sum:
+            command = f'SELECT SUM("Amount") FROM {self.table_name}'
+        elif use_columns:
             command = "SELECT " + ', '.join(columns) + ' FROM ' + self.table_name
-        elif use_columns[1]:
+        elif use_one_column:
             command = "SELECT " + columns + ' FROM ' + self.table_name
         else:
             command = "SELECT * FROM " + self.table_name
@@ -434,12 +443,15 @@ class DatabaseManager:
         return [category[0] for category in res.fetchall()]
 
 
-    def totals_by_category(self, date_range=[]) -> tuple[list[str], np.array]:
+    def totals_by_category(self, date_range=None) -> tuple[list[str], np.array]:
+        ''' date_range: list of str for a range (YYYY-MM-DD YYYY-MM-DD) '''
         categories = self.list_categories()
         totals = []
         for category in categories:
-            self.cur.execute(f'SELECT SUM("Amount") FROM {self.table_name} WHERE Category = ?', (category,))
-            totals.append(self.cur.fetchone()[0])
+            # self.cur.execute(f'SELECT SUM("Amount") FROM {self.table_name} WHERE Category = ?', (category,))
+            total = self.select(category=category, date=date_range, take_sum=True)[0][0]
+            #totals.append(self.cur.fetchone()[0])
+            totals.append(total)
 
         return categories, np.array(totals)
 
@@ -450,7 +462,7 @@ class DatabaseManager:
 
         # Check date formatting
         date_length = len(date)
-        if date_length != 10: raise ValueError('Date must be in format YYYY-MM-DD!')
+        if date_length != 10: raise ValueError(f'Date {date} must be in format YYYY-MM-DD!')
 
         try:
             datetime.date.fromisoformat(date)
