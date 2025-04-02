@@ -26,10 +26,10 @@ class DatabaseManager:
 
     #Good?
     def insert(self, date=None, location=None, category=None, amount=None, array=None):
-        '''
+        """
         Provide date, location, category, amount as lists or single values of str, str, str, float.
         array is a df with columns Date, Location, Amount, Category
-        '''
+        """
 
         if array is None:
             # If all are lists, execute many
@@ -78,13 +78,13 @@ class DatabaseManager:
 
     #Good?
     def delete(self, date=None, location=None, category=None, amount=None):
-        '''
+        """
         specify any or no parameters to delete command.
         date: str or [str, str]
         location: str
         category: str
         amount: float or [float, float]
-        '''
+        """
 
         while True: # Loop for changing delete command.
             # Input checks
@@ -196,10 +196,10 @@ class DatabaseManager:
 
     # Good for now?
     def update_category(self, new_category, date=None, location=None, old_category=None, amount=None):
-        '''
+        """
         Provide the new category and other information. If multiple entries are returned, issue a warning that
         more information is needed to update only one record.
-        '''
+        """
 
         while True:
             selection = self.select(date, location, old_category, amount)
@@ -352,10 +352,10 @@ class DatabaseManager:
 
     # Good for now
     def print_selection(self, selection, columns=None):
-        '''
+        """
         Print a list of tuples return by db.Select
         If selection only contains some columns, specify which columns in columns
-        '''
+        """
         if columns is None: # selection contains 4 columns
             if not all(len(row) == 4 for row in selection): raise ValueError('Columns = None, but all rows in selection don\'t have 4 elements!')
 
