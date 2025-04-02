@@ -36,3 +36,13 @@ def date_to_iso(date, add_year=False):
     if add_year:
         date[0] = str(datetime.date.today())[0:2] + date[0]
     return '-'.join(date)
+
+category_options = ['Income',
+                    'Rent & Utilities',
+                    'Transportation',
+                    'Groceries',
+                    'Eating Out',
+                    'Subscriptions',
+                    'Clothing',
+                    'Personal',
+                    'Hobbies']
