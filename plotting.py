@@ -1,8 +1,9 @@
-import pandas as pd
+import datetime
 import matplotlib.pyplot as plt
 import numpy as  np
 
 from database import DatabaseManager
+from util import last_day_of_month, input_month_to_number
 
 def plot_main(args, db: DatabaseManager):
     plot_pie_by_category(args, db)
@@ -11,9 +12,25 @@ def plot_main(args, db: DatabaseManager):
     return
 
 
-def plot_pie_by_category(args, db):
-    #TODO: date range
-    categories, totals = db.totals_by_category()
+def plot_pie_by_category(args: list[str], db):
+    date_range = []
+    if len(args) > 0:
+        if args[0].lower() == 'month':
+            assert len(args) >= 2
+
+            month = input_month_to_number(args[1])
+
+            if len(args) == 3:
+                year = int(args[2])
+            else:
+                year = datetime.date.today().year
+
+            last_day = last_day_of_month(datetime.date(year, month, 1))
+
+            date_range.append(f'{year}-{month:0>2}-01')
+            date_range.append(f'{year}-{month:0>2}-{last_day}')
+
+    categories, totals = db.totals_by_category(date_range)
 
     expenses = [[],[]]
     income = [[],[]]
