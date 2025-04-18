@@ -4,3 +4,4 @@ tags
 transactions
 .python-version
 .vimspector.json
+*.swp
