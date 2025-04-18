@@ -1,6 +1,7 @@
 import pandas as pd
-import easygui
 from pathlib import Path
+import tkinter as tk
+from tkinter import filedialog
 
 import util
 
@@ -13,9 +14,9 @@ def import_file(rest):
             assert file.exists()
         except:
             print(f'file "{rest[0]}" not found. Select using popup box')
-            file = Path(easygui.fileopenbox())
+            file = open_file_gui()
     else:
-        file = Path(easygui.fileopenbox())
+        file = open_file_gui()
 
     import_type = input('Input 1 (c) to import credit or 2 (d) for debit\n>>> ')
     if import_type.lower() in ['1', 'c']:
@@ -65,4 +66,10 @@ def import_credit(file):
     data = data.rename(columns={'Name': 'Location'})
 
     return data
+
+
+def open_file_gui() -> Path:
+    root = tk.Tk()
+    root.withdraw()
+    return Path(filedialog.askopenfilename())
 
