@@ -365,18 +365,28 @@ class DatabaseManager:
         Print a list of tuples return by db.Select
         If selection only contains some columns, specify which columns in columns
         """
+
+        width_date = 10
+        width_location = 25
+        width_category = 23
+        width_amount = 9
+
         if columns is None: # selection contains 4 columns
             if not all(len(row) == 4 for row in selection): raise ValueError('Columns = None, but all rows in selection don\'t have 4 elements!')
+            
+            line_separator = '-' * (13+width_date+width_amount+width_category+width_location)
 
-            print('''
------------------------------------------------------------------------
-|    Date    |     Location     |        Category         |  Amount   |
------------------------------------------------------------------------''')
+            print(f'''
+{line_separator}
+| {"Date":^{width_date}} | {"Location":^{width_location}} | {"Category":^{width_category}} | {"Amount":^{width_amount}} |
+{line_separator}''')
             for row in selection:
-                print('| ' + row[0] + ' | ' + row[1][:16].center(16) + ' | ' + row[2].center(23) + ' | ' + str(row[3]).center(9) + ' |')
-            print('-----------------------------------------------------------------------\n')
+                print(f'| {row[0]:^{width_date}} | {row[1][:width_location]:^{width_location}} | {row[2]:^{width_category}} | {row[3]:^{width_amount}} |')
+            print(line_separator)
 
         else:
+            line_separator = ''
+            header = '|'
             line1='-'
             line2='|'
             use_date, use_location, use_category, use_amount = False, False, False, False
@@ -385,40 +395,41 @@ class DatabaseManager:
                 use_date = True
                 i_date = i
                 i += 1
-                line1 += '-------------'
-                line2 += '    Date    |'
+                line_separator += '-' * (3+width_date)
+                header += f' {"Date":^{width_date}} |'
             if 'Location' in columns:
                 use_location = True
                 i_location = i
                 i += 1
-                line1 += '-------------------'
-                line2 += '     Location     |'
+                line_separator += '-' * (3+width_location)
+                header += f' {"Location":^{width_location}} |'
             if 'Category' in columns:
                 use_category = True
                 i_category = i
                 i += 1
-                line1 += '--------------------------'
-                line2 += '        Category         |'
+                line_separator += '-' * (3+width_category)
+                header += f' {"Category":^{width_category}} |'
             if 'Amount' in columns:
                 use_amount = True
                 i_amount = i
                 i += 1
-                line1 += '------------'
-                line2 += '  Amount   |'
+                line_separator += '-' * (3+width_amount)
+                header += f' {"Amount":^{width_amount}} |'
 
-            print(line1)
-            print(line2)
-            print(line1)
+            print(f'''
+{line_separator}
+{header}
+{line_separator}''')
 
             for row in selection:
                 line = '| '
-                if use_date:     line += row[i_date] + ' | '
-                if use_location: line += row[i_location][:16].center(16) + ' | '
-                if use_category: line += row[i_category].center(23) + ' | '
-                if use_amount:   line += str(row[i_amount]).center(9) + ' | '
+                if use_date:     line += f'{row[i_date]:^{width_date}} | '
+                if use_location: line += f'{row[i_location][:width_location]:^{width_location}} | '
+                if use_category: line += f'{row[i_category]:^{width_category}} | '
+                if use_amount:   line += f'{row[i_amount]:^{width_amount}} | '
                 print(line)
 
-            print(line1 + '\n')
+            print(line_separator)
 
         return True
 
