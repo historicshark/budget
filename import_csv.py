@@ -29,33 +29,33 @@ def import_file(rest):
 
 
 # df with Date, Location, Amount
-def import_debit(file):
-    debit_data = pd.read_csv(file)
+def import_debit(file) -> pd.DataFrame:
+    data = pd.read_csv(file)
 
     # Combine credit and debit columns
-    debit_data['Amount'] = debit_data['Debit'].fillna(debit_data['Credit'])
+    data['Amount'] = data['Debit'].fillna(data['Credit'])
 
-    debit_data = debit_data.rename(columns={'Description': 'Location'})
+    data = data.rename(columns={'Description': 'Location'})
 
-    debit_data.drop(columns=['Account', 'Memo', 'Check #', 'Credit', 'Debit', 'Category'], inplace=True) #XXX dropping category
+    data.drop(columns=['Account', 'Memo', 'Check #', 'Credit', 'Debit', 'Category'], inplace=True) #XXX dropping category
 
     # Remove slash at the end of debit category
-    # debit_data['Category'] = debit_data['Category'].map(lambda x: x[:-1])
+    # data['Category'] = data['Category'].map(lambda x: x[:-1])
 
     # Remove credit card payments from debit
-    debit_data = debit_data[~debit_data['Location'].str.contains('CARDMEMBER SERV  WEB PYMT')]
+    data = data[~data['Location'].str.contains('CARDMEMBER SERV  WEB PYMT')]
 
     # Change date format from 'MM/DD/YYYY' (or MM/DD/YY' if add_year=True) to 'YYYY-MM-DD'
-    debit_data['Date'] = debit_data['Date'].apply(util.date_to_iso)
+    data['Date'] = data['Date'].apply(util.date_to_iso)
 
     # Negative of debit amounts so that spending is positive
-    # debit_data.Amount = debit_data.Amount.map(lambda x: -x)
+    # data.Amount = data.Amount.map(lambda x: -x)
 
-    return debit_data
+    return data
 
 
 # df with Date, Name, Amount
-def import_credit(file):
+def import_credit(file) -> pd.DataFrame:
     data = pd.read_csv(file)
 
     # Change date format from 'MM/DD/YYYY' (or MM/DD/YY' if add_year=True) to 'YYYY-MM-DD'
