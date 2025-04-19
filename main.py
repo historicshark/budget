@@ -1,4 +1,4 @@
-#!/home/historicshark/Documents/budget/venv_budget/bin/python
+#!/usr/bin/env python3
 
 import argparse
 

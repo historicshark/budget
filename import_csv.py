@@ -3,8 +3,6 @@ from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog
 
-import util
-
 
 def import_file(rest):
     if rest:
@@ -46,7 +44,7 @@ def import_debit(file) -> pd.DataFrame:
     data = data[~data['Location'].str.contains('CARDMEMBER SERV  WEB PYMT')]
 
     # Change date format from 'MM/DD/YYYY' (or MM/DD/YY' if add_year=True) to 'YYYY-MM-DD'
-    data['Date'] = data['Date'].apply(util.date_to_iso)
+    data['Date'] = data['Date'].apply(date_to_iso)
 
     # Negative of debit amounts so that spending is positive
     # data.Amount = data.Amount.map(lambda x: -x)
@@ -72,4 +70,13 @@ def open_file_gui() -> Path:
     root = tk.Tk()
     root.withdraw()
     return Path(filedialog.askopenfilename())
+
+
+def date_to_iso(date, add_year=False) -> str:
+    ''' MM/DD/YYYY --> YYYY-MM-DD '''
+    date = date.split('/')
+    date = [date[2], date[0], date[1]]
+    if add_year:
+        date[0] = str(datetime.date.today())[0:2] + date[0]
+    return '-'.join(date)
 

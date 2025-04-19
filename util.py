@@ -5,39 +5,6 @@ def column(array, i):
     return [row[i] for row in array]
 
 
-def read_categories(categories_filepath):
-    if Path(categories_filepath).exists():
-        categories_file = open(categories_filepath, 'r')
-    else:
-        raise FileNotFoundError(categories_filepath)
-    
-    categories = categories_file.readline()
-    categories_file.close()
-    return categories.split(',')[:-1] # last comma means -1 entry is ''
-
-
-def add_category(categories_filepath, category):
-    if Path(categories_filepath).exists():
-        categories_file = open(categories_filepath, 'a')
-    else:
-        raise FileNotFoundError(categories_filepath)
-    
-    if category[-1] != ',':
-        category += ','
-        
-    categories_file.write(category)
-    categories_file.close()
-
-
-def date_to_iso(date, add_year=False):
-    ''' MM/DD/YYYY --> YYYY-MM-DD '''
-    date = date.split('/')
-    date = [date[2], date[0], date[1]]
-    if add_year:
-        date[0] = str(datetime.date.today())[0:2] + date[0]
-    return '-'.join(date)
-
-
 def last_day_of_month(day: datetime.date) -> int:
     next_month = day.replace(day=28) + datetime.timedelta(days=4)
     return (next_month - datetime.timedelta(days=next_month.day)).day
@@ -72,13 +39,3 @@ def input_month_to_number(month: str) -> int:
     else:
         raise ValueError(f'In input_month_to_number(), month "{month}" is  not recognized!')
 
-
-category_options = ['Income',
-                    'Rent & Utilities',
-                    'Transportation',
-                    'Groceries',
-                    'Eating Out',
-                    'Subscriptions',
-                    'Clothing',
-                    'Personal',
-                    'Hobbies']
