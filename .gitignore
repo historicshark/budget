@@ -5,3 +5,4 @@ transactions
 .python-version
 .vimspector.json
 *.swp
+.DS_Store
