@@ -1,0 +1,50 @@
+import sys
+
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QApplication,
+    QLabel,
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QGridLayout,
+    QPushButton,
+)
+from PyQt5.QtGui import (
+    QFont,
+)
+from PyQt5.QtCore import Qt
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle('Budget Program')
+        self.button = QPushButton('click me', self)
+        self.label = QLabel('hello', self)
+        self.setGeometry(100, 100, 700, 700)
+
+        self.initUI()
+
+    def initUI(self):
+        self.button.setGeometry(10, 10, 200, 70)
+        self.button.setStyleSheet('font-size: 30px')
+        self.button.clicked.connect(self.on_click)
+
+        self.label.setGeometry(150,300, 200, 100)
+        self.label.setStyleSheet('font-size: 30px;')
+
+    def on_click(self):
+        print('button clicked')
+        self.button.setText('clicked')
+        self.button.setDisabled(True)
+        self.label.setText('goodbye')
+
+def main():
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    main()
