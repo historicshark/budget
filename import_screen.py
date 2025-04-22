@@ -19,6 +19,7 @@ class ImportScreen(QWidget):
         super().__init__()
         self.stacked_widget = stacked_widget
         self.layout = QVBoxLayout()
+        self.filename = ''
         self.initUI()
 
     def initUI(self):
@@ -165,7 +166,15 @@ class ImportScreen(QWidget):
             print('debit')
 
     def open_file_dialog(self):
-        pass
+        self.filename, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'CSV Files (*.csv)')
+        if self.filename:
+            self.import_label.setText(f'{self.filename}')
+            self.import_label.setStyleSheet(f'''
+                            font-family: Monaco;
+                            font-size: 18px;
+                            color: {COLORS['fg']};
+                            ''')
+            print(self.filename)
 
     def go_home(self):
         self.stacked_widget.setCurrentIndex(SCREENS.HOME)
