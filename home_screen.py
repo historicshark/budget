@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import (
     QLabel,
     QVBoxLayout,
     QHBoxLayout,
-    QGridLayout,
 )
 
 from PyQt5.QtCore import Qt
