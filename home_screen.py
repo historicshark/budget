@@ -1,6 +1,4 @@
 from PyQt5.QtWidgets import (
-    QApplication,
-    QMainWindow,
     QWidget,
     QStackedWidget,
     QPushButton,
@@ -11,7 +9,7 @@ from PyQt5.QtWidgets import (
 
 from PyQt5.QtCore import Qt
 
-from global_variables import COLORS
+from global_variables import COLORS, SCREENS
 
 
 class HomeScreen(QWidget):
@@ -105,7 +103,7 @@ class HomeScreen(QWidget):
 
 
     def on_click_import(self):
-        print('import')
+        self.stacked_widget.setCurrentIndex(SCREENS.IMPORT)
 
     def on_click_plot(self):
         print('plot')
