@@ -2,7 +2,8 @@ from enum import IntEnum
 import json
 from pathlib import Path
 
-with open('colors.json', 'r') as f:
+
+with open('ui/colors.json', 'r') as f:
     COLORS = json.load(f)
 
 class SCREENS(IntEnum):

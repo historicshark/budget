@@ -27,7 +27,7 @@ def import_file(rest):
 
 
 # df with Date, Location, Amount
-def import_debit(file) -> pd.DataFrame:
+def import_debit(file: str) -> pd.DataFrame:
     data = pd.read_csv(file)
 
     # Combine credit and debit columns
@@ -52,8 +52,8 @@ def import_debit(file) -> pd.DataFrame:
     return data
 
 
-# df with Date, Name, Amount
-def import_credit(file) -> pd.DataFrame:
+# df with Date, Location, Amount
+def import_credit(file: str) -> pd.DataFrame:
     data = pd.read_csv(file)
 
     # Change date format from 'MM/DD/YYYY' (or MM/DD/YY' if add_year=True) to 'YYYY-MM-DD'

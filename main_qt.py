@@ -9,8 +9,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QPalette, QColor
 
 from global_variables import COLORS
-from home_screen import HomeScreen
-from import_screen import ImportScreen
+from ui.home_screen import HomeScreen
+from ui.import_screen import ImportScreen
 
 class MainWindow(QMainWindow):
     def __init__(self):

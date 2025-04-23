@@ -29,8 +29,8 @@ class HomeScreen(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.layout.setSpacing(0)
-        self.layout.setContentsMargins(10,10,10,10)
+        self.layout.setSpacing(10)
+        self.layout.setContentsMargins(15,0,15,0)
 
         self.row_layout.setSpacing(10)
 
@@ -86,7 +86,8 @@ class HomeScreen(QWidget):
 
         # footer
         self.layout.addStretch()
-        footer = QLabel(' • '.join([f'({key}): {button}' for button, _, _, key in self.button_labels_descriptions_methods_keys]))
+
+        footer = QLabel(' • '.join([f'{button}: {key}' for button, _, _, key in self.button_labels_descriptions_methods_keys]))
         footer.setStyleSheet(f'''
                              QLabel {{
                              background-color: {COLORS['fg']};
@@ -96,7 +97,6 @@ class HomeScreen(QWidget):
                              padding: 3px;
                             }}
                              ''')
-
         self.layout.addWidget(footer)
 
         self.setLayout(self.layout)
