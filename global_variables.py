@@ -8,5 +8,6 @@ with open('ui/colors.json', 'r') as f:
 
 class SCREENS(IntEnum):
     HOME = 0,
-    IMPORT = 1
+    IMPORT = 1,
+    CATEGORIZE = 2,
 

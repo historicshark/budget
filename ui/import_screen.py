@@ -169,8 +169,6 @@ class ImportScreen(QWidget):
         continue_button_layout.addWidget(self.continue_button)
         continue_button_layout.addStretch()
         self.layout.addLayout(continue_button_layout)
-        #self.layout.addWidget(self.continue_button)
-
 
         # footer
         keys_functions = [('h', 'go home'),
@@ -266,6 +264,7 @@ class ImportScreen(QWidget):
 
     def continue_button_pressed(self):
         print('continue')
+        # self.stacked_widget.setCurrentIndex(SCREENS.CATEGORIZE)
 
     def go_home(self):
         self.stacked_widget.setCurrentIndex(SCREENS.HOME)
