@@ -12,6 +12,7 @@ from global_variables import COLORS
 from ui.home_screen import HomeScreen
 from ui.import_screen import ImportScreen
 from ui.categorize_screen import CategorizeScreen
+from fcn.import_categorize import Importer
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -27,9 +28,13 @@ class MainWindow(QMainWindow):
         palette.setColor(QPalette.Window, QColor(COLORS['bg']))
         self.setPalette(palette)
 
+        # logic classes
+        importer = Importer()
+
+        # ui classes
         self.home_screen = HomeScreen(self.stack)
-        self.import_screen = ImportScreen(self.stack)
-        self.categorize_screen = CategorizeScreen(self.stack)
+        self.import_screen = ImportScreen(self.stack, importer)
+        self.categorize_screen = CategorizeScreen(self.stack, importer)
 
         self.stack.addWidget(self.home_screen)
         self.stack.addWidget(self.import_screen)

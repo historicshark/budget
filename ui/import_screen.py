@@ -16,17 +16,18 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 
 from global_variables import COLORS, SCREENS
-from fcn.import_csv import import_credit, import_debit
+from fcn.import_categorize import Importer
 
 
 class ImportScreen(QWidget):
-    def __init__(self, stacked_widget: QStackedWidget):
+    def __init__(self, stacked_widget: QStackedWidget, importer: Importer):
         super().__init__()
         self.stacked_widget = stacked_widget
         self.layout = QVBoxLayout()
-        self.filename = ''
+        self.file = ''
         self.file_exists = False
         self.account = ''
+        self.importer = importer
         self.initUI()
 
     def initUI(self):
@@ -141,8 +142,8 @@ class ImportScreen(QWidget):
 
         self.layout.addLayout(account_type_layout)
 
-        # continue button
-        self.layout.addSpacing(25)
+        # continue/cancel
+        self.layout.addStretch()
 
         continue_button_layout = QHBoxLayout()
         self.continue_button = QPushButton('Continue')
@@ -151,6 +152,12 @@ class ImportScreen(QWidget):
         self.continue_button.setDisabled(True)
         continue_shortcut = QShortcut(QKeySequence('Return'), self)
         continue_shortcut.activated.connect(self.continue_button.click)
+        
+        self.cancel_button = QPushButton('Cancel')
+        self.cancel_button.setFixedSize(150, 50)
+        self.cancel_button.clicked.connect(self.cancel_button_pressed)
+        cancel_shortcut = QShortcut(QKeySequence('Escape'), self)
+        cancel_shortcut.activated.connect(self.cancel_button.click)
 
         self.continue_button.setStyleSheet(f'''
                                QPushButton {{
@@ -164,9 +171,23 @@ class ImportScreen(QWidget):
                                background-color: {COLORS['purple']};
                                color: {COLORS['fg']};
                             }}
+                                           ''')
+        
+        self.cancel_button.setStyleSheet(f'''
+                               QPushButton {{
+                               font-family: Monaco;
+                               font-size: 18px;
+                               background-color: {COLORS['gray']};
+                               color: {COLORS['bg']};
+                             }}
 
+                             QPushButton:hover {{
+                               background-color: {COLORS['orange']};
+                               color: {COLORS['fg']};
+                            }}
                                            ''')
         continue_button_layout.addWidget(self.continue_button)
+        continue_button_layout.addWidget(self.cancel_button)
         continue_button_layout.addStretch()
         self.layout.addLayout(continue_button_layout)
 
@@ -176,8 +197,9 @@ class ImportScreen(QWidget):
                           ('c', 'credit'),
                           ('d', 'debit'),
                           ('<return>', 'continue'),
+                          ('<esc>', 'cancel'),
                          ]
-        self.layout.addStretch()
+        # self.layout.addStretch()
         footer = QLabel(' • '.join([f'{function}: {key}' for key, function in keys_functions]))
         footer.setStyleSheet(f'''
                              QLabel {{
@@ -206,10 +228,10 @@ class ImportScreen(QWidget):
         self.check_activate_continue_button()
 
     def open_file_dialog(self):
-        self.filename, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'CSV Files (*.csv)')
-        if self.filename:
-            if Path(self.filename).exists():
-                self.import_label.setText(f'{self.filename}')
+        self.file, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'CSV Files (*.csv)')
+        if self.file:
+            if Path(self.file).exists():
+                self.import_label.setText(f'{self.file}')
                 self.import_label.setStyleSheet(f'''
                                 font-family: Monaco;
                                 font-size: 14px;
@@ -241,7 +263,6 @@ class ImportScreen(QWidget):
                                background-color: {COLORS['purple']};
                                color: {COLORS['fg']};
                             }}
-
                                            ''')
 
         else:
@@ -258,13 +279,15 @@ class ImportScreen(QWidget):
                                background-color: {COLORS['purple']};
                                color: {COLORS['fg']};
                             }}
-
                                            ''')
 
-
     def continue_button_pressed(self):
-        print('continue')
-        # self.stacked_widget.setCurrentIndex(SCREENS.CATEGORIZE)
+        self.importer.set_file(self.file)
+        self.importer.import_file(self.account)
+        self.stacked_widget.setCurrentIndex(SCREENS.CATEGORIZE)
+    
+    def cancel_button_pressed(self):
+        self.stacked_widget.setCurrentIndex(SCREENS.HOME)
 
     def go_home(self):
         self.stacked_widget.setCurrentIndex(SCREENS.HOME)
