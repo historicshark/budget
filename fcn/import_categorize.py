@@ -8,8 +8,8 @@ class Importer():
     def __init__(self, file=''):
         self.file = ''
         self.set_file(file)
-        self.rules_file = 'category_rules.json'
-        self.categories_file = 'categories.json'
+        self.rules_file = 'fcn/category_rules.json'
+        self.categories_file = 'fcn/categories.json'
 
         self.rules = self.load_category_rules()
         self.categories = self.load_categories()

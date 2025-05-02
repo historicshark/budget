@@ -36,8 +36,8 @@ class MainWindow(QMainWindow):
         self.import_screen = ImportScreen(self.stack, importer)
         self.categorize_screen = CategorizeScreen(self.stack, importer)
 
-        self.stack.addWidget(self.home_screen)
-        self.stack.addWidget(self.import_screen)
+        # self.stack.addWidget(self.home_screen)
+        # self.stack.addWidget(self.import_screen)
         self.stack.addWidget(self.categorize_screen)
 
 def main():
