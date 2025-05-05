@@ -13,6 +13,21 @@ class Importer():
 
         self.rules = self.load_category_rules()
         self.categories = self.load_categories()
+        
+        # Hold the current index of the iterator for categorizing the transactions
+        self.data = pd.DataFrame()
+        self.index = -1
+        self.length = -1
+
+    def __iter__(self):
+        assert self.length >= 0
+        return self
+    
+    def __next__(self) -> pd.Series:
+        self.index += 1
+        if self.index < self.length:
+            return self.data.iloc[self.index]
+        raise StopIteration 
 
 
     # Set the file to be imported
@@ -23,14 +38,15 @@ class Importer():
         else:
             return False
 
-    def import_file(self, account: str) -> pd.DataFrame:
+    def import_file(self, account: str) -> None:
         match account:
             case 'credit':
-                return self.import_credit()
+                self.data = self.import_credit()
             case 'debit':
-                return self.import_debit()
+                self.data = self.import_debit()
             case _:
                 raise ValueError(f'Invalid account import option {account}')
+        self.length = self.data.shape[0]
     
     # Functions to load the file into a data frame with columns "Date", "Location", "Amount"
     def import_debit(self) -> pd.DataFrame:
