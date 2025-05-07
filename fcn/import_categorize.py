@@ -2,7 +2,7 @@ import datetime
 import json
 import pandas as pd
 from pathlib import Path
-
+from ofxparse import OfxParser
 
 class Importer():
     def __init__(self, file=''):
@@ -15,7 +15,7 @@ class Importer():
         self.categories = self.load_categories()
         
         # Hold the current index of the iterator for categorizing the transactions
-        self.data = pd.DataFrame()
+        self.data: list[dict[str, str]] = []  # Amount, Location, Date
         self.index = -1
         self.length = -1
 
@@ -37,20 +37,26 @@ class Importer():
             return True
         else:
             return False
-
+    
     def import_file(self, account: str) -> None:
+        assert Path(self.file).exists()
+        if self.file.lower().endswith(('.csv', '.txt')):
+            self.import_file_csv(account)
+        elif #TODO ofx
+
+    def import_file_csv(self, account: str) -> None:
         match account:
             case 'credit':
-                self.data = self.import_credit()
+                self.data = self.import_credit_csv()
             case 'debit':
-                self.data = self.import_debit()
+                self.data = self.import_debit_csv()
             case _:
                 raise ValueError(f'Invalid account import option {account}')
         self.length = self.data.shape[0]
     
-    # Functions to load the file into a data frame with columns "Date", "Location", "Amount"
-    def import_debit(self) -> pd.DataFrame:
-        data = pd.read_csv(self.file)
+    # Functions to load the file into a list of dict with "Date", "Location", "Amount"
+    def import_debit_csv(self) -> list[dict[str, str]]:
+        data = pd.read_csv(self.file, dtype=str)
 
         # Combine credit and debit columns
         data['Amount'] = data['Debit'].fillna(data['Credit'])
@@ -69,28 +75,30 @@ class Importer():
 
         # Negative of debit amounts so that spending is positive
         # data.Amount = data.Amount.map(lambda x: -x)
-        return data
+        return data.to_dict('records')
 
-    def import_credit(self) -> pd.DataFrame:
-        data = pd.read_csv(self.file)
-
-        # Combine credit and debit columns
-        data['Amount'] = data['Debit'].fillna(data['Credit'])
-
-        data = data.rename(columns={'Description': 'Location'})
-        data.drop(columns=['Account', 'Memo', 'Check #', 'Credit', 'Debit', 'Category'], inplace=True) #XXX dropping category
-
-        # Remove slash at the end of debit category
-        # data['Category'] = data['Category'].map(lambda x: x[:-1])
-
-        # Remove credit card payments from debit
-        data = data[~data['Location'].str.contains('CARDMEMBER SERV  WEB PYMT')]
+    def import_credit_csv(self) -> list[dict[str, str]]:
+        data = pd.read_csv(self.file, dtype=str)
 
         # Change date format from 'MM/DD/YYYY' (or MM/DD/YY' if add_year=True) to 'YYYY-MM-DD'
-        data['Date'] = data['Date'].apply(self.date_to_iso)
+        # credit_data['Date'] = credit_data['Date'].apply(util.date_to_iso, args=(True,))
 
-        # Negative of debit amounts so that spending is positive
-        # data.Amount = data.Amount.map(lambda x: -x)
+        data = data[~data['Name'].str.contains('INTERNET PAYMENT THANK YOU')]
+        data = data.drop(columns=['Transaction', 'Memo'])
+        data = data.rename(columns={'Name': 'Location'})
+        return data.to_dict('records')
+    
+    def import_file_ofx(self) -> list[dict[str, str]]:
+        with open(self.file) as f:
+            ofx = OfxParser.parse(f)
+        data = [
+            {
+                'Amount': str(transaction.amount),
+                'Location': str(transaction.payee),
+                'Date': str(transaction.date.date())
+            }
+            for transaction in ofx.account.statement.transactions
+        ]
         return data
 
     def date_to_iso(self, date: str, add_year=False) -> str:
@@ -134,3 +142,17 @@ class Importer():
             if keyword in location:
                 return self.rules[keyword]
         return 'Unknown'
+
+    def add_new_category_rule(self, keyword: str, category: str) -> None:
+        self.rules[keyword.lower()] = category
+        self.dump_category_rules()
+        return
+    
+    def add_new_category(self, new_category: str) -> None:
+        if new_category in self.categories:
+            raise ValueError(f'Category {new_category} already exists!')
+        
+        self.categories.append(new_category)
+        self.dump_categories(self.categories)
+        return
+    

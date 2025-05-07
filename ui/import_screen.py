@@ -228,7 +228,7 @@ class ImportScreen(QWidget):
         self.check_activate_continue_button()
 
     def open_file_dialog(self):
-        self.file, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'CSV Files (*.csv)')
+        self.file, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'Statement Files (*.ofx *.qbo *.qfx *.csv)')
         if self.file:
             if Path(self.file).exists():
                 self.import_label.setText(f'{self.file}')
