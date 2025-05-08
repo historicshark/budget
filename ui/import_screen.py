@@ -42,7 +42,6 @@ class ImportScreen(QWidget):
         home_button = QPushButton('Home')
         home_button.clicked.connect(self.go_home)
         home_button.setFixedSize(70, 30)
-        home_button.setShortcut('h')
 
         home_button.setStyleSheet(f'''
                                    QPushButton {{
@@ -78,7 +77,7 @@ class ImportScreen(QWidget):
         import_button.clicked.connect(self.open_file_dialog)
         import_button.setShortcut('o')
 
-        self.import_label = QLabel('Choose a csv file to import')
+        self.import_label = QLabel('Choose a file to import')
 
         import_button.setStyleSheet(f'''
                              QPushButton {{
@@ -109,20 +108,20 @@ class ImportScreen(QWidget):
 
         self.layout.addSpacing(25)
 
-        # credit/debit radio buttons
+        # credit/debit radio buttons - only shown if a csv file is imported
         account_type_layout = QVBoxLayout()
 
-        label_description = QLabel('Choose credit or debit')
+        self.label_description = QLabel('Choose credit or debit')
 
-        credit_button = QRadioButton('credit')
-        credit_button.setShortcut('c')
-        credit_button.toggled.connect(self.credit_button_toggled)
+        self.credit_button = QRadioButton('credit')
+        self.credit_button.setShortcut('c')
+        self.credit_button.toggled.connect(self.credit_button_toggled)
 
-        debit_button = QRadioButton('debit')
-        debit_button.setShortcut('d')
-        debit_button.toggled.connect(self.debit_button_toggled)
+        self.debit_button = QRadioButton('debit')
+        self.debit_button.setShortcut('d')
+        self.debit_button.toggled.connect(self.debit_button_toggled)
 
-        label_description.setStyleSheet(f'''
+        self.label_description.setStyleSheet(f'''
                                         font-family: Monaco;
                                         font-size: 18px;
                                         color: {COLORS['fg']};
@@ -133,12 +132,14 @@ class ImportScreen(QWidget):
             font-size: 16px;
             color: {COLORS['fg']};
             '''
-        credit_button.setStyleSheet(button_format)
-        debit_button.setStyleSheet(button_format)
+        self.credit_button.setStyleSheet(button_format)
+        self.debit_button.setStyleSheet(button_format)
 
-        account_type_layout.addWidget(label_description)
-        account_type_layout.addWidget(credit_button)
-        account_type_layout.addWidget(debit_button)
+        account_type_layout.addWidget(self.label_description)
+        account_type_layout.addWidget(self.credit_button)
+        account_type_layout.addWidget(self.debit_button)
+
+        self.set_account_buttons_visibility(False)
 
         self.layout.addLayout(account_type_layout)
 
@@ -192,8 +193,7 @@ class ImportScreen(QWidget):
         self.layout.addLayout(continue_button_layout)
 
         # footer
-        keys_functions = [('h', 'go home'),
-                          ('o', 'open file'),
+        keys_functions = [('o', 'open file'),
                           ('c', 'credit'),
                           ('d', 'debit'),
                           ('<return>', 'continue'),
@@ -226,6 +226,11 @@ class ImportScreen(QWidget):
         if sender.isChecked():
             self.account = 'debit'
         self.check_activate_continue_button()
+    
+    def set_account_buttons_visibility(self, is_visible: bool):
+        self.label_description.setVisible(is_visible)
+        self.credit_button.setVisible(is_visible)
+        self.debit_button.setVisible(is_visible)
 
     def open_file_dialog(self):
         self.file, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'Statement Files (*.ofx *.qbo *.qfx *.csv)')
@@ -245,11 +250,17 @@ class ImportScreen(QWidget):
                                 font-size: 14px;
                                 color: {COLORS['red']};
                                 ''')
-
+        self.check_activate_account_buttons()
         self.check_activate_continue_button()
-        
+    
+    def check_activate_account_buttons(self):
+        if self.file_exists and self.file.lower().endswith('.csv'):
+            self.set_account_buttons_visibility(True)
+        else:
+            self.set_account_buttons_visibility(False)
+
     def check_activate_continue_button(self):
-        if self.account and self.file_exists:
+        if self.file_exists and (self.file.lower().endswith(('.ofx','.qbo','.qfx')) or (self.account and self.file.lower().endswith('.csv'))):
             self.continue_button.setEnabled(True)
             self.continue_button.setStyleSheet(f'''
                                QPushButton {{
@@ -264,7 +275,6 @@ class ImportScreen(QWidget):
                                color: {COLORS['fg']};
                             }}
                                            ''')
-
         else:
             self.continue_button.setDisabled(True)
             self.continue_button.setStyleSheet(f'''
@@ -287,6 +297,10 @@ class ImportScreen(QWidget):
         self.stacked_widget.setCurrentIndex(SCREENS.CATEGORIZE)
     
     def cancel_button_pressed(self):
+        self.file = ''
+        self.file_exists = False
+        self.import_label.setText('Choose a file to import')
+        self.set_account_buttons_visibility(False)
         self.stacked_widget.setCurrentIndex(SCREENS.HOME)
 
     def go_home(self):

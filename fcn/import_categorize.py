@@ -1,11 +1,13 @@
+from collections.abc import Sequence
 import datetime
 import json
 import pandas as pd
 from pathlib import Path
 from ofxparse import OfxParser
 
-class Importer():
+class Importer(Sequence):
     def __init__(self, file=''):
+        super().__init__()
         self.file = ''
         self.set_file(file)
         self.rules_file = 'fcn/category_rules.json'
@@ -13,22 +15,13 @@ class Importer():
 
         self.rules = self.load_category_rules()
         self.categories = self.load_categories()
-        
-        # Hold the current index of the iterator for categorizing the transactions
         self.data: list[dict[str, str]] = []  # Amount, Location, Date
-        self.index = -1
-        self.length = -1
-
-    def __iter__(self):
-        assert self.length >= 0
-        return self
     
-    def __next__(self) -> pd.Series:
-        self.index += 1
-        if self.index < self.length:
-            return self.data.iloc[self.index]
-        raise StopIteration 
-
+    def __getitem__(self, i):
+        return self.data[i]
+    
+    def __len__(self):
+        return len(self.data)
 
     # Set the file to be imported
     def set_file(self, file: str) -> bool:
@@ -38,12 +31,15 @@ class Importer():
         else:
             return False
     
+    # Import the file set by set_file
     def import_file(self, account: str) -> None:
         assert Path(self.file).exists()
         if self.file.lower().endswith(('.csv', '.txt')):
             self.import_file_csv(account)
-        elif #TODO ofx
+        elif self.file.lower().endswith(('.ofx','.qbo','.qfx')):
+            self.import_file_ofx()
 
+    # Functions to load a csv file. Different processing is needed for each account because the format is different.
     def import_file_csv(self, account: str) -> None:
         match account:
             case 'credit':
@@ -52,9 +48,7 @@ class Importer():
                 self.data = self.import_debit_csv()
             case _:
                 raise ValueError(f'Invalid account import option {account}')
-        self.length = self.data.shape[0]
     
-    # Functions to load the file into a list of dict with "Date", "Location", "Amount"
     def import_debit_csv(self) -> list[dict[str, str]]:
         data = pd.read_csv(self.file, dtype=str)
 
@@ -88,18 +82,18 @@ class Importer():
         data = data.rename(columns={'Name': 'Location'})
         return data.to_dict('records')
     
-    def import_file_ofx(self) -> list[dict[str, str]]:
+    # Function to import ofx-type files.
+    def import_file_ofx(self) -> None:
         with open(self.file) as f:
             ofx = OfxParser.parse(f)
-        data = [
+        self.data = [
             {
-                'Amount': str(transaction.amount),
+                'Amount':   str(transaction.amount),
                 'Location': str(transaction.payee),
-                'Date': str(transaction.date.date())
+                'Date':     str(transaction.date.date())
             }
             for transaction in ofx.account.statement.transactions
         ]
-        return data
 
     def date_to_iso(self, date: str, add_year=False) -> str:
         ''' MM/DD/YYYY --> YYYY-MM-DD '''
@@ -109,6 +103,7 @@ class Importer():
             date[0] = str(datetime.date.today())[0:2] + date[0]
         return '-'.join(date)
 
+    # Load json file containing category rules of {"keyword": "category"}
     def load_category_rules(self) -> dict:
         if Path(self.rules_file).exists():
             with open(self.rules_file, 'r') as f:
@@ -122,6 +117,7 @@ class Importer():
             json.dump(self.rules, f, indent=2)
         return
 
+    # Load json file containing a list of categories
     def load_categories(self) -> list[str]:
         if Path(self.categories_file).exists():
             with open(self.categories_file, 'r') as f:

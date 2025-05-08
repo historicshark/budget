@@ -13,6 +13,7 @@ from ui.home_screen import HomeScreen
 from ui.import_screen import ImportScreen
 from ui.categorize_screen import CategorizeScreen
 from fcn.import_categorize import Importer
+from fcn.database import DatabaseManager
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -29,6 +30,7 @@ class MainWindow(QMainWindow):
         self.setPalette(palette)
 
         # logic classes
+        db = DatabaseManager('transactions')
         importer = Importer()
 
         # ui classes
@@ -36,8 +38,8 @@ class MainWindow(QMainWindow):
         self.import_screen = ImportScreen(self.stack, importer)
         self.categorize_screen = CategorizeScreen(self.stack, importer)
 
-        # self.stack.addWidget(self.home_screen)
-        # self.stack.addWidget(self.import_screen)
+        self.stack.addWidget(self.home_screen)
+        self.stack.addWidget(self.import_screen)
         self.stack.addWidget(self.categorize_screen)
 
 def main():

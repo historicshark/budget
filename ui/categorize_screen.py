@@ -12,6 +12,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 
+from string import ascii_lowercase
+
 from global_variables import COLORS, SCREENS
 from fcn.import_categorize import Importer
 
@@ -22,7 +24,7 @@ class CategorizeScreen(QWidget):
         self.stacked_widget = stacked_widget
         self.layout = QVBoxLayout()
         self.importer = importer
-        self.category_buttons = []
+        self.category = ''
 
         self.initUI()
     
@@ -38,7 +40,6 @@ class CategorizeScreen(QWidget):
         home_button = QPushButton('Home')
         home_button.clicked.connect(self.go_home)
         home_button.setFixedSize(70, 30)
-        home_button.setShortcut('h')
 
         home_button.setStyleSheet(f'''
                                    QPushButton {{
@@ -70,18 +71,18 @@ class CategorizeScreen(QWidget):
         # Two columns showing transaction and category options
         main_layout = QHBoxLayout()
         left_layout = QVBoxLayout()
-        right_layout = QVBoxLayout()
+        self.right_layout = QVBoxLayout()
 
-        # Left column
+        # Left column - current transaction being categorized and the continue and cancel buttons
         left_layout.addSpacing(10)
 
-        location_label = QLabel('Transaction: ')
-        date_label = QLabel('Date: ')
-        amount_label = QLabel('Amount: $')
+        self.location_label = QLabel('Transaction: ')
+        self.date_label = QLabel('Date: ')
+        self.amount_label = QLabel('Amount: $')
 
-        left_layout.addWidget(location_label)
-        left_layout.addWidget(date_label)
-        left_layout.addWidget(amount_label)
+        left_layout.addWidget(self.location_label)
+        left_layout.addWidget(self.date_label)
+        left_layout.addWidget(self.amount_label)
 
         label_style = f'''
                       font-family: Monaco;
@@ -89,9 +90,9 @@ class CategorizeScreen(QWidget):
                       color: {COLORS['fg']};
                       margin: 3px;
                       '''
-        location_label.setStyleSheet(label_style)
-        date_label.setStyleSheet(label_style)
-        amount_label.setStyleSheet(label_style)
+        self.location_label.setStyleSheet(label_style)
+        self.date_label.setStyleSheet(label_style)
+        self.amount_label.setStyleSheet(label_style)
 
         left_layout.addStretch()
         continue_button_layout = QHBoxLayout()
@@ -140,16 +141,21 @@ class CategorizeScreen(QWidget):
         continue_button_layout.addStretch()
         left_layout.addLayout(continue_button_layout)
 
+        # right layout
+        category_label = QLabel('Choose a category:')
+        category_label.setStyleSheet(label_style)
+        self.update_category_buttons()
+
         main_layout.addLayout(left_layout)
-        main_layout.addLayout(right_layout)
+        main_layout.addLayout(self.right_layout)
 
         self.layout.addLayout(main_layout)
         self.setLayout(self.layout)
 
         # footer
-        keys_functions = [('h', 'go home'),
-                          ('<return>', 'continue'),
+        keys_functions = [('<return>', 'continue'),
                           ('<esc>', 'cancel'),
+                          ('<key>', 'select category'),
                          ]
         # self.layout.addStretch()
         footer = QLabel(' • '.join([f'{function}: {key}' for key, function in keys_functions]))
@@ -164,12 +170,57 @@ class CategorizeScreen(QWidget):
                              ''')
         self.layout.addWidget(footer)
 
-
-    def display_transaction(self):
-        pass
+    def display_transaction(self, record: dict[str, str]):
+        self.location_label.setText(f'Transaction: {record["Location"]}')
+        self.date_label.setText(f'Date: {record["Date"]}')
+        self.amount_label.setText(f'Amount: ${record["Amount"]}')
 
     def update_category_buttons(self):
-        pass
+        style = f'''
+                font-family: Monaco;
+                font-size: 16px;
+                color: {COLORS['fg']};
+                '''
+        spacing = 25
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        layout.setContentsMargins(0,0,0,0)
+        for key, category in zip(ascii_lowercase, self.importer.categories):
+            row = QHBoxLayout()
+            key_label = QLabel(f'({key})')
+            button = QRadioButton(category.replace('&', '&&'))
+            button.setShortcut(key)
+            button.toggled.connect(self.category_button_toggled)
+
+            key_label.setStyleSheet(style)
+            button.setStyleSheet(style)
+            row.addWidget(key_label)
+            row.addWidget(button)
+            row.addSpacing(spacing)
+            row.addStretch()
+            layout.addLayout(row)
+        
+        row = QHBoxLayout()
+        key_label = QLabel('   ')
+        button = QRadioButton('New Category')
+        button.toggled.connect(self.category_button_toggled)
+        key_label.setStyleSheet(style)
+        button.setStyleSheet(style)
+        row.addWidget(key_label)
+        row.addWidget(button)
+        row.addSpacing(spacing)
+        row.addStretch()
+        layout.addLayout(row)
+
+        layout.addStretch()
+        self.right_layout.addWidget(container, alignment=Qt.AlignRight)
+
+    def category_button_toggled(self):
+        sender = self.sender()
+        if sender.isChecked():
+            tmp = sender.text().replace('&&','&')
+            print(tmp)
+            self.category = tmp
 
     def continue_button_pressed(self):
         print('continue')
