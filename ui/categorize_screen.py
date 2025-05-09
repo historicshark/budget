@@ -99,7 +99,7 @@ class CategorizeScreen(QWidget):
         self.continue_button = QPushButton('Continue')
         self.continue_button.setFixedSize(150, 50)
         self.continue_button.clicked.connect(self.continue_button_pressed)
-        # self.continue_button.setDisabled(True)
+        self.continue_button.setDisabled(True)
         continue_shortcut = QShortcut(QKeySequence('Return'), self)
         continue_shortcut.activated.connect(self.continue_button.click)
         
@@ -157,7 +157,6 @@ class CategorizeScreen(QWidget):
                           ('<esc>', 'cancel'),
                           ('<key>', 'select category'),
                          ]
-        # self.layout.addStretch()
         footer = QLabel(' • '.join([f'{function}: {key}' for key, function in keys_functions]))
         footer.setStyleSheet(f'''
                              QLabel {{

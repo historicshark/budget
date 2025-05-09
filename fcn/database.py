@@ -5,8 +5,6 @@ import sqlite3
 import pandas as pd
 import numpy as np
 
-from util import column
-
 class DatabaseManager:
     def __init__(self, db_name):
 
@@ -23,6 +21,13 @@ class DatabaseManager:
         res = self.cur.execute('SELECT name FROM sqlite_master')
         self.table_name = res.fetchone()[0]
         self.where = ''
+
+    def insert_records(self, records: list[dict[str, str]]):
+        """
+        Records is a list of dict with keys 'Date', 'Location', 'Amount', 'Category'
+        """
+        self.cur.executemany(f'INSERT INTO {self.table_name} VALUES(:Date, :Location, :Category, :Amount)', records)
+        self.con.commit()
 
     #Good?
     def insert(self, date=None, location=None, category=None, amount=None, array=None):

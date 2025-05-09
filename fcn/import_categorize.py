@@ -5,17 +5,20 @@ import pandas as pd
 from pathlib import Path
 from ofxparse import OfxParser
 
+from fcn.database import DatabaseManager
+
 class Importer(Sequence):
-    def __init__(self, file=''):
+    def __init__(self, db: DatabaseManager, file=''):
         super().__init__()
         self.file = ''
         self.set_file(file)
         self.rules_file = 'fcn/category_rules.json'
         self.categories_file = 'fcn/categories.json'
+        self.db = db
 
         self.rules = self.load_category_rules()
         self.categories = self.load_categories()
-        self.data: list[dict[str, str]] = []  # Amount, Location, Date
+        self.data: list[dict[str, str]] = []  # Amount, Location, Date, (Category)
     
     def __getitem__(self, i):
         return self.data[i]
