@@ -98,6 +98,11 @@ class Importer(Sequence):
             for transaction in ofx.account.statement.transactions
         ]
 
+    def set_category(self, index: int, category: str):
+        assert 0 <= index < len(self.data)
+        assert category in self.categories #XXX add category?
+        self.data[index]["Category"] = category
+
     def date_to_iso(self, date: str, add_year=False) -> str:
         ''' MM/DD/YYYY --> YYYY-MM-DD '''
         date = date.split('/')
@@ -107,7 +112,7 @@ class Importer(Sequence):
         return '-'.join(date)
 
     # Load json file containing category rules of {"keyword": "category"}
-    def load_category_rules(self) -> dict:
+    def load_category_rules(self) -> dict[str, str]:
         if Path(self.rules_file).exists():
             with open(self.rules_file, 'r') as f:
                 return json.load(f)
@@ -135,12 +140,12 @@ class Importer(Sequence):
             json.dump(self.categories, f, indent=2)
         return
     
-    def guess_category(self, location: str) -> str:
-        location = location.lower()
+    def guess_category(self, index: int) -> str:
+        location = self.data[index]['Location'].lower()
         for keyword in self.rules.keys():
             if keyword in location:
                 return self.rules[keyword]
-        return 'Unknown'
+        return self.categories[0]
 
     def add_new_category_rule(self, keyword: str, category: str) -> None:
         self.rules[keyword.lower()] = category

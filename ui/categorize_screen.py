@@ -24,9 +24,13 @@ class CategorizeScreen(QWidget):
         self.stacked_widget = stacked_widget
         self.layout = QVBoxLayout()
         self.importer = importer
+        self.index = -1
         self.category = ''
+        self.guessed_category = ''
+        self.buttons: dict[str, QRadioButton] = {}
 
         self.initUI()
+        self.display_next_transaction()
     
     def initUI(self):
         self.layout.setSpacing(10)
@@ -76,6 +80,7 @@ class CategorizeScreen(QWidget):
         # Left column - current transaction being categorized and the continue and cancel buttons
         left_layout.addSpacing(10)
 
+        self.index_label = QLabel('Categorize transaction X of X')
         self.location_label = QLabel('Transaction: ')
         self.date_label = QLabel('Date: ')
         self.amount_label = QLabel('Amount: $')
@@ -90,6 +95,7 @@ class CategorizeScreen(QWidget):
                       color: {COLORS['fg']};
                       margin: 3px;
                       '''
+        self.index_label.setStyleSheet(label_style)
         self.location_label.setStyleSheet(label_style)
         self.date_label.setStyleSheet(label_style)
         self.amount_label.setStyleSheet(label_style)
@@ -169,12 +175,15 @@ class CategorizeScreen(QWidget):
                              ''')
         self.layout.addWidget(footer)
 
-    def display_transaction(self, record: dict[str, str]):
+    def display_transaction(self):
+        record = self.importer[self.index]
+        self.index_label.setText(f'Categorize transaction {self.index+1} of {len(self.importer)}:')
         self.location_label.setText(f'Transaction: {record["Location"]}')
         self.date_label.setText(f'Date: {record["Date"]}')
         self.amount_label.setText(f'Amount: ${record["Amount"]}')
 
     def update_category_buttons(self):
+        self.buttons.clear()
         style = f'''
                 font-family: Monaco;
                 font-size: 16px;
@@ -190,6 +199,7 @@ class CategorizeScreen(QWidget):
             button = QRadioButton(category.replace('&', '&&'))
             button.setShortcut(key)
             button.toggled.connect(self.category_button_toggled)
+            self.buttons[category] = button
 
             key_label.setStyleSheet(style)
             button.setStyleSheet(style)
@@ -203,6 +213,7 @@ class CategorizeScreen(QWidget):
         key_label = QLabel('   ')
         button = QRadioButton('New Category')
         button.toggled.connect(self.category_button_toggled)
+        self.buttons['New Category'] = button
         key_label.setStyleSheet(style)
         button.setStyleSheet(style)
         row.addWidget(key_label)
@@ -214,18 +225,43 @@ class CategorizeScreen(QWidget):
         layout.addStretch()
         self.right_layout.addWidget(container, alignment=Qt.AlignRight)
 
+    def display_next_transaction(self, forward=True):
+        if forward:
+            self.index += 1
+        else:
+            self.index -= 1
+        self.display_transaction()
+        self.guessed_category = self.importer.guess_category(self.index)
+        self.buttons[self.guessed_category].setChecked(True)
+
     def category_button_toggled(self):
         sender = self.sender()
         if sender.isChecked():
             tmp = sender.text().replace('&&','&')
-            print(tmp)
+            print(tmp) #XXX
             self.category = tmp
 
+    def categorize_transaction(self):
+        if self.guessed_category == self.category:
+            self.importer.set_category(self.index, self.category)
+        elif self.category == 'New Category':
+            pass #XXX
+        else:
+            pass #XXX add new category rule?
+
     def continue_button_pressed(self):
-        print('continue')
+        self.categorize_transaction()
+        if self.index < len(self.importer):
+            self.display_next_transaction()
+        else:
+            self.go_home()
     
     def cancel_button_pressed(self):
-        self.stacked_widget.setCurrentIndex(SCREENS.IMPORT)
+        if self.index <= 0:
+            self.index = -1
+            self.stacked_widget.setCurrentIndex(SCREENS.IMPORT)
+        else:
+            self.display_next_transaction(False)
 
     def go_home(self):
         self.stacked_widget.setCurrentIndex(SCREENS.HOME)

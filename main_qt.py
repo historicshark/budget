@@ -31,7 +31,7 @@ class MainWindow(QMainWindow):
 
         # logic classes
         db = DatabaseManager('transactions')
-        importer = Importer()
+        importer = Importer(db)
 
         # ui classes
         self.home_screen = HomeScreen(self.stack)
