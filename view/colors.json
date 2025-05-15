@@ -1,0 +1,21 @@
+{
+    "bg": "#282828",
+    "bg1": "#3c3836",
+    "red": "#fb4934",
+    "green": "#b8bb26",
+    "yellow": "#fabd2f",
+    "blue": "#83a598",
+    "purple": "#d3869b",
+    "aqua": "#8ec07c",
+    "orange": "#fe8019",
+    "gray": "#928374",
+    "fg": "#ebdbb2",
+    "red-faded": "#cc241d",
+    "green-faded": "#98971a",
+    "yellow-faded": "#d79921",
+    "blue-faded": "#458588",
+    "purple-faded": "#b16286",
+    "aqua-faded": "#689d6a",
+    "orange-faded": "#d65d0e",
+    "gray-faded": "#a89984"
+}
