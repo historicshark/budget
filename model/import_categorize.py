@@ -5,7 +5,7 @@ import pandas as pd
 from pathlib import Path
 from ofxparse import OfxParser
 
-from fcn.database import DatabaseManager
+from model.database import DatabaseManager
 
 class Importer(Sequence):
     def __init__(self, db: DatabaseManager, file=''):
