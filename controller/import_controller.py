@@ -1,11 +1,14 @@
 from pathlib import Path
 
-from model.database import DatabaseManager
 from model.import_categorize import Importer
 from view.import_screen import ImportScreen
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from controller.main_controller import MainController
+
 class ImportController:
-    def __init__(self, main, screen: ImportScreen, importer: Importer):
+    def __init__(self, main: "MainController", screen: ImportScreen, importer: Importer):
         self.file = ''
         self.file_exists = False
         self.account = ''
@@ -44,11 +47,12 @@ class ImportController:
     def on_continue_clicked(self):
         self.importer.set_file(self.file)
         self.importer.import_file(self.account)
-        self.main.go_to_screen('categorize')
+        self.main.import_to_categorize_screen()
 
     def on_cancel_clicked(self):
         self.screen.reset()
         self.file = ''
         self.file_exists = False
-        self.main.go_to_screen('home')
+        # self.main.go_to_screen('home')
+        self.screen.home_clicked.emit()
 

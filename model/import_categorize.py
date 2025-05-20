@@ -26,6 +26,9 @@ class Importer(Sequence):
     def __len__(self):
         return len(self.data)
 
+    def pop(self, index: int):
+        self.data.pop(index)
+
     # Set the file to be imported
     def set_file(self, file: str) -> bool:
         if Path(file).exists():
@@ -89,14 +92,17 @@ class Importer(Sequence):
     def import_file_ofx(self) -> None:
         with open(self.file) as f:
             ofx = OfxParser.parse(f)
-        self.data = [
-            {
-                'Amount':   str(transaction.amount),
-                'Location': str(transaction.payee),
-                'Date':     str(transaction.date.date())
-            }
-            for transaction in ofx.account.statement.transactions
-        ]
+        self.data = []
+        for transaction in ofx.account.statement.transactions:
+            if 'INTERNET PAYMENT THANK YOU' in transaction.payee or 'CARDMEMBER SERV  WEB PYMT' in transaction.payee: #TODO skip rules?
+                continue
+            
+            self.data.append(
+                {
+                    'Amount':   str(transaction.amount),
+                    'Location': str(transaction.payee),
+                    'Date':     str(transaction.date.date())
+                })
 
     def set_category(self, index: int, category: str):
         assert 0 <= index < len(self.data)

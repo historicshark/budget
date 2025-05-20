@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QVBoxLayout,
     QHBoxLayout,
+    QLayout,
 )
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
@@ -35,7 +36,7 @@ class BaseScreen(QWidget):
         owner_layout.addLayout(title_layout)
         owner_layout.addSpacing(50)
     
-    def add_continue_cancel_buttons(self, owner_layout, continue_clicked_connect, cancel_clicked_connect):
+    def add_continue_cancel_buttons(self, owner_layout, continue_clicked_connect, cancel_clicked_connect, add_stretch=True) -> QHBoxLayout:
         layout = QHBoxLayout()
 
         self.continue_button = QPushButton('Continue')
@@ -54,8 +55,10 @@ class BaseScreen(QWidget):
         layout.addWidget(self.continue_button)
         layout.addSpacing(20)
         layout.addWidget(self.cancel_button)
-        layout.addStretch()
+        if add_stretch:
+            layout.addStretch()
         owner_layout.addLayout(layout)
+        return layout
     
     def add_footer(self, owner_layout, keys_functions: list[tuple[str, str]]):
         self.footer = QLabel(' • '.join([f'{function}: {key}' for key, function in keys_functions]))
@@ -64,3 +67,22 @@ class BaseScreen(QWidget):
 
     def update_footer(self, keys_functions: list[tuple[str, str]]):
         self.footer.setText(' • '.join([f'{function}: {key}' for key, function in keys_functions]))
+
+    def clear_layout(self, layout: QLayout):
+        """
+        https://stackoverflow.com/questions/4528347/clear-all-widgets-in-a-layout-in-pyqt
+        """
+        print(f'--- clearing layout {layout}')
+        for i in reversed(range(layout.count())):
+            layout_item = layout.itemAt(i)
+            if layout_item.widget() is not None:
+                widget_to_remove = layout_item.widget()
+                print(f'removing widget {widget_to_remove}')
+                widget_to_remove.setParent(None)
+                layout.removeWidget(widget_to_remove)
+            elif layout_item.spacerItem() is not None:
+                print(f'removing spacer {layout_item.spacerItem()}')
+            else:
+                layout_to_remove = layout.itemAt(i)
+                print(f'-- found Layout: {layout_to_remove}')
+                self.clear_layout(layout_to_remove)
