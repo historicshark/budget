@@ -21,7 +21,7 @@ class MainController:
         self.register_screens()
 
         self.controllers = {
-            'import': ImportController(),
+            'import': ImportController(self, self.screens['import'], self.importer),
         }
 
         # home screen
@@ -34,7 +34,7 @@ class MainController:
             self.go_to[name] = lambda: self.go_to_screen(name)
 
             if hasattr(screen, 'home_clicked'):
-                screen.home_clicked.connect(self.go_to['home'])
+                screen.home_clicked.connect(lambda: self.go_to_screen('home'))
     
     def start(self):
         self.main_window.show()

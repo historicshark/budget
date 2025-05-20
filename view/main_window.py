@@ -23,3 +23,4 @@ class MainWindow(QMainWindow):
         palette = self.palette()
         palette.setColor(QPalette.Window, QColor(colors['bg']))
         self.setPalette(palette)
+

@@ -54,9 +54,11 @@ class BaseScreen(QWidget):
         layout.addWidget(self.continue_button)
         layout.addSpacing(20)
         layout.addWidget(self.cancel_button)
+        layout.addStretch()
         owner_layout.addLayout(layout)
     
     def add_footer(self, owner_layout, keys_functions: list[tuple[str, str]]):
         footer = QLabel(' • '.join([f'{function}: {key}' for key, function in keys_functions]))
         footer.setObjectName('footer')
         owner_layout.addWidget(footer)
+

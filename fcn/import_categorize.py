@@ -26,16 +26,20 @@ class Importer(Sequence):
     def __len__(self):
         return len(self.data)
 
-    # Set the file to be imported
     def set_file(self, file: str) -> bool:
+        """
+        Set the file to be imported
+        """
         if Path(file).exists():
             self.file = file
             return True
         else:
             return False
     
-    # Import the file set by set_file
     def import_file(self, account: str) -> None:
+        """
+        Load the file set by set_file into self.data
+        """
         assert Path(self.file).exists()
         if self.file.lower().endswith(('.csv', '.txt')):
             self.import_file_csv(account)
@@ -59,7 +63,7 @@ class Importer(Sequence):
         data['Amount'] = data['Debit'].fillna(data['Credit'])
 
         data = data.rename(columns={'Description': 'Location'})
-        data.drop(columns=['Account', 'Memo', 'Check #', 'Credit', 'Debit', 'Category'], inplace=True) #XXX dropping category
+        data.drop(columns=['Account', 'Memo', 'Check #', 'Credit', 'Debit', 'Category'], inplace=True)
 
         # Remove slash at the end of debit category
         # data['Category'] = data['Category'].map(lambda x: x[:-1])

@@ -56,6 +56,7 @@ class HomeScreen(BaseScreen):
         self.layout.addLayout(row_layout)
 
         self.layout.addStretch()
-        self.add_footer(self.layout, [(key, function for button, _, _, key in self.button_labels_descriptions_methods_keys)])
+        self.add_footer(self.layout, [(key, function) for function, _, _, key in self.button_labels_descriptions_methods_keys])
 
         self.setLayout(self.layout)
+
