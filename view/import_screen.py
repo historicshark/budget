@@ -27,6 +27,7 @@ class ImportScreen(BaseScreen):
 
         self.initUI()
         self.set_continue_button_enabled(False)
+        self.set_account_buttons_visibility(False)
 
     def initUI(self):
         self.layout.setSpacing(10)
@@ -73,8 +74,6 @@ class ImportScreen(BaseScreen):
         account_type_layout.addWidget(self.credit_button)
         account_type_layout.addWidget(self.debit_button)
 
-        self.set_account_buttons_visibility(False)
-
         self.layout.addLayout(account_type_layout)
 
         # continue/cancel
@@ -83,8 +82,6 @@ class ImportScreen(BaseScreen):
 
         # footer
         keys_functions = [('o', 'open file'),
-                          ('c', 'credit'),
-                          ('d', 'debit'),
                           ('<return>', 'continue'),
                           ('<esc>', 'cancel'),
                          ]
@@ -102,6 +99,19 @@ class ImportScreen(BaseScreen):
         self.label_description.setVisible(is_visible)
         self.credit_button.setVisible(is_visible)
         self.debit_button.setVisible(is_visible)
+        if is_visible:
+            keys_functions = [('o', 'open file'),
+                              ('c', 'credit'),
+                              ('d', 'debit'),
+                              ('<return>', 'continue'),
+                              ('<esc>', 'cancel'),
+                             ]
+        else:
+            keys_functions = [('o', 'open file'),
+                              ('<return>', 'continue'),
+                              ('<esc>', 'cancel'),
+                             ]
+        self.update_footer(keys_functions)
 
     def open_file_dialog(self):
         file, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'Statement Files (*.ofx *.qbo *.qfx *.csv)')

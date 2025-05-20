@@ -58,7 +58,9 @@ class BaseScreen(QWidget):
         owner_layout.addLayout(layout)
     
     def add_footer(self, owner_layout, keys_functions: list[tuple[str, str]]):
-        footer = QLabel(' • '.join([f'{function}: {key}' for key, function in keys_functions]))
-        footer.setObjectName('footer')
-        owner_layout.addWidget(footer)
+        self.footer = QLabel(' • '.join([f'{function}: {key}' for key, function in keys_functions]))
+        self.footer.setObjectName('footer')
+        owner_layout.addWidget(self.footer)
 
+    def update_footer(self, keys_functions: list[tuple[str, str]]):
+        self.footer.setText(' • '.join([f'{function}: {key}' for key, function in keys_functions]))
