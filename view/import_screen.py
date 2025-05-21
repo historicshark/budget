@@ -47,11 +47,11 @@ class ImportScreen(BaseScreen):
                             font-size: 14px;
                             color: {colors['gray']};
                             ''')
+        self.import_label.setWordWrap(True)
 
         row_layout.addWidget(open_button)
         row_layout.addSpacing(10)
         row_layout.addWidget(self.import_label)
-        row_layout.addStretch()
 
         self.layout.addLayout(row_layout)
 

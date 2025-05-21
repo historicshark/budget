@@ -50,7 +50,7 @@ class BaseScreen(QWidget):
         self.cancel_button.clicked.connect(cancel_clicked_connect)
         cancel_shortcut = QShortcut(QKeySequence('Escape'), self)
         cancel_shortcut.activated.connect(self.cancel_button.click)
-        self.cancel_button.setStyleSheet(f'QPushButton:hover {{ background-color: {colors['orange']}; }}')
+        self.cancel_button.setStyleSheet(f'QPushButton:hover {{ background-color: {colors["orange-faded"]}; }}')
 
         layout.addWidget(self.continue_button)
         layout.addSpacing(20)

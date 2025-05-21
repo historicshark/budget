@@ -37,8 +37,15 @@ class MainController:
             if hasattr(screen, 'home_clicked'):
                 screen.home_clicked.connect(lambda: self.go_to_screen('home'))
     
+    def debug(self):
+        file = '/Users/historicshark/Downloads/Credit Card - 2678_03-01-2025_03-31-2025.qfx'
+        self.importer.set_file(file)
+        self.importer.import_file('credit')
+        self.import_to_categorize_screen()
+
     def start(self):
         self.main_window.show()
+        self.debug() #XXX debug
 
     def go_to_screen(self, name):
         if name in self.screens.keys():
@@ -49,7 +56,7 @@ class MainController:
 
     def import_to_categorize_screen(self):
         self.go_to_screen('categorize')
-        self.controllers['categorize'].display_current_transaction()
+        self.controllers['categorize'].start()
     
     def categorize_to_new_category_screen(self): #TODO
         self.go_to_screen('new_category')

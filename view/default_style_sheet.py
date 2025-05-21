@@ -30,7 +30,7 @@ color: {colors['bg']};
 }}
 
 QPushButton:hover {{
-background-color: {colors['purple']};
+background-color: {colors['purple-faded']};
 color: {colors['fg']};
 }}
 
@@ -43,7 +43,7 @@ QPushButton#home {{
 font-size: 14px;
 }}
 QPushButton#home:hover {{
-background-color: {colors['aqua']};
+background-color: {colors['aqua-faded']};
 }}
 
 QRadioButton {{

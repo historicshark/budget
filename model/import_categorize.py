@@ -95,6 +95,7 @@ class Importer(Sequence):
         self.data = []
         for transaction in ofx.account.statement.transactions:
             if 'INTERNET PAYMENT THANK YOU' in transaction.payee or 'CARDMEMBER SERV  WEB PYMT' in transaction.payee: #TODO skip rules?
+                print(f'skipping transaction {transaction.payee} {transaction.date.date()} on import') #XXX debug
                 continue
             
             self.data.append(
@@ -107,6 +108,7 @@ class Importer(Sequence):
     def set_category(self, index: int, category: str):
         assert 0 <= index < len(self.data)
         assert category in self.categories #XXX add category?
+        print(f'categorized transaction {self.data[index]["Location"]} as {category}') #XXX debug
         self.data[index]["Category"] = category
 
     def date_to_iso(self, date: str, add_year=False) -> str:
