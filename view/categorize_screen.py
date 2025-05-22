@@ -24,11 +24,7 @@ class CategorizeScreen(BaseScreen):
     def __init__(self):
         super().__init__()
         self.layout = QVBoxLayout()
-        self.index = -1
-        self.category = ''
-        self.guessed_category = ''
         self.buttons: dict[str, QRadioButton] = {}
-        self.button_layout_container = QWidget()
         self.button_layout = QFormLayout()
         self.button_layout.setContentsMargins(0,0,0,0)
 
@@ -44,7 +40,7 @@ class CategorizeScreen(BaseScreen):
         # Two columns showing transaction and category options
         main_layout = QHBoxLayout()
         left_layout = QVBoxLayout()
-        self.right_layout = QVBoxLayout()
+        right_layout = QVBoxLayout()
 
         # Left column - current transaction being categorized and the continue and cancel buttons
         left_layout.addSpacing(10)
@@ -82,18 +78,16 @@ class CategorizeScreen(BaseScreen):
         button_layout.addStretch()
 
         # right layout
-        category_label = QLabel('Choose a category:')
-        category_label.setStyleSheet(label_style)
-        self.right_layout.addWidget(category_label)
-        self.right_layout.addSpacing(10)
-        self.right_layout.addLayout(self.button_layout)
-        self.right_layout.addStretch()
+        instruction_label = QLabel('Choose a category:')
+        instruction_label.setStyleSheet(label_style)
+        right_layout.addWidget(instruction_label)
+        right_layout.addSpacing(10)
+        right_layout.addLayout(self.button_layout)
+        right_layout.addStretch()
 
         main_layout.addLayout(left_layout)
-        main_layout.addLayout(self.right_layout)
-
+        main_layout.addLayout(right_layout)
         self.layout.addLayout(main_layout)
-        self.setLayout(self.layout)
 
         # footer
         keys_functions = [('<return>', 'continue'),
@@ -102,6 +96,8 @@ class CategorizeScreen(BaseScreen):
                           ('<key>', 'select category'),
                          ]
         self.add_footer(self.layout, keys_functions)
+
+        self.setLayout(self.layout)
 
     def display_transaction(self, record: dict[str, str], index, length):
         self.index_label.setText(f'Categorize transaction {index+1} of {length}:')

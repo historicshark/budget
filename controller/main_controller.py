@@ -4,6 +4,7 @@ from view.main_window import MainWindow
 from view.home_screen import HomeScreen
 from view.import_screen import ImportScreen
 from view.categorize_screen import CategorizeScreen
+from view.add_new_rule_screen import AddNewRuleScreen
 from controller.import_controller import ImportController
 from controller.categorize_controller import CategorizeController
 
@@ -17,13 +18,14 @@ class MainController:
             'home': HomeScreen(),
             'import': ImportScreen(),
             'categorize': CategorizeScreen(),
+            'add_new_rule': AddNewRuleScreen(),
         }
         self.screen_indexes = {}
         self.register_screens()
 
         self.controllers = {
             'import': ImportController(self, self.screens['import'], self.importer),
-            'categorize': CategorizeController(self, self.screens['categorize'], self.importer),
+            'categorize': CategorizeController(self, self.screens['categorize'], self.screens['add_new_rule'], self.importer),
         }
 
         # connections

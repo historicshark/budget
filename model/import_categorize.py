@@ -12,8 +12,8 @@ class Importer(Sequence):
         super().__init__()
         self.file = ''
         self.set_file(file)
-        self.rules_file = 'fcn/category_rules.json'
-        self.categories_file = 'fcn/categories.json'
+        self.rules_file = 'model/category_rules.json'
+        self.categories_file = 'model/categories.json'
         self.db = db
 
         self.rules = self.load_category_rules()
@@ -119,8 +119,10 @@ class Importer(Sequence):
             date[0] = str(datetime.date.today())[0:2] + date[0]
         return '-'.join(date)
 
-    # Load json file containing category rules of {"keyword": "category"}
     def load_category_rules(self) -> dict[str, str]:
+        """
+        Load json file containing category rules of {"keyword": "category"}
+        """
         if Path(self.rules_file).exists():
             with open(self.rules_file, 'r') as f:
                 return json.load(f)
