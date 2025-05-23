@@ -6,3 +6,4 @@ transactions
 .vimspector.json
 *.swp
 .DS_Store
+.vscode
