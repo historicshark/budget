@@ -23,17 +23,20 @@ class ImportScreen(BaseScreen):
 
     def __init__(self):
         super().__init__()
-        self.layout = QVBoxLayout()
 
         self.initUI()
         self.set_continue_button_enabled(False)
         self.set_account_buttons_visibility(False)
 
     def initUI(self):
-        self.layout.setSpacing(10)
-        self.layout.setContentsMargins(15,0,15,0)
+        self.base_layout = QVBoxLayout()
+        self.content_layout = QVBoxLayout()
+        self.content_layout.setSpacing(10)
+        self.base_layout.setContentsMargins(0,0,0,0)
+        self.content_layout.setContentsMargins(15,0,15,0)
+        self.base_layout.addLayout(self.content_layout)
         
-        self.add_title(self.layout, 'Import', self.home_clicked.emit)
+        self.add_title(self.content_layout, 'Import', self.home_clicked.emit)
 
         # import button
         row_layout = QHBoxLayout()
@@ -53,9 +56,9 @@ class ImportScreen(BaseScreen):
         row_layout.addSpacing(10)
         row_layout.addWidget(self.import_label)
 
-        self.layout.addLayout(row_layout)
+        self.content_layout.addLayout(row_layout)
 
-        self.layout.addSpacing(25)
+        self.content_layout.addSpacing(25)
 
         # credit/debit radio buttons - only shown if a csv file is imported
         account_type_layout = QVBoxLayout()
@@ -74,21 +77,21 @@ class ImportScreen(BaseScreen):
         account_type_layout.addWidget(self.credit_button)
         account_type_layout.addWidget(self.debit_button)
 
-        self.layout.addLayout(account_type_layout)
+        self.content_layout.addLayout(account_type_layout)
 
         # continue/cancel
-        self.layout.addStretch()
-        self.add_continue_cancel_buttons(self.layout, self.continue_clicked.emit, self.cancel_clicked.emit)
+        self.content_layout.addStretch()
+        self.add_continue_cancel_buttons(self.content_layout, self.continue_clicked.emit, self.cancel_clicked.emit)
 
         # footer
         keys_functions = [('o', 'open file'),
                           ('<return>', 'continue'),
                           ('<esc>', 'cancel'),
                          ]
-        # self.layout.addStretch()
-        self.add_footer(self.layout, keys_functions)
+        # self.content_layout.addStretch()
+        self.add_footer(self.base_layout, keys_functions)
 
-        self.setLayout(self.layout)
+        self.setLayout(self.base_layout)
 
     def account_button_toggled(self):
         sender = self.sender()

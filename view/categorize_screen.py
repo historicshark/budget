@@ -23,7 +23,6 @@ class CategorizeScreen(BaseScreen):
 
     def __init__(self):
         super().__init__()
-        self.layout = QVBoxLayout()
         self.buttons: dict[str, QRadioButton] = {}
         self.button_layout = QFormLayout()
         self.button_layout.setContentsMargins(0,0,0,0)
@@ -32,10 +31,14 @@ class CategorizeScreen(BaseScreen):
         self.set_continue_button_enabled(False)
     
     def initUI(self):
-        self.layout.setSpacing(10)
-        self.layout.setContentsMargins(15,0,15,0)
+        self.base_layout = QVBoxLayout()
+        self.content_layout = QVBoxLayout()
+        self.content_layout.setSpacing(10)
+        self.base_layout.setContentsMargins(0,0,0,0)
+        self.content_layout.setContentsMargins(15,0,15,0)
+        self.base_layout.addLayout(self.content_layout)
 
-        self.add_title(self.layout, 'Import', self.home_clicked.emit)
+        self.add_title(self.content_layout, 'Import', self.home_clicked.emit)
 
         # Two columns showing transaction and category options
         main_layout = QHBoxLayout()
@@ -87,7 +90,7 @@ class CategorizeScreen(BaseScreen):
 
         main_layout.addLayout(left_layout)
         main_layout.addLayout(right_layout)
-        self.layout.addLayout(main_layout)
+        self.content_layout.addLayout(main_layout)
 
         # footer
         keys_functions = [('<return>', 'continue'),
@@ -95,9 +98,9 @@ class CategorizeScreen(BaseScreen):
                           ('<cmd>+S', 'skip'),
                           ('<key>', 'select category'),
                          ]
-        self.add_footer(self.layout, keys_functions)
+        self.add_footer(self.base_layout, keys_functions)
 
-        self.setLayout(self.layout)
+        self.setLayout(self.base_layout)
 
     def display_transaction(self, record: dict[str, str], index, length):
         self.index_label.setText(f'Categorize transaction {index+1} of {length}:')

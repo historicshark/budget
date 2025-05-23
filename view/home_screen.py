@@ -18,14 +18,16 @@ class HomeScreen(BaseScreen):
             # ('plot', 'Display a plot', self.on_click_plot, 'p'),
             # ('list', 'List transactions', self.on_click_list, 'l'),
         ]
-        
-        self.layout = QVBoxLayout()
 
         self.initUI()
 
     def initUI(self):
-        self.layout.setSpacing(10)
-        self.layout.setContentsMargins(15,0,15,0)
+        self.base_layout = QVBoxLayout()
+        self.content_layout = QVBoxLayout()
+        self.content_layout.setSpacing(10)
+        self.base_layout.setContentsMargins(0,0,0,0)
+        self.content_layout.setContentsMargins(15,0,15,0)
+        self.base_layout.addLayout(self.content_layout)
 
         row_layout = QVBoxLayout()
         row_layout.setSpacing(10)
@@ -34,7 +36,7 @@ class HomeScreen(BaseScreen):
         label_title = QLabel('Home')
         label_title.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
         label_title.setObjectName('title')
-        self.layout.addWidget(label_title)
+        self.content_layout.addWidget(label_title)
 
         # Button rows
         for button_label, button_description, method, key in self.button_labels_descriptions_methods_keys:
@@ -53,10 +55,10 @@ class HomeScreen(BaseScreen):
 
             row_layout.addLayout(row)
 
-        self.layout.addLayout(row_layout)
+        self.content_layout.addLayout(row_layout)
 
-        self.layout.addStretch()
-        self.add_footer(self.layout, [(key, function) for function, _, _, key in self.button_labels_descriptions_methods_keys])
+        self.content_layout.addStretch()
+        self.add_footer(self.base_layout, [(key, function) for function, _, _, key in self.button_labels_descriptions_methods_keys])
 
-        self.setLayout(self.layout)
+        self.setLayout(self.base_layout)
 
