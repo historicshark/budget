@@ -37,6 +37,9 @@ class BaseScreen(QWidget):
         owner_layout.addSpacing(50)
     
     def add_continue_cancel_buttons(self, owner_layout, continue_clicked_connect, cancel_clicked_connect, add_stretch=True) -> QHBoxLayout:
+        """
+        add_stretch: add stretch to the end of the QHBoxLayout containing the buttons
+        """
         layout = QHBoxLayout()
 
         self.continue_button = QPushButton('Continue')
@@ -86,3 +89,6 @@ class BaseScreen(QWidget):
                 layout_to_remove = layout.itemAt(i)
                 print(f'-- found Layout: {layout_to_remove}')
                 self.clear_layout(layout_to_remove)
+
+    def reset(self):
+        print(f'In {self.__class__.__name__}, reset not implemented!') #XXX debug

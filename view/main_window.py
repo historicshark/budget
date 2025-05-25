@@ -11,7 +11,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Budget Program')
-        self.setGeometry(100, 100, 800, 600)
+        self.setGeometry(560, 150, 800, 600)
 
         self.stack = QStackedWidget()
         self.setCentralWidget(self.stack)

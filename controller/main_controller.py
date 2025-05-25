@@ -5,6 +5,7 @@ from view.home_screen import HomeScreen
 from view.import_screen import ImportScreen
 from view.categorize_screen import CategorizeScreen
 from view.add_new_rule_screen import AddNewRuleScreen
+from view.import_complete_screen import ImportCompleteScreen
 from controller.import_controller import ImportController
 from controller.categorize_controller import CategorizeController
 
@@ -19,13 +20,14 @@ class MainController:
             'import': ImportScreen(),
             'categorize': CategorizeScreen(),
             'add_new_rule': AddNewRuleScreen(),
+            'import_complete': ImportCompleteScreen(),
         }
         self.screen_indexes = {}
         self.register_screens()
 
         self.controllers = {
             'import': ImportController(self, self.screens['import'], self.importer),
-            'categorize': CategorizeController(self, self.screens['categorize'], self.screens['add_new_rule'], self.importer),
+            'categorize': CategorizeController(self, self.screens['categorize'], self.screens['add_new_rule'], self.screens['import_complete'], self.importer),
         }
 
         # connections
@@ -62,3 +64,7 @@ class MainController:
     
     def categorize_to_new_category_screen(self): #TODO
         self.go_to_screen('new_category')
+
+    def reset_import_process(self):
+        self.controllers['import'].reset()
+        self.controllers['categorize'].reset()

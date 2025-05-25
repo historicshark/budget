@@ -170,3 +170,7 @@ class Importer(Sequence):
         self.dump_categories()
         return
     
+    def insert_data(self):
+        for record in self.data:
+            assert 'Category' in record.keys()
+        self.db.insert_records(self.data)

@@ -56,3 +56,8 @@ class ImportController:
         # self.main.go_to_screen('home')
         self.screen.home_clicked.emit()
 
+    def reset(self):
+        self.screen.reset()
+        self.file = ''
+        self.file_exists = False
+        self.account = ''

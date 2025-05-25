@@ -4,8 +4,11 @@ with open('view/colors.json', 'r') as f:
     colors = json.load(f)
 
 default_style_sheet = f'''
-QLabel {{
+QWidget {{
 font-family: Monaco;
+}}
+
+QLabel {{
 font-size: 18px;
 color: {colors['fg']};
 }}
@@ -23,7 +26,6 @@ padding: 3px;
 }}
 
 QPushButton {{
-font-family: Monaco;
 font-size: 18px;
 background-color: {colors['gray']};
 color: {colors['bg']};
@@ -47,8 +49,14 @@ background-color: {colors['aqua-faded']};
 }}
 
 QRadioButton {{
-font-family: Monaco;
 font-size: 16px;
 color: {colors['fg']};
+}}
+
+QLineEdit {{
+font-size: 18px;
+color: {colors['fg0']};
+background-color: {colors['bg1']};
+padding: 2px;
 }}
 '''

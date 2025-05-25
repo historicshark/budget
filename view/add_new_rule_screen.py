@@ -28,10 +28,14 @@ class AddNewRuleScreen(BaseScreen):
         self.initUI()
 
     def initUI(self):
-        self.layout.setSpacing(10)
-        self.layout.setContentsMargins(15,0,15,0)
+        self.base_layout = QVBoxLayout()
+        self.content_layout = QVBoxLayout()
+        self.content_layout.setSpacing(10)
+        self.base_layout.setContentsMargins(0,0,0,0)
+        self.content_layout.setContentsMargins(15,0,15,0)
+        self.base_layout.addLayout(self.content_layout)
 
-        self.add_title(self.layout, 'Import', self.home_clicked.emit)
+        self.add_title(self.content_layout, 'Import', self.home_clicked.emit)
 
         # Two columns showing transaction and add new rule
         main_layout = QHBoxLayout()
@@ -75,21 +79,20 @@ class AddNewRuleScreen(BaseScreen):
         right_layout.addSpacing(10)
 
         self.text_box = QLineEdit('Enter rule here')
-        #TODO style sheet
         right_layout.addWidget(self.text_box)
         right_layout.addStretch()
 
         main_layout.addLayout(left_layout)
         main_layout.addLayout(right_layout)
-        self.layout.addLayout(main_layout)
+        self.content_layout.addLayout(main_layout)
 
         # footer
         keys_functions = [('<return>', 'yes'),
                           ('<esc>', 'no'),
                          ]
-        self.add_footer(self.layout, keys_functions)
+        self.add_footer(self.base_layout, keys_functions)
 
-        self.setLayout(self.layout)
+        self.setLayout(self.base_layout)
 
     def display_transaction(self, record: dict[str, str], index, length):
         self.index_label.setText(f'Categorize transaction {index+1} of {length}:')
@@ -102,6 +105,7 @@ class AddNewRuleScreen(BaseScreen):
         self.continue_clicked.emit(self.text_box.text())
 
     def set_purpose(self, purpose: Purpose):
+        self.text_box.setFocus()
         match purpose:
             case self.Purpose.NEW_RULE:
                 self.instruction_label.setText('Add new rule?')

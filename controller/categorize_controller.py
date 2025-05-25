@@ -1,16 +1,18 @@
 from model.import_categorize import Importer
 from view.categorize_screen import CategorizeScreen
 from view.add_new_rule_screen import AddNewRuleScreen
+from view.import_complete_screen import ImportCompleteScreen
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from controller.main_controller import MainController
 
 class CategorizeController:
-    def __init__(self, main: "MainController", categorize_screen: CategorizeScreen, add_new_rule_screen: AddNewRuleScreen, importer: Importer):
+    def __init__(self, main: "MainController", categorize_screen: CategorizeScreen, add_new_rule_screen: AddNewRuleScreen, import_complete_screen: ImportCompleteScreen, importer: Importer):
         self.main = main
         self.categorize_screen = categorize_screen
         self.add_new_rule_screen = add_new_rule_screen
+        self.import_complete_screen = import_complete_screen
         self.importer = importer
         self.index = 0
         self.category = ''
@@ -24,8 +26,11 @@ class CategorizeController:
         self.categorize_screen.category_chosen.connect(self.on_category_chosen)
         self.add_new_rule_screen.continue_clicked.connect(self.on_add_new_continue_clicked)
         self.add_new_rule_screen.cancel_clicked.connect(self.on_add_new_cancel_clicked)
+        self.import_complete_screen.cancel_clicked.connect(self.on_import_complete_cancel_clicked)
+        self.import_complete_screen.continue_clicked.connect(self.on_import_complete_continue_clicked)
 
     def start(self):
+        self.index = 0
         self.categorize_screen.update_category_buttons(self.importer.categories)
         self.display_and_guess_current_transaction()
 
@@ -43,8 +48,7 @@ class CategorizeController:
         if self.index < len(self.importer):
             self.display_and_guess_current_transaction()
         else:
-            self.main.go_to_screen('home')
-            self.reset()
+            self.main.go_to_screen('import_complete')
 
     def guess_category(self):
         self.guessed_category = self.importer.guess_category(self.index)
@@ -79,14 +83,13 @@ class CategorizeController:
         else:
             self.index -= 1
             self.display_and_guess_current_transaction()
-    
+
     def on_skip_clicked(self):
         self.importer.pop(self.index)
         if self.index < len(self.importer):
             self.display_and_guess_current_transaction()
         else:
-            self.main.go_to_screen('home')
-            self.reset()
+            self.main.go_to_screen('import_complete')
 
     def on_add_new_continue_clicked(self, text: str):
         match self.purpose:
@@ -95,6 +98,7 @@ class CategorizeController:
             case AddNewRuleScreen.Purpose.NEW_CATEGORY:
                 self.category = text
                 self.importer.add_new_category(text)
+                self.categorize_screen.update_category_buttons(self.importer.categories)
             case _:
                 print(f'Unexpected value "{self.purpose}" in CategorizeController.on_add_new_continue_clicked')
         self.return_to_categorize_screen()
@@ -108,6 +112,15 @@ class CategorizeController:
                 pass # just return to categorize screen
             case _:
                 print(f'Unexpected value "{self.purpose}" in CategorizeController.on_add_new_cancel_clicked')
+        self.return_to_categorize_screen()
+
+    def on_import_complete_continue_clicked(self):
+        self.importer.insert_data()
+        self.main.go_to_screen('home')
+        self.main.reset_import_process()
+
+    def on_import_complete_cancel_clicked(self):
+        self.on_cancel_clicked()
         self.return_to_categorize_screen()
 
     def add_new_category_rule(self, keyword: str):
@@ -127,6 +140,9 @@ class CategorizeController:
         self.main.go_to_screen('categorize')
 
     def reset(self):
+        self.categorize_screen.reset()
+        self.add_new_rule_screen.reset()
+        self.import_complete_screen.reset()
         self.index = 0
         self.category = ''
         self.guessed_category = ''
