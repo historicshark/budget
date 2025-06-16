@@ -59,4 +59,127 @@ color: {colors['fg0']};
 background-color: {colors['bg1']};
 padding: 2px;
 }}
+
+QComboBox {{
+font-size: 15px;
+color: {colors['fg0']};
+background-color: {colors['bg1']};
+padding: 3px;
+border: 0px solid {colors['bg']};
+selection-background-color: {colors['purple-faded']};
+}}
+
+QComboBox::drop-down {{
+color: {colors['fg']};
+background-color: {colors['purple-faded']};
+subcontrol-origin: padding;
+subcontrol-position: right;
+width: 0px;
+}}
+
+QComboBox:hover {{
+background-color: {colors['purple-faded']};
+color: {colors['fg']};
+}}
+
+QComboBox QAbstractItemView {{
+background-color: {colors['bg1']};
+color: {colors['fg0']};
+}}
+
+QComboBox QAbstractItemView::item:hover {{
+background-color: {colors['bg2']};
+color: {colors['fg0']};
+}}
+
+QSpinBox {{
+font-size: 15px;
+color: {colors['fg0']};
+background-color: {colors['bg1']};
+padding: 3px;
+}}
+
+QSpinBox::up-button {{
+subcontrol-origin: border;
+subcontrol-position: top right;
+}}
+
+QSpinBox::down-button {{
+subcontrol-origin: border;
+subcontrol-position: bottom right;
+}}
+
+QDateEdit {{
+font-size: 15px;
+color: {colors['fg0']};
+background-color: {colors['bg1']};
+padding: 3px;
+border: 0px solid {colors['bg']};
+}}
+
+/* This stops hover from working when focused
+QDateEdit:focus {{
+background-color: {colors['bg1']};
+color: {colors['fg0']};
+}}
+*/
+
+QDateEdit::drop-down {{
+image: url(assets/pencil-square.svg);
+background-color: {colors['purple']};
+subcontrol-origin: padding;
+subcontrol-position: right;
+width: 30px;
+}}
+
+/* Annoying since it doesn't work if you move the mouse from the box to the button
+QDateEdit::drop-down:hover {{
+background-color: {colors['purple-faded']};
+color: {colors['fg']};
+}}
+*/
+
+/* not using down arrow
+QDateEdit::down-arrow {{
+width: 10px;
+height: 8px;
+}}
+*/
+
+QCalendarWidget QWidget {{
+background-color: {colors['bg1']};
+color: {colors['fg0']};
+}}
+
+/* top row buttons */
+/*
+QCalendarWidget QToolButton {{
+background-color: {colors['bg1']};
+color: {colors['fg']};
+}}
+*/
+
+/* table of dates
+QCalendarWidget QTableView {{
+background-color: {colors['bg1']};
+color: {colors['fg']};
+}}
+*/
+
+QCalendarWidget QSpinBox {{
+background-color: {colors['bg']};
+color: {colors['fg']};
+}}
+
+QCalendarWidget QSpinBox::up-button {{
+subcontrol-origin: border;
+subcontrol-position: top right;
+width: 20px;
+}}
+
+QCalendarWidget QSpinBox::down-button {{
+subcontrol-origin: border;
+subcontrol-position: bottom right;
+width: 20px;
+}}
 '''

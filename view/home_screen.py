@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QVBoxLayout,
     QHBoxLayout,
+    QFormLayout,
 )
 from PyQt5.QtCore import Qt, pyqtSignal
 
@@ -10,12 +11,13 @@ from view.base_screen import BaseScreen
 
 class HomeScreen(BaseScreen):
     import_clicked = pyqtSignal()
+    plot_clicked = pyqtSignal()
 
     def __init__(self):
         super().__init__()    
         self.button_labels_descriptions_methods_keys = [
-            ('import', 'Import a csv file on your computer', self.import_clicked.emit, 'i'),
-            # ('plot', 'Display a plot', self.on_click_plot, 'p'),
+            ('import', 'Import a file on your computer', self.import_clicked.emit, 'i'),
+            ('plot', 'Display a plot', self.plot_clicked.emit, 'p'),
             # ('list', 'List transactions', self.on_click_list, 'l'),
         ]
 
@@ -29,9 +31,6 @@ class HomeScreen(BaseScreen):
         self.content_layout.setContentsMargins(15,0,15,0)
         self.base_layout.addLayout(self.content_layout)
 
-        row_layout = QVBoxLayout()
-        row_layout.setSpacing(10)
-
         # Screen title
         label_title = QLabel('Home')
         label_title.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
@@ -39,9 +38,11 @@ class HomeScreen(BaseScreen):
         self.content_layout.addWidget(label_title)
 
         # Button rows
+        button_layout = QFormLayout()
+        button_layout.setVerticalSpacing(20)
+        button_layout.setFormAlignment(Qt.AlignLeft)
+        button_layout.setHorizontalSpacing(20)
         for button_label, button_description, method, key in self.button_labels_descriptions_methods_keys:
-            row = QHBoxLayout()
-
             button = QPushButton(button_label)
             button.setFixedSize(150, 50)
             button.clicked.connect(method)
@@ -49,13 +50,9 @@ class HomeScreen(BaseScreen):
 
             label = QLabel(button_description)
 
-            row.addWidget(button)
-            row.addWidget(label)
-            row.addStretch()
+            button_layout.addRow(button, label)
 
-            row_layout.addLayout(row)
-
-        self.content_layout.addLayout(row_layout)
+        self.content_layout.addLayout(button_layout)
 
         self.content_layout.addStretch()
         self.add_footer(self.base_layout, [(key, function) for function, _, _, key in self.button_labels_descriptions_methods_keys])

@@ -70,15 +70,15 @@ class CategorizeScreen(BaseScreen):
 
         left_layout.addStretch()
 
-        button_layout = self.add_continue_cancel_buttons(left_layout, self.continue_clicked.emit, self.cancel_clicked.emit, add_stretch=False)
+        continue_cancel_layout = self.add_continue_cancel_buttons(left_layout, self.continue_clicked.emit, self.cancel_clicked.emit, add_stretch=False)
         skip_button = QPushButton('Skip')
         skip_button.setFixedSize(150, 50)
         skip_button.clicked.connect(self.skip_clicked.emit)
         skip_button.setShortcut('Ctrl+S')
         skip_button.setStyleSheet(f'QPushButton:hover {{ background-color: {colors["yellow-faded"]}; }}')
-        button_layout.addSpacing(20)
-        button_layout.addWidget(skip_button)
-        button_layout.addStretch()
+        continue_cancel_layout.addSpacing(20)
+        continue_cancel_layout.addWidget(skip_button)
+        continue_cancel_layout.addStretch()
 
         # right layout
         instruction_label = QLabel('Choose a category:')

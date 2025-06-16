@@ -1,11 +1,6 @@
 from model.database import DatabaseManager
 from model.import_categorize import Importer
-from view.main_window import MainWindow
-from view.home_screen import HomeScreen
-from view.import_screen import ImportScreen
-from view.categorize_screen import CategorizeScreen
-from view.add_new_rule_screen import AddNewRuleScreen
-from view.import_complete_screen import ImportCompleteScreen
+from view import MainWindow, HomeScreen, ImportScreen, CategorizeScreen, AddNewRuleScreen, ImportCompleteScreen, FilterScreen
 from controller.import_controller import ImportController
 from controller.categorize_controller import CategorizeController
 
@@ -21,6 +16,7 @@ class MainController:
             'categorize': CategorizeScreen(),
             'add_new_rule': AddNewRuleScreen(),
             'import_complete': ImportCompleteScreen(),
+            'filter': FilterScreen()
         }
         self.screen_indexes = {}
         self.register_screens()
@@ -32,6 +28,7 @@ class MainController:
 
         # connections
         self.screens['home'].import_clicked.connect(lambda: self.go_to_screen('import'))
+        self.screens['home'].plot_clicked.connect(lambda: self.go_to_screen('filter'))
     
     def register_screens(self):
         for name, screen in self.screens.items():
@@ -42,10 +39,7 @@ class MainController:
                 screen.home_clicked.connect(lambda: self.go_to_screen('home'))
     
     def debug(self):
-        file = '/Users/historicshark/Downloads/Credit Card - 2678_03-01-2025_03-31-2025.qfx'
-        self.importer.set_file(file)
-        self.importer.import_file('credit')
-        self.import_to_categorize_screen()
+        self.go_to_screen('filter')
 
     def start(self):
         self.main_window.show()

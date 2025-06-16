@@ -1,5 +1,7 @@
-from PyQt5.QtWidgets import QDateEdit
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtWidgets import QDateEdit, QStyleOptionSpinBox, QTableView
+from PyQt5.QtCore import Qt, QTimer, QEvent
+from PyQt5.QtGui import QMouseEvent, QColor
+from view.default_style_sheet import colors
 
 class DateEditFix(QDateEdit):
     """
@@ -8,6 +10,8 @@ class DateEditFix(QDateEdit):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setCalendarPopup(True)
+        self.setMouseTracking(True)
+        self._hover_button = False
 
         self.dateChanged.connect(self.start_timer)
 
@@ -15,7 +19,13 @@ class DateEditFix(QDateEdit):
         self.hover_reset_timer.timeout.connect(self.reset_hover_state)
         self.hover_reset_timer.setSingleShot(True)
 
-    def start_timer(self):
+        calendar = self.calendarWidget()
+        fmt = calendar.headerTextFormat()
+        fmt.setForeground(QColor(colors['fg0']))
+        fmt.setBackground(QColor(colors['bg2']))
+        calendar.setHeaderTextFormat(fmt)
+
+    def start_timer(self, index):
         self.hover_reset_timer.start(100)
 
     def reset_hover_state(self):
@@ -23,6 +33,31 @@ class DateEditFix(QDateEdit):
         self.style().unpolish(self)
         self.style().polish(self)
         self.update()
+
+    def mouseMoveEvent(self, event):
+        # Get the drop-down button rectangle
+        opt = QStyleOptionSpinBox()
+        self.initStyleOption(opt)
+        button_rect = self.style().subControlRect(
+            self.style().CC_ComboBox, opt,
+            self.style().SC_ComboBoxArrow, self
+        )
+
+        # Check if mouse is over the button
+        was_hovering = self._hover_button
+        self._hover_button = button_rect.contains(event.pos())
+
+        # Update style if hover state changed
+        if was_hovering != self._hover_button:
+            self.update()
+
+        super().mouseMoveEvent(event)
+
+    def leaveEvent(self, event):
+        if self._hover_button:
+            self._hover_button = False
+            self.update()
+        super().leaveEvent(event)
 
 #    this resets style when calendar popup opens
 #    def focusOutEvent(self, event):
