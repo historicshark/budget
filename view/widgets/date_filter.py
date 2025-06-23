@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (
     QComboBox,
     QLabel,
     QSpinBox,
+    QCheckBox,
 )
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
 from PyQt5.QtGui import QKeySequence
@@ -15,34 +16,34 @@ from view.widgets.combo_box_fix import ComboBoxFix
 import datetime
 
 class DateFilter(QWidget):
-    options = ['last month', 'last 3 months', 'last 6 months', 'last year', 'range', 'one month', 'all time']
+    stateChanged = pyqtSignal(Qt.CheckState)
+    date_range_changed = pyqtSignal(list)
 
-    def __init__(self, shortcut_key=None, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self.from_range = datetime.date.today()
-        self.to_range = datetime.date.today()
+        self.options = ['last month', 'last 3 months', 'last 6 months', 'last year', 'range', 'one month', 'all time']
+        self.date_range = [datetime.date.today()] * 2
         self.set_range_last_n_months(1)
-
-        self.shortcut_key = shortcut_key
 
         self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 
-        # header with label and drop down menu
+        # header with checkbox label and drop down menu
         self.header_layout = QHBoxLayout()
         self.header_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.label = QLabel('Date:')
-        self.label.setStyleSheet('font-size: 15px;')
+        self.check_box = QCheckBox('Date:')
+        self.check_box.setChecked(True)
+        self.check_box.stateChanged.connect(lambda state: self.stateChanged.emit(state))
 
         self.menu = ComboBoxFix()
         self.menu.addItems(self.options)
-        self.menu.setCurrentIndex(0)
-        self.menu.currentTextChanged.connect(self.on_menu_item_selected)
         self.menu.setFixedWidth(200)
         self.menu.view().setMinimumWidth(206)
+        self.menu.setCurrentIndex(0)
+        self.menu.currentTextChanged.connect(self.on_menu_item_selected)
 
-        self.header_layout.addWidget(self.label)
+        self.header_layout.addWidget(self.check_box)
         self.header_layout.addSpacing(10)
         self.header_layout.addWidget(self.menu)
         self.header_layout.addStretch()
@@ -53,7 +54,7 @@ class DateFilter(QWidget):
         date_range_layout = QGridLayout()
         date_range_layout.setHorizontalSpacing(30)
         date_range_layout.setVerticalSpacing(5)
-        date_range_layout.setContentsMargins(20, 10, 20, 10)
+        date_range_layout.setContentsMargins(20, 5, 20, 20)
 
         from_label = QLabel('From:')
         to_label = QLabel('To:')
@@ -64,8 +65,8 @@ class DateFilter(QWidget):
         self.to_date = DateEditFix()
         self.from_date.setFixedWidth(120)
         self.to_date.setFixedWidth(120)
-        self.from_date.setDate(QDate().fromString(str(self.from_range), Qt.ISODate))
-        self.to_date.setDate(QDate().fromString(str(self.to_range), Qt.ISODate))
+        self.from_date.setDate(QDate().fromString(str(self.date_range[0]), Qt.ISODate))
+        self.to_date.setDate(QDate().fromString(str(self.date_range[1]), Qt.ISODate))
         self.set_date_limits()
         self.from_date.dateChanged.connect(self.on_date_range_changed)
         self.to_date.dateChanged.connect(self.on_date_range_changed)
@@ -86,7 +87,7 @@ class DateFilter(QWidget):
         one_month_layout = QGridLayout()
         one_month_layout.setHorizontalSpacing(30)
         one_month_layout.setVerticalSpacing(5)
-        one_month_layout.setContentsMargins(20, 10, 20, 10)
+        one_month_layout.setContentsMargins(20, 5, 20, 10)
 
         month_label = QLabel('Month:')
         year_label = QLabel('Year:')
@@ -119,6 +120,7 @@ class DateFilter(QWidget):
         self.setLayout(self.main_layout)
 
     def on_menu_item_selected(self, option):
+        print('menu changed')
         self.date_range_widget.hide()
         self.one_month_widget.hide()
         match option:
@@ -132,8 +134,7 @@ class DateFilter(QWidget):
                 self.set_range_last_n_months(6)
 
             case 'last year':
-                self.to_range = datetime.date.today()
-                self.from_range = self.to_range.replace(year=self.to_range.year-1)
+                self.set_range_last_n_months(12)
 
             case 'range':
                 self.date_range_widget.show()
@@ -144,33 +145,51 @@ class DateFilter(QWidget):
                 self.on_month_selected()
 
             case 'all time':
-                self.to_range = datetime.date.today()
-                self.from_range = datetime.date.today().replace(year=datetime.MINYEAR)
-
-    def on_date_range_changed(self):
-        self.set_date_limits()
-        self.from_range = self.from_date.date().toPyDate()
-        self.to_range = self.to_date.date().toPyDate()
+                self.date_range[0] = datetime.date.today().replace(year=datetime.MINYEAR)
+                self.date_range[1] = datetime.date.today()
+                self.date_range_changed.emit(self.date_range)
 
     def set_date_limits(self):
         self.from_date.setMaximumDate(self.to_date.date())
         self.to_date.setMinimumDate(self.from_date.date())
 
+    def on_date_range_changed(self):
+        self.set_date_limits()
+        self.date_range[0] = self.from_date.date().toPyDate()
+        self.date_range[1] = self.to_date.date().toPyDate()
+        self.date_range_changed.emit(self.date_range)
+
     def on_month_selected(self):
-        self.from_range = datetime.date(self.year_box.value(),
-                                        self.month_box.currentIndex()+1,
-                                        1)
-        self.to_range = self.from_range.replace(day=self.last_day_of_month(self.from_range))
+        self.date_range[0] = datetime.date(self.year_box.value(),
+                                           self.month_box.currentIndex()+1,
+                                           1)
+        self.date_range[1] = self.date_range[0].replace(day=self.last_day_of_month(self.date_range[0]))
+        self.date_range_changed.emit(self.date_range)
 
     def set_range_last_n_months(self, n_months: int):
         assert n_months > 0
-        self.to_range = datetime.date.today().replace(day=1) - datetime.timedelta(days=1)
-        self.from_range = self.to_range
+        self.date_range[1] = datetime.date.today().replace(day=1) - datetime.timedelta(days=1)
+        self.date_range[0] = self.date_range[1]
         for month in range(n_months):
-            self.from_range = self.from_range.replace(day=1) - datetime.timedelta(days=1)
-        self.from_range += datetime.timedelta(days=1)
+            self.date_range[0] = self.date_range[0].replace(day=1) - datetime.timedelta(days=1)
+        self.date_range[0] += datetime.timedelta(days=1)
+        self.date_range_changed.emit(self.date_range)
 
     def last_day_of_month(self, day: datetime.date) -> int:
         next_month = day.replace(day=28) + datetime.timedelta(days=4)
         return (next_month - datetime.timedelta(days=next_month.day)).day
+
+    def reset(self):
+        self.date_range = [datetime.date.today()] * 2
+        self.set_range_last_n_months(1)
+        
+        self.check_box.setChecked(True)
+        self.menu.setCurrentIndex(0)
+
+        self.from_date.setDate(QDate().fromString(str(self.date_range[0]), Qt.ISODate))
+        self.to_date.setDate(QDate().fromString(str(self.date_range[1]), Qt.ISODate))
+        self.set_date_limits()
+
+        self.month_box.setCurrentIndex(datetime.date.today().month-1)
+        self.year_box.setValue(datetime.date.today().year)
 
