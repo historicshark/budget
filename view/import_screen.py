@@ -11,8 +11,7 @@ from PyQt5.QtWidgets import (
 
 from PyQt5.QtCore import pyqtSignal
 
-from view.base_screen import BaseScreen
-from view.default_style_sheet import colors
+from view import BaseScreen, colors
 
 class ImportScreen(BaseScreen):
     home_clicked = pyqtSignal()

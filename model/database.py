@@ -6,7 +6,6 @@ import sqlite3
 
 class DatabaseManager:
     def __init__(self, db_name):
-
         if not Path(db_name).exists():
             print(f'Creating new database {db_name}')
             self.con = sqlite3.connect(db_name)
@@ -28,7 +27,7 @@ class DatabaseManager:
         self.cur.executemany(f'INSERT INTO {self.table_name} VALUES(:Date, :Location, :Category, :Amount)', records)
         self.con.commit()
 
-    # test
+    #TODO need to test
     def insert_record(self, record: dict[str, str]):
         self.cur.execute(f'INSERT INTO {self.table_name} VALUES(:Date, :Location, :Category, :Amount)', record)
         self.con.commit()
@@ -58,9 +57,9 @@ class DatabaseManager:
         self.cur.execute(command + self.where)
         self.con.commit()
 
-    def select(self, date=None, location=None, category=None, amount=None, order_by=None):
+    def select(self, date=None, location=None, category=None, amount=None, order_by=None) -> list[dict[str, str]]:
         """ 
-        Return a list of tuples, each tuple is a record in the database. Any or none of the arguments can be provided.
+        Return a list of records. Any or none of the arguments can be provided.
         Also sets db.where for future use.
 
         Date: A list containing two datetime.date for a date range

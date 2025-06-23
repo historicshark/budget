@@ -11,13 +11,13 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 
-from view.default_style_sheet import colors
+from view import colors
 
 class BaseScreen(QWidget):
     def __init__(self):
         super().__init__()
     
-    def add_title(self, owner_layout, title: str, home_clicked_connect):
+    def add_title(self, owner_layout, title: str, home_clicked_connect, spacing=50):
         title_layout = QHBoxLayout()
 
         label_title = QLabel(title)
@@ -34,10 +34,11 @@ class BaseScreen(QWidget):
         title_layout.addSpacing(70)
 
         owner_layout.addLayout(title_layout)
-        owner_layout.addSpacing(50)
+        owner_layout.addSpacing(spacing)
     
     def add_continue_cancel_buttons(self, owner_layout, continue_clicked_connect, cancel_clicked_connect, add_stretch=True) -> QHBoxLayout:
         """
+        adds shortcuts 'Return' and 'Escape' to Continue and Cancel buttons
         add_stretch: add stretch to the end of the QHBoxLayout containing the buttons
         returns the layout containing the buttons
         """

@@ -11,8 +11,7 @@ from PyQt5.QtCore import pyqtSignal
 
 from string import ascii_lowercase
 
-from view.base_screen import BaseScreen
-from view.default_style_sheet import colors
+from view import BaseScreen, colors
 
 class CategorizeScreen(BaseScreen):
     home_clicked = pyqtSignal()
@@ -80,7 +79,7 @@ class CategorizeScreen(BaseScreen):
         continue_cancel_layout.addWidget(skip_button)
         continue_cancel_layout.addStretch()
 
-        # right layout
+        # right layout - options
         instruction_label = QLabel('Choose a category:')
         instruction_label.setStyleSheet(label_style)
         right_layout.addWidget(instruction_label)

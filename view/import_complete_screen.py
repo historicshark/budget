@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import pyqtSignal
 
-from view.base_screen import BaseScreen
+from view import BaseScreen
 
 class ImportCompleteScreen(BaseScreen):
     home_clicked = pyqtSignal()

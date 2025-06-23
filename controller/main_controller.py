@@ -1,8 +1,6 @@
-from model.database import DatabaseManager
-from model.import_categorize import Importer
-from view import MainWindow, HomeScreen, ImportScreen, CategorizeScreen, AddNewRuleScreen, ImportCompleteScreen, FilterScreen
-from controller.import_controller import ImportController
-from controller.categorize_controller import CategorizeController
+from model import *
+from view import *
+from controller import *
 
 class MainController:
     def __init__(self):
@@ -16,7 +14,7 @@ class MainController:
             'categorize': CategorizeScreen(),
             'add_new_rule': AddNewRuleScreen(),
             'import_complete': ImportCompleteScreen(),
-            'filter': FilterScreen()
+            'filter': FilterScreen(),
         }
         self.screen_indexes = {}
         self.register_screens()
@@ -24,12 +22,13 @@ class MainController:
         self.controllers = {
             'import': ImportController(self, self.screens['import'], self.importer),
             'categorize': CategorizeController(self, self.screens['categorize'], self.screens['add_new_rule'], self.screens['import_complete'], self.importer),
+            'filter': FilterController(self, self.screens['filter'], self.db),
         }
 
         # connections
         self.screens['home'].import_clicked.connect(lambda: self.go_to_screen('import'))
         self.screens['home'].plot_clicked.connect(lambda: self.go_to_screen('filter'))
-    
+
     def register_screens(self):
         for name, screen in self.screens.items():
             self.main_window.stack.addWidget(screen)
@@ -62,3 +61,4 @@ class MainController:
     def reset_import_process(self):
         self.controllers['import'].reset()
         self.controllers['categorize'].reset()
+

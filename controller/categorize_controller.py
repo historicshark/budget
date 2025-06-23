@@ -1,7 +1,5 @@
-from model.import_categorize import Importer
-from view.categorize_screen import CategorizeScreen
-from view.add_new_rule_screen import AddNewRuleScreen
-from view.import_complete_screen import ImportCompleteScreen
+from model import Importer
+from view import CategorizeScreen, AddNewRuleScreen, ImportCompleteScreen
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

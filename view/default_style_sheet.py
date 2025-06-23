@@ -1,7 +1,4 @@
-import json
-
-with open('view/colors.json', 'r') as f:
-    colors = json.load(f)
+from view import colors
 
 default_style_sheet = f'''
 QWidget {{
@@ -92,19 +89,20 @@ background-color: {colors['bg2']};
 color: {colors['fg0']};
 }}
 
-QSpinBox {{
+QSpinBox, QDoubleSpinBox {{
 font-size: 15px;
 color: {colors['fg0']};
 background-color: {colors['bg1']};
 padding: 3px;
+border: 0px solid {colors['bg']};
 }}
 
-QSpinBox::up-button {{
+QSpinBox::up-button, QDoubleSpinBox::up-button {{
 subcontrol-origin: border;
 subcontrol-position: top right;
 }}
 
-QSpinBox::down-button {{
+QSpinBox::down-button, QDoubleSpinBox::down-button {{
 subcontrol-origin: border;
 subcontrol-position: bottom right;
 }}
@@ -181,5 +179,29 @@ QCalendarWidget QSpinBox::down-button {{
 subcontrol-origin: border;
 subcontrol-position: bottom right;
 width: 20px;
+}}
+
+QCheckBox {{
+font-size: 15px;
+color: {colors['fg']};
+background-color: {colors['bg']};
+spacing: 8px;
+}}
+
+QCheckBox::indicator {{
+width: 15px;
+height: 15px;
+}}
+
+QCheckBox::indicator:unchecked {{
+border: 2px solid {colors['gray']};
+background-color: {colors['bg1']};
+border-radius: 3px;
+}}
+
+QCheckBox::indicator:checked {{
+border: 2px solid {colors['gray']};
+background-color: {colors['aqua']};
+border-radius: 3px;
 }}
 '''
