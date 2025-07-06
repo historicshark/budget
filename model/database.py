@@ -57,6 +57,9 @@ class DatabaseManager:
         self.cur.execute(command + self.where)
         self.con.commit()
 
+    def select_filter(self, filters) -> list[dict[str, str]]:
+        return self.select(date=filters['Date'], category=filters['Category'], amount=filters['Amount'])
+
     def select(self, date=None, location=None, category=None, amount=None, order_by=None) -> list[dict[str, str]]:
         """ 
         Return a list of records. Any or none of the arguments can be provided.
@@ -89,7 +92,7 @@ class DatabaseManager:
         else:
             order = ''
 
-        # print(command + self.where + order) #DEBUG
+        print(command + self.where + order) #DEBUG
 
         res = self.cur.execute(command + self.where + order)
         output = res.fetchall() # list of tuples
@@ -98,8 +101,7 @@ class DatabaseManager:
     def add_and(self, use_and):
         if use_and:
             self.where += ' AND '
-        else:
-            use_and = True
+        return True
 
     def build_where(self, date, location, category, amount):
         if not (date or location or category or amount):
@@ -110,23 +112,24 @@ class DatabaseManager:
         use_and = False
 
         if date:
-            self.add_and(use_and)
+            use_and = self.add_and(use_and)
             self.where += f'Date BETWEEN "{date[0]}" AND "{date[1]}"'
 
         if location:
-            self.add_and(use_and)
+            use_and = self.add_and(use_and)
             self.where += f'Location="{location}"'
 
         if category:
-            self.add_and(use_and)
+            use_and = self.add_and(use_and)
             if isinstance(category, list):
+                category = [f'"{c}"' for c in category]
                 self.where += f'Category IN ({", ".join(category)})'
             else:
                 self.where += f'Category={category}'
 
         if amount:
-            self.add_and(use_and)
-            self.where += f'Amount BETWEEN {amount[0]} AND {amount[1]}'
+            use_and = self.add_and(use_and)
+            self.where += f'abs(Amount) BETWEEN {amount[0]} AND {amount[1]}'
 
     def print_records(self, records):
         """
