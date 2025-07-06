@@ -1,3 +1,4 @@
 from .database import DatabaseManager
-from .import_categorize import Importer
+from .categories import Categories
+from .importer import Importer
 

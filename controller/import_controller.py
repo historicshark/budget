@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from model.import_categorize import Importer
-from view.import_screen import ImportScreen
+from model import Categories, Importer
+from view import ImportScreen
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

@@ -5,7 +5,8 @@ from controller import *
 class MainController:
     def __init__(self):
         self.db = DatabaseManager('transactions')
-        self.importer = Importer(self.db)
+        self.categories = Categories()
+        self.importer = Importer(self.db, self.categories)
 
         self.main_window = MainWindow()
         self.screens = {
@@ -22,7 +23,7 @@ class MainController:
         self.controllers = {
             'import': ImportController(self, self.screens['import'], self.importer),
             'categorize': CategorizeController(self, self.screens['categorize'], self.screens['add_new_rule'], self.screens['import_complete'], self.importer),
-            'filter': FilterController(self, self.screens['filter'], self.db),
+            'filter': FilterController(self, self.screens['filter'], self.db, self.categories),
         }
 
         # connections
@@ -39,6 +40,8 @@ class MainController:
     
     def debug(self):
         self.go_to_screen('filter')
+        self.controllers['filter'].start()
+        self.start_plot()
 
     def start(self):
         self.main_window.show()
@@ -61,4 +64,12 @@ class MainController:
     def reset_import_process(self):
         self.controllers['import'].reset()
         self.controllers['categorize'].reset()
+
+    def start_plot(self):
+        self.controllers['filter'].cancel_clicked.connect(lambda: self.go_to_screen('home'))
+        self.controllers['filter'].continue_clicked.connect(self.print_records)
+
+    def print_records(self):
+        records = self.controllers['filter'].records
+        self.db.print_records(records)
 

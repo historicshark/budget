@@ -169,12 +169,26 @@ class FilterScreen(BaseScreen):
                 self.checked_categories.append(category)
         self.on_filter_changed()
 
+    def get_amount_range(self):
+        """
+        Make range negative because expenses are negative
+        """
+        minimum = self.amount_min.value()
+        maximum = self.amount_max.value()
+
+        if minimum == 0 and maximum == 0:
+            return None
+        if minimum > maximum:
+            return None
+
+        return (minimum, maximum)
+
     def on_filter_changed(self):
         self.filter['Date'] = self.date_filter.date_range if self.date_filter.check_box.isChecked() else None
-        self.filter['Amount'] = (self.amount_min.value(), self.amount_max.value()) if self.amount_check_box.isChecked() else None
+        self.filter['Amount'] = self.get_amount_range() if self.amount_check_box.isChecked() else None
         self.filter['Category'] = self.checked_categories if self.category_check_box.isChecked() else None
         self.filter_changed.emit(self.filter)
-        print(self.filter) #XXX
+        print(self.filter) #XXX debug
 
     def reset(self):
         self.checked_categories = []
