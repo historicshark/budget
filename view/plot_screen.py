@@ -1,15 +1,24 @@
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import (
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QPushButton,
+    QLayout,
+    QLabel,
+)
+from PyQt5.QtCore import pyqtSignal, Qt
 
-from view import BaseScreen
+from view import BaseScreen, colors
+from view.widgets import PlotCategory, ComboBoxFix
 
 class PlotScreen(BaseScreen):
     home_clicked = pyqtSignal()
-    continue_clicked = pyqtSignal()
-    cancel_clicked = pyqtSignal()
+    new_search_clicked = pyqtSignal()
 
     def __init__(self):
         super().__init__()
-
+        self.show_menu_options = ['both', 'expenses', 'income']
+        self.initUI()
 
     def initUI(self):
         self.base_layout = QVBoxLayout()
@@ -18,4 +27,91 @@ class PlotScreen(BaseScreen):
         self.base_layout.setContentsMargins(0,0,0,0)
         self.content_layout.setContentsMargins(15,0,15,0)
         self.base_layout.addLayout(self.content_layout)
+
+        self.add_title(self.content_layout, 'Plot', self.home_clicked.emit)
+
+        # Layout with plots and buttons to change plot format
+        plot_layout = QHBoxLayout()
+
+        expenses_layout = QVBoxLayout()
+        expenses_layout.setSpacing(0)
+        self.expenses_container = QWidget()
+        self.expenses_container.setLayout(expenses_layout)
+        self.expenses_plot = PlotCategory()
+        expenses_label = QLabel('Expenses')
+        expenses_layout.addWidget(expenses_label, alignment=Qt.AlignHCenter)
+        expenses_layout.addWidget(self.expenses_plot, alignment=Qt.AlignHCenter)
+        expenses_layout.addStretch()
+        plot_layout.addWidget(self.expenses_container)
+
+        income_layout = QVBoxLayout()
+        income_layout.setSpacing(0)
+        self.income_container = QWidget()
+        self.income_container.setLayout(income_layout)
+        self.income_plot = PlotCategory()
+        income_label = QLabel('Income')
+        income_layout.addWidget(income_label, alignment=Qt.AlignHCenter)
+        income_layout.addWidget(self.income_plot, alignment=Qt.AlignHCenter)
+        income_layout.addStretch()
+        plot_layout.addWidget(self.income_container)
+
+        plot_layout.addStretch()
+
+        self.content_layout.addLayout(plot_layout)
+
+        self.expenses_plot.plot_pie(['test1','test2'], [2,3])
+        self.income_plot.plot_pie(['Plot','test2'], [2,1])
+
+        # Bottom row with drop down menu and button for new search
+        bottom_row_layout = QHBoxLayout()
+
+        label = QLabel('Show:')
+        self.show_menu = ComboBoxFix()
+        self.show_menu.addItems(self.show_menu_options)
+        self.show_menu.setFixedWidth(150)
+        self.show_menu.view().setMinimumWidth(156)
+        self.show_menu.currentTextChanged.connect(self.on_show_menu_item_selected)
+        self.show_menu.setCurrentIndex(1)
+
+        bottom_row_layout.addSpacing(200)
+        bottom_row_layout.addWidget(label)
+        bottom_row_layout.addWidget(self.show_menu)
+        
+        bottom_row_layout.addStretch()
+        
+        new_search_button = QPushButton('New Search')
+        new_search_button.setFixedSize(150, 50)
+        new_search_button.clicked.connect(self.new_search_clicked.emit)
+        new_search_button.setStyleSheet(f'''
+                                        QPushButton:hover {{
+                                        background-color: {colors['green-faded']};
+                                       }}
+                                        ''')
+        bottom_row_layout.addWidget(new_search_button)
+
+        self.content_layout.addLayout(bottom_row_layout)
+
+        keys_functions = [('test', 'test'),
+                         ]
+        self.content_layout.addStretch()
+        self.add_footer(self.base_layout, keys_functions)
+        self.setLayout(self.base_layout)
+
+    def on_show_menu_item_selected(self, option):
+        match option:
+            case 'both':
+                self.expenses_container.show()
+                self.income_container.show()
+            case 'expenses':
+                self.expenses_container.show()
+                self.income_container.hide()
+            case 'income':
+                self.expenses_container.hide()
+                self.income_container.show()
+
+    def plot_expenses(self, categories, totals):
+        self.expenses_plot.plot_pie(categories, totals)
+
+    def plot_income(self, categories, totals):
+        self.income_plot.plot_pie(categories, totals)
 

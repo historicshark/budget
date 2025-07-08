@@ -16,6 +16,7 @@ class MainController:
             'add_new_rule': AddNewRuleScreen(),
             'import_complete': ImportCompleteScreen(),
             'filter': FilterScreen(),
+            'plot': PlotScreen(),
         }
         self.screen_indexes = {}
         self.register_screens()
@@ -24,11 +25,12 @@ class MainController:
             'import': ImportController(self, self.screens['import'], self.importer),
             'categorize': CategorizeController(self, self.screens['categorize'], self.screens['add_new_rule'], self.screens['import_complete'], self.importer),
             'filter': FilterController(self, self.screens['filter'], self.db, self.categories),
+            'plot': PlotController(self, self.screens['plot'], self.db),
         }
 
         # connections
         self.screens['home'].import_clicked.connect(lambda: self.go_to_screen('import'))
-        self.screens['home'].plot_clicked.connect(lambda: self.go_to_screen('filter'))
+        self.screens['home'].plot_clicked.connect(self.start_plot)
 
     def register_screens(self):
         for name, screen in self.screens.items():
@@ -39,9 +41,7 @@ class MainController:
                 screen.home_clicked.connect(lambda: self.go_to_screen('home'))
     
     def debug(self):
-        self.go_to_screen('filter')
-        self.controllers['filter'].start()
-        self.start_plot()
+        self.go_to_screen('home')
 
     def start(self):
         self.main_window.show()
@@ -66,8 +66,15 @@ class MainController:
         self.controllers['categorize'].reset()
 
     def start_plot(self):
+        self.go_to_screen('filter')
+
         self.controllers['filter'].cancel_clicked.connect(lambda: self.go_to_screen('home'))
-        self.controllers['filter'].continue_clicked.connect(self.print_records)
+        self.controllers['filter'].continue_clicked.connect(self.set_records_and_go_to_plot_screen)
+
+    def set_records_and_go_to_plot_screen(self):
+        self.controllers['plot'].records = self.controllers['filter'].records
+        self.go_to_screen('plot')
+        self.controllers['plot'].plot()
 
     def print_records(self):
         records = self.controllers['filter'].records

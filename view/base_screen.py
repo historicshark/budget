@@ -17,7 +17,7 @@ class BaseScreen(QWidget):
     def __init__(self):
         super().__init__()
     
-    def add_title(self, owner_layout, title: str, home_clicked_connect, spacing=50):
+    def add_title(self, owner_layout, title: str, home_clicked_emit, spacing=50):
         title_layout = QHBoxLayout()
 
         label_title = QLabel(title)
@@ -25,7 +25,7 @@ class BaseScreen(QWidget):
         label_title.setObjectName('title')
 
         home_button = QPushButton('Home')
-        home_button.clicked.connect(home_clicked_connect)
+        home_button.clicked.connect(home_clicked_emit)
         home_button.setObjectName('home')
         home_button.setFixedSize(70, 30)
 

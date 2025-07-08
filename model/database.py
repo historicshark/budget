@@ -167,10 +167,8 @@ class DatabaseManager:
         categories = self.list_categories()
         totals = []
         for category in categories:
-            # self.cur.execute(f'SELECT SUM("Amount") FROM {self.table_name} WHERE Category = ?', (category,))
-            total = self.select(category=category, date=date_range, take_sum=True)[0][0]
-            #totals.append(self.cur.fetchone()[0])
-            totals.append(total)
+            self.cur.execute(f'SELECT SUM("Amount") FROM {self.table_name} WHERE Category = ?', (category,))
+            totals.append(self.cur.fetchone()[0])
 
         return categories, np.array(totals)
 
