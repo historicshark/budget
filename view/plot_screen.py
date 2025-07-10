@@ -5,8 +5,13 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QLayout,
     QLabel,
+    QTabWidget,
+    QTableWidget,
+    QTableWidgetItem,
 )
 from PyQt5.QtCore import pyqtSignal, Qt
+
+from decimal import Decimal
 
 from view import BaseScreen, colors
 from view.widgets import PlotCategory, ComboBoxFix
@@ -30,30 +35,25 @@ class PlotScreen(BaseScreen):
 
         self.add_title(self.content_layout, 'Plot', self.home_clicked.emit)
 
-        # Layout with plots and buttons to change plot format
+        # Layout with plot and table with summary
         plot_layout = QHBoxLayout()
+        self.plot_container = QWidget()
+        self.plot_container.setLayout(plot_layout)
 
         expenses_layout = QVBoxLayout()
         expenses_layout.setSpacing(0)
-        self.expenses_container = QWidget()
-        self.expenses_container.setLayout(expenses_layout)
         self.expenses_plot = PlotCategory()
         expenses_label = QLabel('Expenses')
         expenses_layout.addWidget(expenses_label, alignment=Qt.AlignHCenter)
         expenses_layout.addWidget(self.expenses_plot, alignment=Qt.AlignHCenter)
         expenses_layout.addStretch()
-        plot_layout.addWidget(self.expenses_container)
+        plot_layout.addLayout(expenses_layout)
 
-        income_layout = QVBoxLayout()
-        income_layout.setSpacing(0)
-        self.income_container = QWidget()
-        self.income_container.setLayout(income_layout)
-        self.income_plot = PlotCategory()
-        income_label = QLabel('Income')
-        income_layout.addWidget(income_label, alignment=Qt.AlignHCenter)
-        income_layout.addWidget(self.income_plot, alignment=Qt.AlignHCenter)
-        income_layout.addStretch()
-        plot_layout.addWidget(self.income_container)
+        summary_table_layout = QVBoxLayout()
+        summary_table_layout.setSpacing(0)
+        self.summary_table = QTableWidget()
+        self.summary_table.setColumnCount(3)
+        self.summary_table.setHorizontalHeaderLabels(['Category', 'Amount', '%'])
 
         plot_layout.addStretch()
 
@@ -109,9 +109,9 @@ class PlotScreen(BaseScreen):
                 self.expenses_container.hide()
                 self.income_container.show()
 
-    def plot_expenses(self, categories, totals):
+    def update_plot_view(self, categories: list[str], totals: list[Decimal]):
         self.expenses_plot.plot_pie(categories, totals)
 
-    def plot_income(self, categories, totals):
-        self.income_plot.plot_pie(categories, totals)
+        total_all_categories = sum(totals)
+        percentages = ['{0:.1f}%'.format(total / total_all_categories) for total in totals]
 

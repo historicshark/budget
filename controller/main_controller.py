@@ -41,10 +41,11 @@ class MainController:
                 screen.home_clicked.connect(lambda: self.go_to_screen('home'))
     
     def debug(self):
-        self.go_to_screen('home')
+        pass
 
     def start(self):
         self.main_window.show()
+        self.go_to_screen('home')
         self.debug() #XXX debug
 
     def go_to_screen(self, name):
@@ -70,6 +71,7 @@ class MainController:
 
         self.controllers['filter'].cancel_clicked.connect(lambda: self.go_to_screen('home'))
         self.controllers['filter'].continue_clicked.connect(self.set_records_and_go_to_plot_screen)
+        self.controllers['filter'].start()
 
     def set_records_and_go_to_plot_screen(self):
         self.controllers['plot'].records = self.controllers['filter'].records

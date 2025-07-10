@@ -23,19 +23,19 @@ class PlotController(QObject):
 
     def plot(self):
         self.db.print_records(self.records) #XXX debug
-        expenses = {}
-        income = {}
+
+        # get totals by category
+        totals = {}
         for record in self.records:
             amount = Decimal(record['Amount'])
             category = record['Category']
-            if amount > 0:
-                if category not in income.keys():
-                    income[category] = 0
-                income[category] += amount
-            else:
-                if category not in expenses.keys():
-                    expenses[category] = 0
-                expenses[category] -= amount
+            if category not in totals.keys():
+                totals[category] = 0
+            totals[category] += amount
+
+        # separate into income and expenses
+        income = {category: amount for category, amount in totals.items() if amount > 0}
+        expenses = {category: -amount for category, amount in totals.items() if amount <= 0}
 
         self.plot_screen.plot_expenses(expenses.keys(), expenses.values())
         self.plot_screen.plot_income(income.keys(), income.values())
