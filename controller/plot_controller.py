@@ -37,8 +37,7 @@ class PlotController(QObject):
         income = {category: amount for category, amount in totals.items() if amount > 0}
         expenses = {category: -amount for category, amount in totals.items() if amount <= 0}
 
-        self.plot_screen.plot_expenses(expenses.keys(), expenses.values())
-        self.plot_screen.plot_income(income.keys(), income.values())
+        self.plot_screen.update_plot_view(expenses.keys(), expenses.values())
 
     def on_new_search_clicked(self):
         self.main.go_to_screen('filter')
