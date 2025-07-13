@@ -204,4 +204,21 @@ border: 2px solid {colors['gray']};
 background-color: {colors['aqua']};
 border-radius: 3px;
 }}
+
+QTableWidget {{
+background-color: {colors['bg1']};
+alternate-background-color: {colors['bg2']};
+color: {colors['fg']};
+selection-background-color: {colors['blue-faded']};
+selection-color: {colors['fg']};
+gridline-color: {colors['gray']};
+border: 1px solid {colors['gray']};
+}}
+
+QHeaderView::section {{
+background-color: {colors['bg2']};
+color: {colors['fg']};
+border: 0px solid white;
+font-weight: bold;
+}}
 '''

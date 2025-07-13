@@ -9,8 +9,11 @@ from PyQt5.QtWidgets import (
     QTableWidget,
     QTableWidgetItem,
     QHeaderView,
+    QSizePolicy,
+    QAbstractItemView,
 )
 from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtGui import QFont, QColor
 
 from decimal import Decimal
 
@@ -65,6 +68,10 @@ class PlotScreen(BaseScreen):
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
         
         self.summary_table.verticalHeader().setVisible(False)
+        self.summary_table.setAlternatingRowColors(True)
+        self.summary_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.summary_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
+        self.summary_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         plot_view_layout.addWidget(self.summary_table)
 
@@ -104,11 +111,30 @@ class PlotScreen(BaseScreen):
         n_rows = len(categories) + 1
         self.summary_table.setRowCount(n_rows)
         for row, (category, total, percentage) in enumerate(zip(categories, totals, percentages)):
-            self.summary_table.setItem(row, 0, QTableWidgetItem(category))
-            self.summary_table.setItem(row, 1, QTableWidgetItem(f'{total:.0f}'))
-            self.summary_table.setItem(row, 2, QTableWidgetItem(f'{percentage:.1f}%'))
+            category_item = QTableWidgetItem(category)
+            total_item = QTableWidgetItem(f'{total:.0f}')
+            total_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            percentage_item = QTableWidgetItem(f'{percentage:.1f}%')
+            self.summary_table.setItem(row, 0, category_item)
+            self.summary_table.setItem(row, 1, total_item)
+            self.summary_table.setItem(row, 2, percentage_item)
 
-        self.summary_table.setItem(n_rows - 1, 0, QTableWidgetItem('Total'))
-        self.summary_table.setItem(n_rows - 1, 1, QTableWidgetItem(f'{total_all_categories:.0f}'))
-        self.summary_table.setItem(n_rows - 1, 2, QTableWidgetItem('100%'))
+        category_item = QTableWidgetItem('Total')
+        total_item = QTableWidgetItem(f'{total_all_categories:.0f}')
+        total_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        percentage_item = QTableWidgetItem('100%')
+        self.summary_table.setItem(n_rows - 1, 0, category_item)
+        self.summary_table.setItem(n_rows - 1, 1, total_item)
+        self.summary_table.setItem(n_rows - 1, 2, percentage_item)
+
+        for col in range(self.summary_table.columnCount()):
+            item = self.summary_table.item(n_rows - 1, col)
+            font = item.font()
+            font.setBold(True)
+            item.setFont(font)
+            item.setBackground(QColor(colors['purple-faded']))
+
+        # set the table maximum height
+        height = self.summary_table.verticalHeader().length() + self.summary_table.horizontalHeader().height()
+        self.summary_table.setMaximumHeight(height + 2)
 
