@@ -76,7 +76,7 @@ class MainController:
     def set_records_and_go_to_plot_screen(self):
         self.controllers['plot'].records = self.controllers['filter'].records
         self.go_to_screen('plot')
-        self.controllers['plot'].plot()
+        self.controllers['plot'].update_views()
 
     def print_records(self):
         records = self.controllers['filter'].records

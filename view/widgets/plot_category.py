@@ -10,7 +10,7 @@ class PlotCategory(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.figure = Figure(figsize=(4.5,3), facecolor='none')
+        self.figure = Figure(figsize=(5,3), facecolor='none')
         self.ax = self.figure.subplots(1, 1)
         self.figure.subplots_adjust(left=0.1, right=0.9, top=0.99, bottom=0.01)
         self.canvas = FigureCanvas(self.figure)

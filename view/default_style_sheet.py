@@ -221,4 +221,50 @@ color: {colors['fg']};
 border: 0px solid white;
 font-weight: bold;
 }}
+
+QTabWidget::pane {{
+border-top: 1px solid {colors['gray']};
+}}
+
+QTabWidget::tab-bar {{
+left: 0px;
+}}
+
+QTabBar::tab {{
+background: {colors['bg']};
+color: {colors['fg']};
+border: 1px solid {colors['gray']};
+border-bottom-color: {colors['gray']};
+padding: 2px;
+padding-left: 5px;
+padding-right: 5px;
+margin: 0px;
+}}
+
+QTabBar::tab:selected, QTabBar::tab:hover {{
+background: {colors['blue-faded']};
+color: {colors['fg']};
+}}
+
+QTabBar::tab:selected {{
+border-color: {colors['fg']};
+}}
+
+QTabBar::tab:!selected {{
+margin-top: 4px;
+}}
+
+QTabBar::tab:selected {{
+margin-left: -9px;
+margin-right: -4px;
+}}
+
+QTabBar::tab:first:selected {{
+margin-left: 0px;
+}}
+
+QTabBar::tab:last:selected {{
+margin-right: 0px;
+}}
+
 '''
