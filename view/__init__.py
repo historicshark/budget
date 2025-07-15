@@ -12,7 +12,7 @@ from .categorize_screen import CategorizeScreen
 from .add_new_rule_screen import AddNewRuleScreen
 from .import_complete_screen import ImportCompleteScreen
 from .filter_screen import FilterScreen
-from .plot_screen import PlotScreen
+from .expenses_screen import ExpensesScreen
 
 __all__ = [
     'MainWindow',
@@ -22,5 +22,5 @@ __all__ = [
     'AddNewRuleScreen',
     'ImportCompleteScreen',
     'FilterScreen',
-    'PlotScreen',
+    'ExpensesScreen',
 ]

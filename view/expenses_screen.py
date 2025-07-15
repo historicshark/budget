@@ -21,16 +21,13 @@ from decimal import Decimal
 from view import BaseScreen, colors
 from view.widgets import PlotCategory, ComboBoxFix
 
-class PlotScreen(BaseScreen):
+class ExpensesScreen(BaseScreen):
     home_clicked = pyqtSignal()
     new_search_clicked = pyqtSignal()
 
     def __init__(self):
         super().__init__()
-        self.show_menu_options = ['both', 'expenses', 'income']
         self.is_plot_view = True
-        self.tables = []
-        self.tabs = []
         self.initUI()
 
     def initUI(self):
@@ -41,7 +38,7 @@ class PlotScreen(BaseScreen):
         self.content_layout.setContentsMargins(15,0,15,0)
         self.base_layout.addLayout(self.content_layout)
 
-        self.add_title(self.content_layout, 'Plot', self.home_clicked.emit, 20)
+        self.add_title(self.content_layout, 'Expenses', self.home_clicked.emit, 20)
 
         # Layout with plot and table with summary
         plot_view_layout = QHBoxLayout()
@@ -53,8 +50,6 @@ class PlotScreen(BaseScreen):
         plot_layout.setSpacing(0)
         plot_layout.setContentsMargins(0, 0, 0, 0)
         self.plot = PlotCategory()
-        plot_label = QLabel('Expenses')
-        plot_layout.addWidget(plot_label, alignment=Qt.AlignHCenter)
         plot_layout.addWidget(self.plot, alignment=Qt.AlignHCenter)
         plot_layout.addStretch()
         plot_view_layout.addLayout(plot_layout)
@@ -74,10 +69,13 @@ class PlotScreen(BaseScreen):
         self.summary_table.verticalHeader().setVisible(False)
         self.summary_table.setAlternatingRowColors(True)
         self.summary_table.setSelectionBehavior(QTableWidget.SelectRows)
-        self.summary_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
+        self.summary_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.summary_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
-        plot_view_layout.addWidget(self.summary_table)
+        summary_table_layout.addWidget(self.summary_table)
+        summary_table_layout.addStretch()
+
+        plot_view_layout.addLayout(summary_table_layout)
 
         self.content_layout.addWidget(self.plot_view_container)
 
@@ -96,8 +94,6 @@ class PlotScreen(BaseScreen):
         self.content_layout.addWidget(self.list_view_container)
 
         # Bottom row with button to switch views and new search button
-        #self.content_layout.addStretch()
-
         bottom_row_layout = QHBoxLayout()
         bottom_row_layout.setContentsMargins(0, 0, 0, 0)
 
@@ -162,7 +158,7 @@ class PlotScreen(BaseScreen):
 
         # set the table maximum height
         height = self.summary_table.verticalHeader().length() + self.summary_table.horizontalHeader().height()
-        self.summary_table.setMaximumHeight(height + 2)
+        self.summary_table.setMinimumHeight(height + 2)
 
     def update_list_view(self, categories: list[str], dates: dict[str, list], locations: dict[str, list], amounts: dict[str, list], totals: dict[str, Decimal]):
         self.tab_widget.clear()

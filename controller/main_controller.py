@@ -16,7 +16,7 @@ class MainController:
             'add_new_rule': AddNewRuleScreen(),
             'import_complete': ImportCompleteScreen(),
             'filter': FilterScreen(),
-            'plot': PlotScreen(),
+            'expenses': ExpensesScreen(),
         }
         self.screen_indexes = {}
         self.register_screens()
@@ -25,7 +25,7 @@ class MainController:
             'import': ImportController(self, self.screens['import'], self.importer),
             'categorize': CategorizeController(self, self.screens['categorize'], self.screens['add_new_rule'], self.screens['import_complete'], self.importer),
             'filter': FilterController(self, self.screens['filter'], self.db, self.categories),
-            'plot': PlotController(self, self.screens['plot'], self.db),
+            'expenses': ExpensesController(self, self.screens['expenses'], self.db),
         }
 
         # connections
@@ -42,6 +42,9 @@ class MainController:
     
     def debug(self):
         pass
+        #self.start_plot()
+        #self.controllers['filter'].filter = {'Date': None, 'Category': None, 'Amount': None}
+        #self.controllers['filter'].on_continue_clicked()
 
     def start(self):
         self.main_window.show()
@@ -74,9 +77,9 @@ class MainController:
         self.controllers['filter'].start()
 
     def set_records_and_go_to_plot_screen(self):
-        self.controllers['plot'].records = self.controllers['filter'].records
-        self.go_to_screen('plot')
-        self.controllers['plot'].update_views()
+        self.controllers['expenses'].records = self.controllers['filter'].records
+        self.go_to_screen('expenses')
+        self.controllers['expenses'].update_views()
 
     def print_records(self):
         records = self.controllers['filter'].records
