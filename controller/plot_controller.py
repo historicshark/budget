@@ -3,6 +3,7 @@ from PyQt5.QtCore import QObject
 from view import PlotScreen
 from model import DatabaseManager, Categories
 
+import datetime
 from decimal import Decimal
 
 from typing import TYPE_CHECKING
@@ -42,6 +43,13 @@ class PlotController(QObject):
             dates[category].append(record['Date'])
             locations[category].append(record['Location'])
             amounts[category].append(record['Amount'])
+
+        # sort lists by date
+        for category in dates.keys():
+            sorted_indexes = [p[0] for p in sorted(enumerate(dates[category]), key=lambda x: datetime.date.fromisoformat(x[1]))]
+            dates[category] = [dates[category][i] for i in sorted_indexes]
+            locations[category] = [locations[category][i] for i in sorted_indexes]
+            amounts[category] = [amounts[category][i] for i in sorted_indexes]
 
         # separate into income and expenses
         income = {category: amount for category, amount in totals.items() if amount > 0}

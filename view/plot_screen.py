@@ -181,7 +181,8 @@ class PlotScreen(BaseScreen):
             header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
 
             assert len(dates[category]) == len(locations[category]) == len(amounts[category]) #XXX debug
-            n_rows = len(dates[category])
+
+            n_rows = len(dates[category]) + 1
             table.setRowCount(n_rows)
             for row, (date, location, amount) in enumerate(zip(dates[category], locations[category], amounts[category])):
                 date_item = QTableWidgetItem(date)
