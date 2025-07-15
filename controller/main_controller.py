@@ -6,7 +6,7 @@ class MainController:
     def __init__(self):
         self.db = DatabaseManager('transactions')
         self.categories = Categories()
-        self.importer = Importer(self.db, self.categories)
+        self.importer = Importer(self.db)
 
         self.main_window = MainWindow()
         self.screens = {
@@ -23,7 +23,7 @@ class MainController:
 
         self.controllers = {
             'import': ImportController(self, self.screens['import'], self.importer),
-            'categorize': CategorizeController(self, self.screens['categorize'], self.screens['add_new_rule'], self.screens['import_complete'], self.importer),
+            'categorize': CategorizeController(self, self.screens['categorize'], self.screens['add_new_rule'], self.screens['import_complete'], self.importer, self.categories),
             'filter': FilterController(self, self.screens['filter'], self.db, self.categories),
             'expenses': ExpensesController(self, self.screens['expenses'], self.db),
         }
@@ -61,9 +61,6 @@ class MainController:
     def import_to_categorize_screen(self):
         self.go_to_screen('categorize')
         self.controllers['categorize'].start()
-    
-    def categorize_to_new_category_screen(self): #TODO
-        self.go_to_screen('new_category')
 
     def reset_import_process(self):
         self.controllers['import'].reset()

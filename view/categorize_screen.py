@@ -12,6 +12,7 @@ from PyQt5.QtCore import pyqtSignal
 from string import ascii_lowercase
 
 from view import BaseScreen, colors
+from model import Categories
 
 class CategorizeScreen(BaseScreen):
     home_clicked = pyqtSignal()
@@ -135,6 +136,8 @@ class CategorizeScreen(BaseScreen):
     def guess_category(self, guessed_category: str):
         if guessed_category in self.buttons.keys():
             self.buttons[guessed_category].setChecked(True)
+        else:
+            print('Warning: guessed category {guessed_category} not in available buttons on screen') #XXX debug
 
     def category_button_toggled(self):
         sender = self.sender()

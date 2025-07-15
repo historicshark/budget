@@ -46,6 +46,13 @@ class Categories(Sequence):
         with open(self.categories_file, 'w') as f:
             json.dump(self.categories, f, indent=2)
         return
+   
+    def guess_category(self, location: str) -> str:
+        location = location.lower()
+        for keyword in self.rules.keys():
+            if keyword in location:
+                return self.rules[keyword]
+        return self.categories[0]
  
     def add_new_category(self, new_category: str) -> None:
         if new_category in self.categories:
@@ -57,6 +64,6 @@ class Categories(Sequence):
 
     def add_new_category_rule(self, keyword: str, category: str) -> None:
         self.rules[keyword.lower()] = category
-        self.categories.dump_category_rules()
+        self.dump_category_rules()
         return
 

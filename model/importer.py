@@ -5,15 +5,13 @@ from pathlib import Path
 from ofxparse import OfxParser
 
 from model.database import DatabaseManager
-from model.categories import Categories
 
 class Importer(Sequence):
-    def __init__(self, db: DatabaseManager, categories: Categories, file=''):
+    def __init__(self, db: DatabaseManager, file=''):
         super().__init__()
         self.file = ''
         self.set_file(file)
         self.db = db
-        self.categories = categories
         self.data: list[dict[str, str]] = []  # Amount, Location, Date, (Category)
     
     def __getitem__(self, i):
@@ -103,7 +101,6 @@ class Importer(Sequence):
 
     def set_category(self, index: int, category: str):
         assert 0 <= index < len(self.data)
-        assert category in self.categories #XXX add category?
         print(f'categorized transaction {self.data[index]["Location"]} as {category}') #XXX debug
         self.data[index]["Category"] = category
 
@@ -114,13 +111,6 @@ class Importer(Sequence):
         if add_year:
             date[0] = str(datetime.date.today())[0:2] + date[0]
         return '-'.join(date)
-   
-    def guess_category(self, index: int) -> str:
-        location = self.data[index]['Location'].lower()
-        for keyword in self.categories.rules.keys():
-            if keyword in location:
-                return self.categories.rules[keyword]
-        return self.categories[0]
     
     def insert_data(self):
         for record in self.data:
