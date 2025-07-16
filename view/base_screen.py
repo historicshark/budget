@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
     QLayout,
+    QSizePolicy,
 )
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
@@ -37,6 +38,7 @@ class BaseScreen(QWidget):
         label_title = QLabel(title)
         label_title.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
         label_title.setObjectName('title')
+        label_title.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
 
         home_button = QPushButton('Home')
         home_button.clicked.connect(home_clicked_emit)
@@ -81,6 +83,7 @@ class BaseScreen(QWidget):
 
     def add_footer(self, owner_layout, keys_functions: list[tuple[str, str]]):
         self.footer = QLabel(' • '.join([f'{function}: {key}' for key, function in keys_functions]))
+        self.footer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
         self.footer.setObjectName('footer')
         owner_layout.addWidget(self.footer)
 
@@ -109,3 +112,22 @@ class BaseScreen(QWidget):
 
     def reset(self):
         print(f'In {self.__class__.__name__}, reset not implemented!') #XXX debug
+
+    def add_debug_borders(self, colors=None):
+        """Add colored borders to widget and all child widgets"""
+        if colors is None:
+            colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown']
+
+        def apply_borders(w, depth=0):
+            color = colors[depth % len(colors)]
+            current_style = w.styleSheet()
+            new_style = f"{current_style}; border: 2px solid {color};"
+            w.setStyleSheet(new_style)
+
+            # Recursively apply to children
+            for child in w.findChildren(QWidget):
+                if child.parent() == w:  # Only direct children
+                    apply_borders(child, depth + 1)
+
+        apply_borders(self)
+
