@@ -60,13 +60,12 @@ class CollapsibleGroupBox(QGroupBox):
         if self.expanded:
             self.content_widget.hide()
             self.toggle_button.setText(self.header_text.replace("▼", "▶"))
-            self.expanded = False
             font.setBold(False)
         else:
             self.content_widget.show()
             self.toggle_button.setText(self.header_text.replace("▶", "▼"))
-            self.expanded = True
             font.setBold(True)
+        self.expanded = not self.expanded
         self.toggle_button.setFont(font)
 
     def addWidget(self, widget):
