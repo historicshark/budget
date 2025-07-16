@@ -19,7 +19,7 @@ from PyQt5.QtGui import QFont, QColor
 from decimal import Decimal
 
 from view import BaseScreen, colors
-from view.widgets import PlotCategory, ComboBoxFix
+from view.widgets import PlotCategory
 
 class ExpensesScreen(BaseScreen):
     home_clicked = pyqtSignal()
@@ -65,7 +65,7 @@ class ExpensesScreen(BaseScreen):
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        
+
         self.summary_table.verticalHeader().setVisible(False)
         self.summary_table.setAlternatingRowColors(True)
         self.summary_table.setSelectionBehavior(QTableWidget.SelectRows)
@@ -118,9 +118,10 @@ class ExpensesScreen(BaseScreen):
 
         self.content_layout.addLayout(bottom_row_layout)
 
-        keys_functions = [('v', 'switch view'),
-                          ('n', 'new search'),
-                         ]
+        keys_functions = [
+            ('v', 'switch view'),
+            ('n', 'new search'),
+        ]
         self.add_footer(self.base_layout, keys_functions)
         self.setLayout(self.base_layout)
 

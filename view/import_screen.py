@@ -83,10 +83,11 @@ class ImportScreen(BaseScreen):
         self.add_continue_cancel_buttons(self.content_layout, self.continue_clicked.emit, self.cancel_clicked.emit)
 
         # footer
-        keys_functions = [('<return>', 'continue'),
-                          ('<esc>', 'cancel'),
-                          ('o', 'open file'),
-                         ]
+        keys_functions = [
+            ('<return>', 'continue'),
+            ('<esc>', 'cancel'),
+            ('o', 'open file'),
+        ]
         # self.content_layout.addStretch()
         self.add_footer(self.base_layout, keys_functions)
 
@@ -102,17 +103,19 @@ class ImportScreen(BaseScreen):
         self.credit_button.setVisible(is_visible)
         self.debit_button.setVisible(is_visible)
         if is_visible:
-            keys_functions = [('<return>', 'continue'),
-                              ('<esc>', 'cancel'),
-                              ('o', 'open file'),
-                              ('c', 'credit'),
-                              ('d', 'debit'),
-                             ]
+            keys_functions = [
+                ('<return>', 'continue'),
+                ('<esc>', 'cancel'),
+                ('o', 'open file'),
+                ('c', 'credit'),
+                ('d', 'debit'),
+            ]
         else:
-            keys_functions = [('<return>', 'continue'),
-                              ('<esc>', 'cancel'),
-                              ('o', 'open file'),
-                             ]
+            keys_functions = [
+                ('<return>', 'continue'),
+                ('<esc>', 'cancel'),
+                ('o', 'open file'),
+            ]
         self.update_footer(keys_functions)
 
     def open_file_dialog(self):

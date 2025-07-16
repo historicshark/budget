@@ -122,9 +122,10 @@ class FilterScreen(BaseScreen):
         self.content_layout.addStretch()
 
         self.add_continue_cancel_buttons(self.content_layout, self.continue_clicked.emit, self.cancel_clicked.emit)
-        keys_functions = [('<return>', 'continue'),
-                          ('<esc>', 'cancel'),
-                         ]
+        keys_functions = [
+            ('<return>', 'continue'),
+            ('<esc>', 'cancel'),
+        ]
         self.add_footer(self.base_layout, keys_functions)
 
         self.setLayout(self.base_layout)

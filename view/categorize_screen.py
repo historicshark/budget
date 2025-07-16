@@ -93,11 +93,12 @@ class CategorizeScreen(BaseScreen):
         self.content_layout.addLayout(main_layout)
 
         # footer
-        keys_functions = [('<return>', 'continue'),
-                          ('<esc>', 'cancel'),
-                          ('<cmd>+S', 'skip'),
-                          ('<key>', 'select category'),
-                         ]
+        keys_functions = [
+            ('<return>', 'continue'),
+            ('<esc>', 'cancel'),
+            ('<cmd>+S', 'skip'),
+            ('<key>', 'select category'),
+        ]
         self.add_footer(self.base_layout, keys_functions)
 
         self.setLayout(self.base_layout)

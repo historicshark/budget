@@ -86,9 +86,10 @@ class AddNewRuleScreen(BaseScreen):
         self.content_layout.addLayout(main_layout)
 
         # footer
-        keys_functions = [('<return>', 'yes'),
-                          ('<esc>', 'no'),
-                         ]
+        keys_functions = [
+            ('<return>', 'yes'),
+            ('<esc>', 'no'),
+        ]
         self.add_footer(self.base_layout, keys_functions)
 
         self.setLayout(self.base_layout)
