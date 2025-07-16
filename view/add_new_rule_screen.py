@@ -27,13 +27,6 @@ class AddNewRuleScreen(BaseScreen):
         self.initUI()
 
     def initUI(self):
-        self.base_layout = QVBoxLayout()
-        self.content_layout = QVBoxLayout()
-        self.content_layout.setSpacing(10)
-        self.base_layout.setContentsMargins(0,0,0,0)
-        self.content_layout.setContentsMargins(15,0,15,0)
-        self.base_layout.addLayout(self.content_layout)
-
         self.add_title(self.content_layout, 'Import', self.home_clicked.emit)
 
         # Two columns showing transaction and add new rule
@@ -91,8 +84,6 @@ class AddNewRuleScreen(BaseScreen):
             ('<esc>', 'no'),
         ]
         self.add_footer(self.base_layout, keys_functions)
-
-        self.setLayout(self.base_layout)
 
     def display_transaction(self, record: dict[str, str], index, length):
         self.index_label.setText(f'Categorize transaction {index+1} of {length}:')

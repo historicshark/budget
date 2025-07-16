@@ -24,13 +24,6 @@ class HomeScreen(BaseScreen):
         self.initUI()
 
     def initUI(self):
-        self.base_layout = QVBoxLayout()
-        self.content_layout = QVBoxLayout()
-        self.content_layout.setSpacing(10)
-        self.base_layout.setContentsMargins(0,0,0,0)
-        self.content_layout.setContentsMargins(15,0,15,0)
-        self.base_layout.addLayout(self.content_layout)
-
         # Screen title
         label_title = QLabel('Home')
         label_title.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
@@ -56,6 +49,4 @@ class HomeScreen(BaseScreen):
 
         self.content_layout.addStretch()
         self.add_footer(self.base_layout, [(key, function) for function, _, _, key in self.button_labels_descriptions_methods_keys])
-
-        self.setLayout(self.base_layout)
 

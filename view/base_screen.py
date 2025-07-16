@@ -14,9 +14,23 @@ from PyQt5.QtGui import QKeySequence
 from view import colors
 
 class BaseScreen(QWidget):
+    """
+    screen with
+    - base_layout (QVBoxLayout) with no margins
+    - content_layout (QVBoxLayout) with 15px margins left and right
+    """
     def __init__(self):
         super().__init__()
-    
+
+        self.base_layout = QVBoxLayout()
+        self.content_layout = QVBoxLayout()
+        self.content_layout.setSpacing(10)
+        self.base_layout.setContentsMargins(0,0,0,0)
+        self.content_layout.setContentsMargins(15,0,15,0)
+        self.base_layout.addLayout(self.content_layout)
+
+        self.setLayout(self.base_layout)
+
     def add_title(self, owner_layout, title: str, home_clicked_emit, spacing=50):
         title_layout = QHBoxLayout()
 
@@ -35,7 +49,7 @@ class BaseScreen(QWidget):
 
         owner_layout.addLayout(title_layout)
         owner_layout.addSpacing(spacing)
-    
+
     def add_continue_cancel_buttons(self, owner_layout, continue_clicked_connect, cancel_clicked_connect, add_stretch=True) -> QHBoxLayout:
         """
         adds shortcuts 'Return' and 'Escape' to Continue and Cancel buttons
@@ -64,7 +78,7 @@ class BaseScreen(QWidget):
             layout.addStretch()
         owner_layout.addLayout(layout)
         return layout
-    
+
     def add_footer(self, owner_layout, keys_functions: list[tuple[str, str]]):
         self.footer = QLabel(' • '.join([f'{function}: {key}' for key, function in keys_functions]))
         self.footer.setObjectName('footer')
