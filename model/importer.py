@@ -9,19 +9,32 @@ from model.database import DatabaseManager
 class Importer(Sequence):
     def __init__(self, db: DatabaseManager, file=''):
         super().__init__()
-        self.file = ''
+        self.file = file
         self.set_file(file)
         self.db = db
         self.data: list[dict[str, str]] = []  # Amount, Location, Date, (Category)
-    
-    def __getitem__(self, i):
+        self.records_to_skip: set[int] = set()
+
+    def __getitem__(self, i: int):
         return self.data[i]
-    
+
+    #def __setitem__(self, i: int, item: dict[str, str]):
+    #    assert isinstance(item, dict)
+    #    for key in ['Date', 'Location', 'Amount']:
+    #        assert key in item.keys()
+    #    self.data.__setitem__(i, item)
+
+    #def __delitem__(self, i: int):
+    #    self.data.__delitem__(i)
+
     def __len__(self):
         return len(self.data)
 
-    def pop(self, index: int):
-        self.data.pop(index)
+    #def insert(self, i: int, item: dict[str, str]):
+    #    assert isinstance(item, dict)
+    #    for key in ['Date', 'Location', 'Amount']:
+    #        assert key in item.keys()
+    #    self.data.insert(i, item)
 
     # Set the file to be imported
     def set_file(self, file: str) -> bool:
@@ -30,10 +43,11 @@ class Importer(Sequence):
             return True
         else:
             return False
-    
+
     # Import the file set by set_file
     def import_file(self, account: str) -> None:
         assert Path(self.file).exists()
+        self.records_to_skip = set()
         if self.file.lower().endswith(('.csv', '.txt')):
             self.import_file_csv(account)
         elif self.file.lower().endswith(('.ofx','.qbo','.qfx')):
@@ -91,7 +105,7 @@ class Importer(Sequence):
             if 'INTERNET PAYMENT THANK YOU' in transaction.payee or 'CARDMEMBER SERV  WEB PYMT' in transaction.payee: #TODO skip rules?
                 print(f'skipping transaction {transaction.payee} {transaction.date.date()} on import') #XXX debug
                 continue
-            
+
             self.data.append(
                 {
                     'Amount':   str(transaction.amount),
@@ -111,8 +125,12 @@ class Importer(Sequence):
         if add_year:
             date[0] = str(datetime.date.today())[0:2] + date[0]
         return '-'.join(date)
-    
-    def insert_data(self):
+
+    def skip_record(self, i: int):
+        self.records_to_skip.add(i)
+
+    def insert_records_into_database(self):
+        self.data = [record for i, record in enumerate(self.data) if i not in self.records_to_skip]
         for record in self.data:
             assert 'Category' in record.keys()
         self.db.insert_records(self.data)

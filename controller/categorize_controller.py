@@ -114,7 +114,7 @@ class CategorizeController:
                 print(f'Unexpected value "{self.purpose}" in CategorizeController.on_add_new_cancel_clicked')
 
     def on_import_complete_continue_clicked(self):
-        self.importer.insert_data()
+        self.importer.insert_records_into_database()
         self.main.go_to_screen('home')
         self.main.reset_import_process()
 
