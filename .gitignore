@@ -1,7 +1,6 @@
 .idea/
 __pycache__/
 tags
-transactions
 .python-version
 .vimspector.json
 *.swp
