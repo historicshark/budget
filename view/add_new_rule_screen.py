@@ -9,7 +9,6 @@ from PyQt5.QtWidgets import (
     QLineEdit,
 )
 from PyQt5.QtCore import pyqtSignal
-from enum import IntEnum
 from view import BaseScreen, colors
 
 class AddNewRuleScreen(BaseScreen):
@@ -19,7 +18,6 @@ class AddNewRuleScreen(BaseScreen):
 
     def __init__(self):
         super().__init__()
-        self.layout = QVBoxLayout()
         self.initUI()
 
     def initUI(self):
