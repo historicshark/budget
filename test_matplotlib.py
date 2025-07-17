@@ -1,64 +1,55 @@
 import sys
-import numpy as np
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton
+import matplotlib
+matplotlib.use('Qt5Agg')
+
+from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
+import numpy as np
 
-class PlotWidget(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-    
-    def initUI(self):
-        layout = QVBoxLayout()
+class MatplotlibWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
         
-        # Create matplotlib figure and canvas
-        self.figure = Figure(figsize=(10, 6))
+        # Create the matplotlib figure
+        self.figure = Figure(figsize=(8, 6))
         self.canvas = FigureCanvas(self.figure)
         
-        # Add canvas to layout
+        # Create layout for this widget
+        layout = QVBoxLayout()
         layout.addWidget(self.canvas)
-        
-        # Add button to generate new plot
-        self.plot_button = QPushButton("Generate Plot")
-        self.plot_button.clicked.connect(self.plot_data)
-        layout.addWidget(self.plot_button)
-        
         self.setLayout(layout)
-        self.plot_data()  # Initial plot
+        
+        # Create a simple plot
+        self.plot_data()
     
     def plot_data(self):
-        # Clear previous plot
-        self.figure.clear()
-        
-        # Create subplot
         ax = self.figure.add_subplot(111)
-        
-        # Generate sample data
         x = np.linspace(0, 10, 100)
-        y = np.sin(x) + np.random.normal(0, 0.1, 100)
-        
-        # Plot data
-        ax.plot(x, y, 'b-', linewidth=2, label='Sin wave with noise')
-        ax.set_xlabel('X axis')
-        ax.set_ylabel('Y axis')
+        y = np.sin(x)
+        ax.plot(x, y)
         ax.set_title('Sample Plot')
-        ax.legend()
-        ax.grid(True)
-        
-        # Refresh canvas
+        ax.set_xlabel('X')
+        ax.set_ylabel('Y')
         self.canvas.draw()
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("PyQt Matplotlib Example")
+        self.setWindowTitle("PyQt5 Matplotlib Example")
         self.setGeometry(100, 100, 800, 600)
         
-        # Set central widget
-        self.plot_widget = PlotWidget()
-        self.setCentralWidget(self.plot_widget)
+        # Create central widget and layout
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        layout = QVBoxLayout(central_widget)
+        
+        # CORRECT: Create an instance of the widget
+        matplotlib_widget = MatplotlibWidget()
+        layout.addWidget(matplotlib_widget)
+        
+        # INCORRECT: This would cause the error you're seeing
+        # layout.addWidget(MatplotlibWidget)  # Don't do this!
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
