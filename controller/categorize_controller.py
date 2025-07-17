@@ -16,7 +16,7 @@ class CategorizeController:
         self.index = 0
         self.category = ''
         self.guessed_category = ''
-        self.purpose = self.add_new_rule_screen.Purpose.NEW_RULE
+        self.is_purpose_new_rule = True
 
         # button wiring
         self.categorize_screen.continue_clicked.connect(self.on_continue_clicked)
@@ -37,40 +37,38 @@ class CategorizeController:
         self.categorize_screen.display_transaction(self.importer[self.index], self.index, len(self.importer))
         self.guess_category()
 
-    def check_activate_continue_button(self):
-        enable = bool(self.category in self.categories or self.category == 'New Category')
-        self.categorize_screen.set_continue_button_enabled(enable)
-
-    def set_category_and_advance(self):
-        self.importer.set_category(self.index, self.category)
-        self.index += 1
-        if self.index < len(self.importer):
-            self.display_and_guess_current_transaction()
-        else:
-            self.main.go_to_screen('import_complete')
-
     def guess_category(self):
         self.guessed_category = self.categories.guess_category(self.importer[self.index]['Location'])
         self.category = self.guessed_category
         self.categorize_screen.guess_category(self.guessed_category)
         self.check_activate_continue_button()
 
+    def check_activate_continue_button(self):
+        enable = bool(self.category in self.categories or self.category == 'New Category')
+        self.categorize_screen.set_continue_button_enabled(enable)
+
+    def advance(self):
+        self.index += 1
+        if self.index < len(self.importer):
+            self.display_and_guess_current_transaction()
+        else:
+            self.main.go_to_screen('import_complete')
+
+    def set_category_and_advance(self):
+        self.importer.set_category(self.index, self.category)
+        self.advance()
+
     def on_category_chosen(self, category: str):
         self.category = category
         self.check_activate_continue_button()
 
     def on_continue_clicked(self):
-        """
-        * handles new category and new category rules
-        * sets the category in self.importer
-        * advances to next transaction
-        """
-        if self.category == 'New Category':
-            self.go_to_add_new_rule_screen(AddNewRuleScreen.Purpose.NEW_CATEGORY)
+        if self.category != self.guessed_category:
+            self.go_to_add_new_rule_screen()
             return
 
-        if self.category != self.guessed_category:
-            self.go_to_add_new_rule_screen(AddNewRuleScreen.Purpose.NEW_RULE)
+        elif self.category == 'New Category':
+            self.go_to_add_new_category_screen()
             return
 
         self.set_category_and_advance()
@@ -84,34 +82,25 @@ class CategorizeController:
             self.display_and_guess_current_transaction()
 
     def on_skip_clicked(self):
-        self.importer.pop(self.index)
-        if self.index < len(self.importer):
-            self.display_and_guess_current_transaction()
-        else:
-            self.main.go_to_screen('import_complete')
+        self.importer.skip_record(self.index)
+        self.advance()
 
     def on_add_new_continue_clicked(self, text: str):
-        match self.purpose:
-            case AddNewRuleScreen.Purpose.NEW_RULE:
-                self.categories.add_new_category_rule(text, self.category)
-            case AddNewRuleScreen.Purpose.NEW_CATEGORY:
-                self.category = text
-                self.categories.add_new_category(text)
-                self.categorize_screen.update_category_buttons(self.categories)
-            case _:
-                print(f'Unexpected value "{self.purpose}" in CategorizeController.on_add_new_continue_clicked')
+        if self.is_purpose_new_rule:
+            self.categories.add_new_category_rule(text, self.category)
+        else:
+            self.category = text
+            self.categories.add_new_category(text)
+            self.categorize_screen.update_category_buttons(self.categories)
         self.return_to_categorize_screen()
         self.set_category_and_advance()
 
     def on_add_new_cancel_clicked(self):
         self.return_to_categorize_screen()
-        match self.purpose:
-            case AddNewRuleScreen.Purpose.NEW_RULE:
-                self.set_category_and_advance()
-            case AddNewRuleScreen.Purpose.NEW_CATEGORY:
-                pass # just return to categorize screen
-            case _:
-                print(f'Unexpected value "{self.purpose}" in CategorizeController.on_add_new_cancel_clicked')
+        if self.is_purpose_new_rule:
+            self.set_category_and_advance()
+        else:
+            pass # just return to categorize screen
 
     def on_import_complete_continue_clicked(self):
         self.importer.insert_records_into_database()
@@ -122,16 +111,15 @@ class CategorizeController:
         self.on_cancel_clicked()
         self.return_to_categorize_screen()
 
-    def add_new_category_rule(self, keyword: str):
-        self.categories.add_new_category_rule(keyword, self.category)
-        self.add_new_rule_to_categorize_screen()
+    def go_to_add_new_rule_screen(self):
+        self.is_purpose_new_rule = True
+        self.add_new_rule_screen.set_text_new_rule()
+        self.add_new_rule_screen.display_transaction(self.importer[self.index], self.index, len(self.importer))
+        self.main.go_to_screen('add_new_rule')
 
-    def add_new_category(self, category: str):
-        self.importer.add_new_category(category)
-
-    def go_to_add_new_rule_screen(self, purpose):
-        self.purpose = purpose
-        self.add_new_rule_screen.set_purpose(purpose)
+    def go_to_add_new_category_screen(self):
+        self.is_purpose_new_rule = False
+        self.add_new_rule_screen.set_text_new_category()
         self.add_new_rule_screen.display_transaction(self.importer[self.index], self.index, len(self.importer))
         self.main.go_to_screen('add_new_rule')
 

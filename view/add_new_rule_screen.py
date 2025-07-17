@@ -17,10 +17,6 @@ class AddNewRuleScreen(BaseScreen):
     continue_clicked = pyqtSignal(str)
     cancel_clicked = pyqtSignal()
 
-    class Purpose(IntEnum):
-        NEW_RULE = 1
-        NEW_CATEGORY = 2
-
     def __init__(self):
         super().__init__()
         self.layout = QVBoxLayout()
@@ -95,15 +91,14 @@ class AddNewRuleScreen(BaseScreen):
     def on_continue_clicked(self):
         self.continue_clicked.emit(self.text_box.text())
 
-    def set_purpose(self, purpose: Purpose):
+    def set_text_new_rule(self):
         self.text_box.setFocus()
-        match purpose:
-            case self.Purpose.NEW_RULE:
-                self.instruction_label.setText('Add new rule?')
-                self.continue_button.setText('Add Rule')
-                self.cancel_button.setText('No')
-            case self.Purpose.NEW_CATEGORY:
-                self.instruction_label.setText('Add new category?')
-                self.continue_button.setText('Continue')
-                self.cancel_button.setText('Cancel')
+        self.instruction_label.setText('Add new rule?')
+        self.continue_button.setText('Add Rule')
+        self.cancel_button.setText('No')
 
+    def set_text_new_category(self):
+        self.text_box.setFocus()
+        self.instruction_label.setText('Add new category?')
+        self.continue_button.setText('Continue')
+        self.cancel_button.setText('Cancel')
