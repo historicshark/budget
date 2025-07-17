@@ -17,6 +17,7 @@ class MainController:
             'import_complete': ImportCompleteScreen(),
             'filter': FilterScreen(),
             'expenses': ExpensesScreen(),
+            'list': ListScreen(),
         }
         self.screen_indexes = {}
         self.register_screens()
@@ -30,7 +31,8 @@ class MainController:
 
         # connections
         self.screens['home'].import_clicked.connect(lambda: self.go_to_screen('import'))
-        self.screens['home'].plot_clicked.connect(self.start_plot)
+        self.screens['home'].expenses_clicked.connect(self.start_expenses)
+        self.screens['home'].list_clicked.connect(lambda: self.go_to_screen('list'))
 
     def register_screens(self):
         for name, screen in self.screens.items():
@@ -41,10 +43,9 @@ class MainController:
                 screen.home_clicked.connect(lambda: self.go_to_screen('home'))
     
     def debug(self):
-        pass
-        #self.start_plot()
-        #self.controllers['filter'].filter = {'Date': None, 'Category': None, 'Amount': None}
-        #self.controllers['filter'].on_continue_clicked()
+        self.go_to_screen('list')
+        records = self.db.select()
+        self.screens['list'].update_table(records)
 
     def start(self):
         self.main_window.show()
@@ -66,14 +67,20 @@ class MainController:
         self.controllers['import'].reset()
         self.controllers['categorize'].reset()
 
-    def start_plot(self):
+    def start_expenses(self):
         self.go_to_screen('filter')
-
         self.controllers['filter'].cancel_clicked.connect(lambda: self.go_to_screen('home'))
-        self.controllers['filter'].continue_clicked.connect(self.set_records_and_go_to_plot_screen)
+        self.controllers['filter'].continue_clicked.connect(self.set_records_and_go_to_expenses_screen)
         self.controllers['filter'].start()
 
-    def set_records_and_go_to_plot_screen(self):
+    def start_list(self):
+        self.go_to_screen('filter')
+        self.controllers['filter'].cancel_clicked.connect(lambda: self.go_to_screen('home'))
+        self.controllers['filter'].continue_clicked.connect(lambda: print('not implemented')) #TODO
+        self.go_to_screen('list')
+        self.screens['list'].update_table(self.db.select())
+
+    def set_records_and_go_to_expenses_screen(self):
         self.controllers['expenses'].records = self.controllers['filter'].records
         self.go_to_screen('expenses')
         self.controllers['expenses'].update_views()

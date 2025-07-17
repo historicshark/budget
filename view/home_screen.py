@@ -11,14 +11,15 @@ from view import BaseScreen
 
 class HomeScreen(BaseScreen):
     import_clicked = pyqtSignal()
-    plot_clicked = pyqtSignal()
+    expenses_clicked = pyqtSignal()
+    list_clicked = pyqtSignal()
 
     def __init__(self):
         super().__init__()    
         self.button_labels_descriptions_methods_keys = [
             ('import', 'Import a file on your computer', self.import_clicked.emit, 'i'),
-            ('plot', 'Display a plot', self.plot_clicked.emit, 'p'),
-            # ('list', 'List transactions', self.on_click_list, 'l'),
+            ('expenses', 'Visualize expenses', self.expenses_clicked.emit, 'e'),
+            ('list', 'List transactions', self.list_clicked.emit, 'l'),
         ]
 
         self.initUI()
@@ -29,10 +30,11 @@ class HomeScreen(BaseScreen):
         label_title.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
         label_title.setObjectName('title')
         self.content_layout.addWidget(label_title)
+        self.content_layout.addSpacing(30)
 
         # Button rows
         button_layout = QFormLayout()
-        button_layout.setVerticalSpacing(20)
+        button_layout.setVerticalSpacing(30)
         button_layout.setFormAlignment(Qt.AlignLeft)
         button_layout.setHorizontalSpacing(20)
         for button_label, button_description, method, key in self.button_labels_descriptions_methods_keys:

@@ -13,6 +13,7 @@ from .add_new_rule_screen import AddNewRuleScreen
 from .import_complete_screen import ImportCompleteScreen
 from .filter_screen import FilterScreen
 from .expenses_screen import ExpensesScreen
+from .list_screen import ListScreen
 
 __all__ = [
     'MainWindow',
@@ -23,4 +24,5 @@ __all__ = [
     'ImportCompleteScreen',
     'FilterScreen',
     'ExpensesScreen',
+    'ListScreen',
 ]

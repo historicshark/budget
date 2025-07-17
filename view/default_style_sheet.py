@@ -222,6 +222,23 @@ border: 0px solid white;
 font-weight: bold;
 }}
 
+QTableWidget::indicator {{
+width: 15px;
+height: 15px;
+}}
+
+QTableWidget::indicator:unchecked {{
+border: 2px solid {colors['gray']};
+background-color: {colors['bg1']};
+border-radius: 3px;
+}}
+
+QTableWidget::indicator:checked {{
+border: 2px solid {colors['gray']};
+background-color: {colors['aqua']};
+border-radius: 3px;
+}}
+
 QTabWidget::pane {{
 border-top: 1px solid {colors['gray']};
 }}
