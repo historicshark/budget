@@ -30,8 +30,10 @@ class FilterController(QObject):
         self.filter_screen.continue_clicked.connect(self.on_continue_clicked)
         self.filter_screen.filter_changed.connect(self.on_filter_changed)
 
-    def start(self):
         self.filter_screen.update_category_buttons(self.categories)
+
+    def start(self):
+        pass
 
     def on_filter_changed(self, filters):
         """
@@ -49,6 +51,21 @@ class FilterController(QObject):
     def on_cancel_clicked(self):
         self.filter_screen.reset()
         self.cancel_clicked.emit()
+
+    def disconnect_all(self):
+        """ Try disconnecting all slots. if they aren't connected, disconnect() gives an error,
+        so use try/except to ignore the error
+        """
+        try:
+            self.continue_clicked.disconnect()
+        except:
+            pass
+
+        try:
+            self.cancel_clicked.disconnect()
+        except:
+            pass
+
 
     def reset(self):
         self.filter_screen.reset()
