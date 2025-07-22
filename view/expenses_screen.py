@@ -208,8 +208,8 @@ class ExpensesScreen(BaseScreen):
             self.switch_view_button.setText('plot view')
             self.switch_view_button.setShortcut('v')
         else:
-            self.plot_view_container.show()
             self.list_view_container.hide()
+            self.plot_view_container.show()
             self.switch_view_button.setText('list view')
             self.switch_view_button.setShortcut('v')
         self.is_plot_view = not self.is_plot_view
