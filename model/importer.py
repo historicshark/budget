@@ -108,7 +108,7 @@ class Importer(Sequence):
 
             self.data.append(
                 {
-                    'Amount':   str(transaction.amount),
+                    'Amount':   f'{transaction.amount:.2f}', # transaction.amount is a Decimal type
                     'Location': str(transaction.payee),
                     'Date':     str(transaction.date.date())
                 })
