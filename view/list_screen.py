@@ -131,10 +131,12 @@ class ListScreen(BaseScreen):
         self.add_footer(self.base_layout, keys_functions)
 
     def update_table(self, records: list):
+        self.table.clearContents()
         n_rows = len(records)
         self.table.setRowCount(n_rows)
 
         for row, record in enumerate(records):
+            print(f'creating row {row}')
             check_box_item = QTableWidgetItem()
             check_box_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             check_box_item.setCheckState(Qt.Unchecked)
@@ -142,7 +144,7 @@ class ListScreen(BaseScreen):
             date_item = QTableWidgetItem(record['Date'])
             location_item = QTableWidgetItem(record['Location'])
             category_item = QTableWidgetItem(record['Category'])
-            amount_item = QTableWidgetItem(record['Amount'])
+            amount_item = QTableWidgetItem(f'{record['Amount']} ')
             amount_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
 
             self.table.setItem(row, 0, check_box_item)
@@ -157,8 +159,8 @@ class ListScreen(BaseScreen):
     def on_table_cell_double_clicked(self, row, col):
         print(f'cell clicked: {row}, {col}')
 
-    def on_table_item_changed(self, item):
-        print(f'Item {item} at location {item.row()}, {item.column()} changed')
+    def on_table_item_changed(self, item: QTableWidgetItem):
+        print(f'{item.row()}, {item.column()}')
 
     def on_select_all_clicked(self):
         print('select all')
@@ -170,4 +172,4 @@ class ListScreen(BaseScreen):
         print('edit selected')
 
     def on_sort_by_changed(self, text):
-        print(f'sort by {text}')
+        self.sort_by_changed.emit(text)

@@ -27,12 +27,13 @@ class MainController:
             'categorize': CategorizeController(self, self.screens['categorize'], self.screens['add_new_rule'], self.screens['import_complete'], self.importer, self.categories),
             'filter': FilterController(self, self.screens['filter'], self.db, self.categories),
             'expenses': ExpensesController(self, self.screens['expenses'], self.db),
+            'list': ListController(self, self.screens['list'], self.db),
         }
 
         # connections
         self.screens['home'].import_clicked.connect(lambda: self.go_to_screen('import'))
         self.screens['home'].expenses_clicked.connect(self.start_expenses)
-        self.screens['home'].list_clicked.connect(lambda: self.go_to_screen('list'))
+        self.screens['home'].list_clicked.connect(self.start_list)
 
     def register_screens(self):
         for name, screen in self.screens.items():
@@ -43,9 +44,13 @@ class MainController:
                 screen.home_clicked.connect(lambda: self.go_to_screen('home'))
     
     def debug(self):
+        self.start_list()
         self.go_to_screen('list')
         records = self.db.select()
-        self.screens['list'].update_table(records)
+        self.controllers['filter'].records = records
+        self.controllers['list'].records = records
+        self.controllers['list'].sort_records_by_date()
+        self.controllers['list'].update_table()
 
     def start(self):
         self.main_window.show()
@@ -68,24 +73,31 @@ class MainController:
         self.controllers['categorize'].reset()
 
     def start_expenses(self):
+        print('start expenses')
         self.go_to_screen('filter')
+        self.controllers['filter'].disconnect_all()
         self.controllers['filter'].cancel_clicked.connect(lambda: self.go_to_screen('home'))
         self.controllers['filter'].continue_clicked.connect(self.set_records_and_go_to_expenses_screen)
-        self.controllers['filter'].start()
 
     def start_list(self):
+        print('start list')
         self.go_to_screen('filter')
+        self.controllers['filter'].disconnect_all()
         self.controllers['filter'].cancel_clicked.connect(lambda: self.go_to_screen('home'))
-        self.controllers['filter'].continue_clicked.connect(lambda: print('not implemented')) #TODO
-        self.go_to_screen('list')
-        self.screens['list'].update_table(self.db.select())
+        self.controllers['filter'].continue_clicked.connect(self.set_records_and_go_to_list_screen)
 
     def set_records_and_go_to_expenses_screen(self):
         self.controllers['expenses'].records = self.controllers['filter'].records
         self.go_to_screen('expenses')
         self.controllers['expenses'].update_views()
 
+    def set_records_and_go_to_list_screen(self):
+        print('LIST LIST')
+        self.controllers['list'].records = self.controllers['filter'].records
+        self.go_to_screen('list')
+        self.controllers['list'].sort_records_by_date()
+        self.controllers['list'].update_table()
+
     def print_records(self):
         records = self.controllers['filter'].records
         self.db.print_records(records)
-
