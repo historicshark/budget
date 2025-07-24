@@ -1,4 +1,6 @@
 import datetime
+from decimal import Decimal
+import numbers
 import numpy as np
 import pandas as pd
 from pathlib import Path
@@ -76,12 +78,12 @@ class DatabaseManager:
             print('In DatabaseManager.select, order_by must be one of [\'Date\', \'Location\', \'Category\', \'Amount\']. Order ignored.')
             order_by = None
 
-        if date:
-            if len(date) != 2: raise ValueError('Provide date range as a list of two strings!')
-            if not all(isinstance(elem, datetime.date) for elem in date): raise ValueError('Provide date range as a list of two dates!')
+        #if date:
+        #    if len(date) != 2: raise ValueError('Provide date range as a list of two strings!')
+        #    if not all(isinstance(elem, datetime.date) for elem in date): raise ValueError('Provide date range as a list of two dates!')
 
-        if amount:
-            if len(amount) != 2: raise ValueError('Provide amount range as a list of two numbers!')
+        #if amount:
+        #    if len(amount) != 2: raise ValueError('Provide amount range as a list of two numbers!')
         
         command = f"SELECT Date, Location, Category, Amount FROM {self.table_name}"
 
@@ -92,11 +94,46 @@ class DatabaseManager:
         else:
             order = ''
 
-        print(command + self.where + order) #DEBUG
+        print(command + self.where + order) #XXX debug
 
         res = self.cur.execute(command + self.where + order)
         output = res.fetchall() # list of tuples
         return [dict(zip(['Date','Location','Category','Amount'], values)) for values in output]
+    
+    def update(self,
+               old_date=None, old_location=None, old_category=None, old_amount=None,
+               new_date=None, new_location=None, new_category=None, new_amount=None):
+        """
+        update() does an UPDATE operation on one record in the database. 
+
+        old/new_date: datetime.date
+        old/new_location: str
+        old/new_category: str
+        old/new_amount: number
+        """
+        self.build_where(old_date, old_location, old_category, old_amount)
+
+        set_statement = 'SET'
+        if new_date:
+            set_statement += f' Date = "{new_date}",'
+
+        if new_location:
+            set_statement += f' Location = "{new_location}",'
+
+        if new_category:
+            set_statement += f' Category = "{new_category}",'
+
+        if new_amount:
+            if isinstance(new_amount, str):
+                new_amount = Decimal(new_amount)
+            set_statement += f' Amount = "{new_amount:.2f}",'
+
+        set_statement = set_statement[:-1]
+
+        command = f'UPDATE {self.table_name}\n{set_statement}\n{self.where}'
+        print(command) #XXX debug
+        self.cur.execute(command)
+        self.con.commit()
 
     def add_and(self, use_and):
         if use_and:
@@ -104,6 +141,9 @@ class DatabaseManager:
         return True
 
     def build_where(self, date, location, category, amount):
+        """
+        adds a WHERE statement to self.where
+        """
         if not (date or location or category or amount):
             self.where = ''
             return
@@ -113,7 +153,10 @@ class DatabaseManager:
 
         if date:
             use_and = self.add_and(use_and)
-            self.where += f'Date BETWEEN "{date[0]}" AND "{date[1]}"'
+            if isinstance(date, (list, tuple)):
+                self.where += f'Date BETWEEN "{date[0]}" AND "{date[1]}"'
+            else:
+                self.where += f'Date="{date}"'
 
         if location:
             use_and = self.add_and(use_and)
@@ -121,15 +164,18 @@ class DatabaseManager:
 
         if category:
             use_and = self.add_and(use_and)
-            if isinstance(category, list):
+            if isinstance(category, (list, tuple)):
                 category = [f'"{c}"' for c in category]
                 self.where += f'Category IN ({", ".join(category)})'
             else:
-                self.where += f'Category={category}'
+                self.where += f'Category="{category}"'
 
         if amount:
             use_and = self.add_and(use_and)
-            self.where += f'abs(Amount) BETWEEN {amount[0]} AND {amount[1]}'
+            if isinstance(amount, (list, tuple)):
+                self.where += f'abs(Amount) BETWEEN {amount[0]} AND {amount[1]}'
+            else:
+                self.where += f'Amount="{amount}"'
 
     def print_records(self, records):
         """
@@ -171,4 +217,3 @@ class DatabaseManager:
             totals.append(self.cur.fetchone()[0])
 
         return categories, np.array(totals)
-
