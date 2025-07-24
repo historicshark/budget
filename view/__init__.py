@@ -14,6 +14,7 @@ from .import_complete_screen import ImportCompleteScreen
 from .filter_screen import FilterScreen
 from .expenses_screen import ExpensesScreen
 from .list_screen import ListScreen
+from .edit_record_screen import EditRecordScreen
 
 __all__ = [
     'MainWindow',
@@ -25,4 +26,5 @@ __all__ = [
     'FilterScreen',
     'ExpensesScreen',
     'ListScreen',
+    'EditRecordScreen',
 ]
