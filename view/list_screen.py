@@ -19,7 +19,8 @@ from view.widgets import ComboBoxFix
 class ListScreen(BaseScreen):
     home_clicked = pyqtSignal()
     new_search_clicked = pyqtSignal()
-    edit_selected_clicked = pyqtSignal()
+    edit_clicked = pyqtSignal()
+    delete_clicked = pyqtSignal()
     sort_by_changed = pyqtSignal(str)
 
     def __init__(self):
@@ -86,10 +87,17 @@ class ListScreen(BaseScreen):
         button_layout.addStretch()
 
         # edit selected
-        edit_selected_button = QPushButton('edit selected')
-        edit_selected_button.setFixedSize(150, 50)
-        edit_selected_button.clicked.connect(self.on_edit_selected_clicked)
-        button_layout.addWidget(edit_selected_button)
+        edit_button = QPushButton('edit')
+        edit_button.setFixedSize(100, 50)
+        edit_button.clicked.connect(self.on_edit_clicked)
+        button_layout.addWidget(edit_button)
+        button_layout.addStretch()
+
+        # delete selected
+        delete_button = QPushButton('delete')
+        delete_button.setFixedSize(100, 50)
+        delete_button.clicked.connect(self.on_delete_clicked)
+        button_layout.addWidget(delete_button)
         button_layout.addStretch()
 
         # sort by
@@ -168,8 +176,11 @@ class ListScreen(BaseScreen):
     def on_select_none_clicked(self):
         print('select none')
 
-    def on_edit_selected_clicked(self):
+    def on_edit_clicked(self):
         print('edit selected')
+
+    def on_delete_clicked(self):
+        print('delete selected')
 
     def on_sort_by_changed(self, text):
         self.sort_by_changed.emit(text)
