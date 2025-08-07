@@ -12,7 +12,7 @@ from PyQt5.QtCore import pyqtSignal
 from string import ascii_lowercase
 
 from view import BaseScreen, colors
-from model import Categories
+from model import Categories, Record
 
 class CategorizeScreen(BaseScreen):
     home_clicked = pyqtSignal()
@@ -94,11 +94,11 @@ class CategorizeScreen(BaseScreen):
         ]
         self.add_footer(self.base_layout, keys_functions)
 
-    def display_transaction(self, record: dict[str, str], index, length):
+    def display_transaction(self, record: Record, index, length):
         self.index_label.setText(f'Categorize transaction {index+1} of {length}:')
-        self.location_label.setText(f'Transaction: {record["Location"]}')
-        self.date_label.setText(f'Date: {record["Date"]}')
-        self.amount_label.setText(f'Amount: ${record["Amount"]}')
+        self.location_label.setText(f'Transaction: {record.location}')
+        self.date_label.setText(f'Date: {record.date}')
+        self.amount_label.setText(f'Amount: ${record.amount_str()}')
 
     def update_category_buttons(self, categories: list[str]):
         self.clear_layout(self.button_layout)

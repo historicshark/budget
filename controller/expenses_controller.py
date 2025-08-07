@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QObject
 
 from view import ExpensesScreen
-from model import DatabaseManager, Categories
+from model import DatabaseManager, Categories, Record
 
 import datetime
 from decimal import Decimal
@@ -32,17 +32,16 @@ class ExpensesController(QObject):
         locations = {}
         amounts = {}
         for record in self.records:
-            amount = Decimal(record['Amount'])
-            category = record['Category']
+            category = record.category
             if category not in totals.keys():
-                totals[category] = 0
+                totals[category] = Decimal('0')
                 dates[category] = []
                 locations[category] = []
                 amounts[category] = []
-            totals[category] += amount
-            dates[category].append(record['Date'])
-            locations[category].append(record['Location'])
-            amounts[category].append(record['Amount'])
+            totals[category] += record.amount
+            dates[category].append(record.date_str())
+            locations[category].append(record.location)
+            amounts[category].append(record.amount_str())
 
         # sort lists by date
         for category in dates.keys():

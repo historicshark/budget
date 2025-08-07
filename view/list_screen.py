@@ -15,6 +15,7 @@ from PyQt5.QtCore import pyqtSignal, Qt
 
 from view import BaseScreen, colors
 from view.widgets import ComboBoxFix
+from model import Record
 
 class ListScreen(BaseScreen):
     home_clicked = pyqtSignal()
@@ -149,10 +150,10 @@ class ListScreen(BaseScreen):
             check_box_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
             check_box_item.setCheckState(Qt.Unchecked)
 
-            date_item = QTableWidgetItem(record['Date'])
-            location_item = QTableWidgetItem(record['Location'])
-            category_item = QTableWidgetItem(record['Category'])
-            amount_item = QTableWidgetItem(f'{record['Amount']} ')
+            date_item = QTableWidgetItem(record.date_str())
+            location_item = QTableWidgetItem(record.location)
+            category_item = QTableWidgetItem(record.category)
+            amount_item = QTableWidgetItem(f'{record.amount_str()} ')
             amount_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
 
             self.table.setItem(row, 0, check_box_item)

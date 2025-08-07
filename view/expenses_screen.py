@@ -153,7 +153,12 @@ class ExpensesScreen(BaseScreen):
         height = self.summary_table.verticalHeader().length() + self.summary_table.horizontalHeader().height()
         self.summary_table.setMinimumHeight(height + 2)
 
-    def update_list_view(self, categories: list[str], dates: dict[str, list], locations: dict[str, list], amounts: dict[str, list], totals: dict[str, Decimal]):
+    def update_list_view(self,
+                         categories: list[str],
+                         dates: dict[str, list[str]],
+                         locations: dict[str, list[str]],
+                         amounts: dict[str, list[str]],
+                         totals: dict[str, Decimal]):
         self.tab_widget.clear()
         for category in categories:
             table = QTableWidget()

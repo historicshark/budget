@@ -1,6 +1,6 @@
 from PyQt5.QtCore import pyqtSignal, QObject
 
-from model import DatabaseManager, Categories
+from model import DatabaseManager, Categories, Record
 from view import FilterScreen
 
 from typing import TYPE_CHECKING
@@ -23,7 +23,7 @@ class FilterController(QObject):
         self.categories = categories
 
         self.filter = {'Date': None, 'Amount': None, 'Category': None}
-        self.records: list[dict[str, str]] = []
+        self.records: list[Record] = []
 
         # button wiring
         self.filter_screen.cancel_clicked.connect(self.on_cancel_clicked)
@@ -69,4 +69,3 @@ class FilterController(QObject):
 
     def reset(self):
         self.filter_screen.reset()
-

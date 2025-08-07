@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QObject
 
 from view import ListScreen
-from model import DatabaseManager
+from model import DatabaseManager, Record
 
 import datetime
 
@@ -40,17 +40,16 @@ class ListController(QObject):
         self.update_table()
 
     def sort_records_by_date(self):
-        self.records.sort(key=lambda record: datetime.date.fromisoformat(record['Date']))
+        self.records.sort(key=lambda record: record.date)
 
     def sort_records_by_location(self):
-        self.records.sort(key=lambda record: record['Location'].lower())
+        self.records.sort(key=lambda record: record.location.lower())
 
     def sort_records_by_category(self):
-        self.records.sort(key=lambda record: record['Category'])
+        self.records.sort(key=lambda record: record.category)
 
     def sort_records_by_amount(self):
-        self.records.sort(key=lambda record: float(record['Amount']))
+        self.records.sort(key=lambda record: record.amount)
 
     def on_new_search_clicked(self):
         self.main.go_to_screen('filter')
-

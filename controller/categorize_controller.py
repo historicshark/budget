@@ -38,7 +38,7 @@ class CategorizeController:
         self.guess_category()
 
     def guess_category(self):
-        self.guessed_category = self.categories.guess_category(self.importer[self.index]['Location'])
+        self.guessed_category = self.categories.guess_category(self.importer[self.index].location)
         self.category = self.guessed_category
         self.categorize_screen.guess_category(self.guessed_category)
         self.check_activate_continue_button()
@@ -133,4 +133,3 @@ class CategorizeController:
         self.index = 0
         self.category = ''
         self.guessed_category = ''
-

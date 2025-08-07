@@ -1,3 +1,4 @@
+from dataclasses import asdict
 import datetime
 from decimal import Decimal
 import numbers
@@ -5,6 +6,8 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 import sqlite3
+
+from model.record import Record
 
 class DatabaseManager:
     def __init__(self, db_name):
@@ -22,16 +25,16 @@ class DatabaseManager:
         self.table_name = res.fetchone()[0]
         self.where = ''
 
-    def insert_records(self, records: list[dict[str, str]]):
+    def insert_records(self, records: list[Record]):
         """
-        Records is a list of dict with keys 'Date', 'Location', 'Amount', 'Category'
+        convert records to list of dicts for named insertion
         """
-        self.cur.executemany(f'INSERT INTO {self.table_name} VALUES(:Date, :Location, :Category, :Amount)', records)
+        self.cur.executemany(f'INSERT INTO {self.table_name} VALUES(:date, :location, :category, :amount)', [asdict(record) for record in records])
         self.con.commit()
 
     #TODO need to test
-    def insert_record(self, record: dict[str, str]):
-        self.cur.execute(f'INSERT INTO {self.table_name} VALUES(:Date, :Location, :Category, :Amount)', record)
+    def insert_record(self, record: Record):
+        self.cur.execute(f'INSERT INTO {self.table_name} VALUES(:date, :location, :category, :amount)', asdict(record))
         self.con.commit()
 
     def delete(self, date=None, location=None, category=None, amount=None):
@@ -62,7 +65,7 @@ class DatabaseManager:
     def select_filter(self, filters) -> list[dict[str, str]]:
         return self.select(date=filters['Date'], category=filters['Category'], amount=filters['Amount'])
 
-    def select(self, date=None, location=None, category=None, amount=None, order_by=None) -> list[dict[str, str]]:
+    def select(self, date=None, location=None, category=None, amount=None, order_by=None) -> list[Record]:
         """ 
         Return a list of records. Any or none of the arguments can be provided.
         Also sets db.where for future use.
@@ -98,7 +101,8 @@ class DatabaseManager:
 
         res = self.cur.execute(command + self.where + order)
         output = res.fetchall() # list of tuples
-        return [dict(zip(['Date','Location','Category','Amount'], values)) for values in output]
+        #return [dict(zip(['Date','Location','Category','Amount'], values)) for values in output]
+        return [Record(date=values[0], location=values[1], category=values[2], amount=values[3]) for values in output]
     
     def update(self,
                old_date=None, old_location=None, old_category=None, old_amount=None,
@@ -194,7 +198,7 @@ class DatabaseManager:
 | {"Date":^{width_date}} | {"Location":^{width_location}} | {"Category":^{width_category}} | {"Amount":^{width_amount}} |
 {line_separator}''')
         for record in records:
-            print(f'| {record["Date"]:^{width_date}} | {record["Location"][:width_location]:^{width_location}} | {record["Category"]:^{width_category}} | {record["Amount"]:^{width_amount}} |')
+            print(f'| {record.date:^{width_date}} | {record.location[:width_location]:^{width_location}} | {record.category:^{width_category}} | {record.amount:^{width_amount}} |')
         print(line_separator)
 
     def select_and_print(self, date=None, location=None, category=None, amount=None, order_by=None):

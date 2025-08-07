@@ -13,6 +13,7 @@ import datetime
 
 from view import BaseScreen, colors
 from view.widgets import DateEditFix, ComboBoxFix
+from model import Record
 
 class EditRecordScreen(BaseScreen):
     home_clicked = pyqtSignal()

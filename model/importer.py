@@ -5,6 +5,7 @@ from pathlib import Path
 from ofxparse import OfxParser
 
 from model.database import DatabaseManager
+from model.record import Record
 
 class Importer(Sequence):
     def __init__(self, db: DatabaseManager, file=''):
@@ -12,10 +13,10 @@ class Importer(Sequence):
         self.file = file
         self.set_file(file)
         self.db = db
-        self.data: list[dict[str, str]] = []  # Amount, Location, Date, (Category)
+        self.data: list[Record] = []
         self.records_to_skip: set[int] = set()
 
-    def __getitem__(self, i: int):
+    def __getitem__(self, i: int) -> Record:
         return self.data[i]
 
     #def __setitem__(self, i: int, item: dict[str, str]):
@@ -55,6 +56,7 @@ class Importer(Sequence):
 
     # Functions to load a csv file. Different processing is needed for each account because the format is different.
     def import_file_csv(self, account: str) -> None:
+        raise NotImplementedError('todo') #TODO dict -> Record
         match account:
             case 'credit':
                 self.data = self.import_credit_csv()
@@ -63,7 +65,7 @@ class Importer(Sequence):
             case _:
                 raise ValueError(f'Invalid account import option {account}')
     
-    def import_debit_csv(self) -> list[dict[str, str]]:
+    def import_debit_csv(self) -> list[Record]:
         data = pd.read_csv(self.file, dtype=str)
 
         # Combine credit and debit columns
@@ -83,7 +85,9 @@ class Importer(Sequence):
 
         # Negative of debit amounts so that spending is positive
         # data.Amount = data.Amount.map(lambda x: -x)
-        return data.to_dict('records')
+
+        #return data.to_dict('records')
+        return [Record(row.Date, row.Location, '', row.Amount) for row in data.itertuples(index=False)]
 
     def import_credit_csv(self) -> list[dict[str, str]]:
         data = pd.read_csv(self.file, dtype=str)
@@ -106,17 +110,16 @@ class Importer(Sequence):
                 print(f'skipping transaction {transaction.payee} {transaction.date.date()} on import') #XXX debug
                 continue
 
-            self.data.append(
-                {
-                    'Amount':   f'{transaction.amount:.2f}', # transaction.amount is a Decimal type
-                    'Location': str(transaction.payee),
-                    'Date':     str(transaction.date.date())
-                })
+            self.data.append(Record(date=str(transaction.date.date()),
+                                    location=str(transaction.payee),
+                                    amount=f'{transaction.amount:.2f}', # transaction.amount is a Decimal type
+                                    category='')
+                            )
 
     def set_category(self, index: int, category: str):
         assert 0 <= index < len(self.data)
-        print(f'categorized transaction {self.data[index]["Location"]} as {category}') #XXX debug
-        self.data[index]["Category"] = category
+        print(f'categorized transaction {self.data[index].location} as {category}') #XXX debug
+        self.data[index].category = category
 
     def date_to_iso(self, date: str, add_year=False) -> str:
         ''' MM/DD/YYYY --> YYYY-MM-DD '''
@@ -132,5 +135,5 @@ class Importer(Sequence):
     def insert_records_into_database(self):
         self.data = [record for i, record in enumerate(self.data) if i not in self.records_to_skip]
         for record in self.data:
-            assert 'Category' in record.keys()
+            assert bool(record.category)
         self.db.insert_records(self.data)
