@@ -20,12 +20,13 @@ from model import Record
 class ListScreen(BaseScreen):
     home_clicked = pyqtSignal()
     new_search_clicked = pyqtSignal()
-    edit_clicked = pyqtSignal()
-    delete_clicked = pyqtSignal()
+    edit_clicked = pyqtSignal(list)
+    delete_clicked = pyqtSignal(list)
     sort_by_changed = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
+        self.indices_selected = []
         self.initUI()
 
     def initUI(self):
@@ -165,22 +166,40 @@ class ListScreen(BaseScreen):
         height = self.table.verticalHeader().length() + self.table.horizontalHeader().height()
         self.table.setMaximumHeight(height + 2)
 
+    def set_row_check_state(self, row, state):
+        assert row >= 0 and row < self.table.rowCount()
+        item = self.table.item(row, 0)
+        item.setCheckState(Qt.Checked if state else Qt.Unchecked)
+
     def on_table_cell_double_clicked(self, row, col):
-        print(f'cell clicked: {row}, {col}')
+        """ Only edit the record that is clicked """
+        self.indices_selected.clear()
+        self.indices_selected.append(row)
+        self.on_edit_clicked()
 
     def on_table_item_changed(self, item: QTableWidgetItem):
-        print(f'{item.row()}, {item.column()}')
+        row = item.row()
+        if item.checkState() == Qt.Checked and row not in self.indices_selected:
+            self.indices_selected.append(row)
+        elif item.checkState() == Qt.Unchecked and row in self.indices_selected:
+            self.indices_selected.remove(row)
+        self.indices_selected.sort()
+        print(f'{item.row()}, {item.column()}; selected: {self.indices_selected}')
 
     def on_select_all_clicked(self):
-        print('select all')
+        for row in range(self.table.rowCount()):
+            self.set_row_check_state(row, True)
 
     def on_select_none_clicked(self):
-        print('select none')
+        for row in range(self.table.rowCount()):
+            self.set_row_check_state(row, False)
 
     def on_edit_clicked(self):
+        self.edit_clicked.emit(self.indices_selected)
         print('edit selected')
 
     def on_delete_clicked(self):
+        self.delete_clicked.emit(self.indices_selected)
         print('delete selected')
 
     def on_sort_by_changed(self, text):

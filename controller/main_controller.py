@@ -18,6 +18,7 @@ class MainController:
             'filter': FilterScreen(),
             'expenses': ExpensesScreen(),
             'list': ListScreen(),
+            'edit_record': EditRecordScreen(),
         }
         self.screen_indexes = {}
         self.register_screens()
@@ -28,6 +29,7 @@ class MainController:
             'filter': FilterController(self, self.screens['filter'], self.db, self.categories),
             'expenses': ExpensesController(self, self.screens['expenses'], self.db),
             'list': ListController(self, self.screens['list'], self.db),
+            'edit_record': EditRecordController(self, self.screens['edit_record'], self.db, self.categories),
         }
 
         # connections
@@ -44,13 +46,14 @@ class MainController:
                 screen.home_clicked.connect(lambda: self.go_to_screen('home'))
     
     def debug(self):
-        self.start_list()
-        self.go_to_screen('list')
-        records = self.db.select()
-        self.controllers['filter'].records = records
-        self.controllers['list'].records = records
-        self.controllers['list'].sort_records_by_date()
-        self.controllers['list'].update_table()
+        self.go_to_screen('edit_record')
+        #self.start_list()
+        #self.go_to_screen('list')
+        #records = self.db.select()
+        #self.controllers['filter'].records = records
+        #self.controllers['list'].records = records
+        #self.controllers['list'].sort_records_by_date()
+        #self.controllers['list'].update_table()
 
     def start(self):
         self.main_window.show()
@@ -92,11 +95,14 @@ class MainController:
         self.controllers['expenses'].update_views()
 
     def set_records_and_go_to_list_screen(self):
-        print('LIST LIST')
         self.controllers['list'].records = self.controllers['filter'].records
         self.go_to_screen('list')
         self.controllers['list'].sort_records_by_date()
         self.controllers['list'].update_table()
+
+    def list_screen_to_edit_record_screen(self, records_to_edit: list[Record]):
+        for record in records_to_edit:
+            print(record)
 
     def print_records(self):
         records = self.controllers['filter'].records

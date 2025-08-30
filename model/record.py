@@ -33,3 +33,6 @@ class Record:
 
     def amount_str(self) -> str:
         return f'{self.amount:.2f}'
+
+    def asdict(self):
+        return {'date': self.date_str(), 'location': self.location, 'category': self.category, 'amount': self.amount_str()}

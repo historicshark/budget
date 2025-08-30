@@ -22,6 +22,10 @@ font-size: 14px;
 padding: 3px;
 }}
 
+QLabel:disabled {{
+color: {colors['gray']};
+}}
+
 QPushButton {{
 font-size: 18px;
 background-color: {colors['gray']};
@@ -55,6 +59,10 @@ font-size: 18px;
 color: {colors['fg0']};
 background-color: {colors['bg1']};
 padding: 2px;
+}}
+
+QLineEdit:disabled {{
+color: {colors['gray']};
 }}
 
 QComboBox {{
@@ -97,6 +105,10 @@ padding: 3px;
 border: 0px solid {colors['bg']};
 }}
 
+QSpinBox:disabled, QDoubleSpinBox:disabled {{
+color: {colors['gray']};
+}}
+
 QSpinBox::up-button, QDoubleSpinBox::up-button {{
 subcontrol-origin: border;
 subcontrol-position: top right;
@@ -115,6 +127,10 @@ padding: 3px;
 border: 0px solid {colors['bg']};
 }}
 
+QDateEdit:disabled {{
+color: {colors['gray']};
+}}
+
 /* This stops hover from working when focused
 QDateEdit:focus {{
 background-color: {colors['bg1']};
@@ -128,6 +144,10 @@ background-color: {colors['purple']};
 subcontrol-origin: padding;
 subcontrol-position: right;
 width: 30px;
+}}
+
+QDateEdit::drop-down:disabled {{
+background-color: {colors['bg3']};
 }}
 
 /* Annoying since it doesn't work if you move the mouse from the box to the button

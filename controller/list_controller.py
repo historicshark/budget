@@ -22,6 +22,7 @@ class ListController(QObject):
 
         self.list_screen.new_search_clicked.connect(self.on_new_search_clicked)
         self.list_screen.sort_by_changed.connect(self.sort_records)
+        self.list_screen.edit_clicked.connect(self.on_edit_clicked)
 
     def update_table(self):
         self.db.print_records(self.records)
@@ -53,3 +54,10 @@ class ListController(QObject):
 
     def on_new_search_clicked(self):
         self.main.go_to_screen('filter')
+
+    def on_edit_clicked(self, indices_selected):
+        records_to_edit = [self.records[i] for i in indices_selected]
+        self.main.list_screen_to_edit_record_screen(self, records_to_edit)
+
+    def on_delete_clicked(self, indices_selected):
+        records_to_delete = [self.records[i] for i in indices_selected]

@@ -29,30 +29,23 @@ class DatabaseManager:
         """
         convert records to list of dicts for named insertion
         """
-        self.cur.executemany(f'INSERT INTO {self.table_name} VALUES(:date, :location, :category, :amount)', [asdict(record) for record in records])
+        self.cur.executemany(f'INSERT INTO {self.table_name} VALUES(:date, :location, :category, :amount)', [record.asdict() for record in records])
         self.con.commit()
 
     #TODO need to test
     def insert_record(self, record: Record):
-        self.cur.execute(f'INSERT INTO {self.table_name} VALUES(:date, :location, :category, :amount)', asdict(record))
+        self.cur.execute(f'INSERT INTO {self.table_name} VALUES(:date, :location, :category, :amount)', record.asdict())
         self.con.commit()
 
     def delete(self, date=None, location=None, category=None, amount=None):
-        """
-        Date: A list containing two datetime.date for a date range
-        Location: str matching name of location (not recommended)
-        Category: str or list[str] matching categories
-        Amount: A list containing two numbers for an amount range
-        """
+        #if date:
+        #    if len(date) != 2: raise ValueError('Provide date range as a list of two strings!')
+        #    if not all(isinstance(elem, datetime.date) for elem in date): raise ValueError('Provide date range as a list of two dates!')
 
-        if date:
-            if len(date) != 2: raise ValueError('Provide date range as a list of two strings!')
-            if not all(isinstance(elem, datetime.date) for elem in date): raise ValueError('Provide date range as a list of two dates!')
-
-        if amount:
-            if len(amount) != 2: raise ValueError('Provide amount range as a list of two numbers!')
+        #if amount:
+        #    if len(amount) != 2: raise ValueError('Provide amount range as a list of two numbers!')
  
-        command = "DELETE FROM " + self.table_name
+        command = f"DELETE FROM {self.table_name}"
 
         self.build_where(date, location, category, amount)
 
@@ -147,6 +140,8 @@ class DatabaseManager:
     def build_where(self, date, location, category, amount):
         """
         adds a WHERE statement to self.where
+        - date and amount can be a single value or range
+        - category can be a single value or a list
         """
         if not (date or location or category or amount):
             self.where = ''
@@ -198,7 +193,7 @@ class DatabaseManager:
 | {"Date":^{width_date}} | {"Location":^{width_location}} | {"Category":^{width_category}} | {"Amount":^{width_amount}} |
 {line_separator}''')
         for record in records:
-            print(f'| {record.date:^{width_date}} | {record.location[:width_location]:^{width_location}} | {record.category:^{width_category}} | {record.amount:^{width_amount}} |')
+            print(f'| {record.date_str():^{width_date}} | {record.location[:width_location]:^{width_location}} | {record.category:^{width_category}} | {record.amount:^{width_amount}} |')
         print(line_separator)
 
     def select_and_print(self, date=None, location=None, category=None, amount=None, order_by=None):
