@@ -51,6 +51,8 @@ class DatabaseManager:
 
         # for debugging
         # print(command + self.where + order)
+        print('deleting the following records:')
+        self.select_and_print(date=date, location=location, category=category, amount=amount)
 
         self.cur.execute(command + self.where)
         self.con.commit()
@@ -196,9 +198,9 @@ class DatabaseManager:
             print(f'| {record.date_str():^{width_date}} | {record.location[:width_location]:^{width_location}} | {record.category:^{width_category}} | {record.amount:^{width_amount}} |')
         print(line_separator)
 
-    def select_and_print(self, date=None, location=None, category=None, amount=None, order_by=None):
+    def select_and_print(self, date=None, location=None, category=None, amount=None):
         ''' Make easy to make a selection and print it in one function '''
-        records = self.select(date, location, category, amount, order_by)
+        records = self.select(date, location, category, amount)
         self.print_records(records)
 
     def list_categories(self) -> list[str]:

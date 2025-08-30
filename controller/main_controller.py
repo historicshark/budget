@@ -46,14 +46,11 @@ class MainController:
                 screen.home_clicked.connect(lambda: self.go_to_screen('home'))
     
     def debug(self):
-        self.go_to_screen('edit_record')
-        #self.start_list()
-        #self.go_to_screen('list')
-        #records = self.db.select()
-        #self.controllers['filter'].records = records
-        #self.controllers['list'].records = records
-        #self.controllers['list'].sort_records_by_date()
-        #self.controllers['list'].update_table()
+        self.start_list()
+        self.screens['filter'].date_filter.menu.setCurrentIndex(1)
+        self.screens['filter'].amount_check_box.setChecked(False)
+        self.screens['filter'].category_check_box.setChecked(False)
+        self.controllers['filter'].on_continue_clicked()
 
     def start(self):
         self.main_window.show()
@@ -103,6 +100,12 @@ class MainController:
     def list_screen_to_edit_record_screen(self, records_to_edit: list[Record]):
         for record in records_to_edit:
             print(record)
+
+    def update_records_in_list_controller_screen(self):
+        """ after deleting records from the list, use the filters to get the
+        updated records from the database """
+        self.controllers['list'].records = self.db.select_filter(self.controllers['filter'].filter)
+        self.controllers['list'].sort_records(self.screens['list'].drop_down.currentText())
 
     def print_records(self):
         records = self.controllers['filter'].records

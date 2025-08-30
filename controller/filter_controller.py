@@ -66,6 +66,5 @@ class FilterController(QObject):
         except:
             pass
 
-
     def reset(self):
         self.filter_screen.reset()
