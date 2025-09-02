@@ -18,15 +18,11 @@ from model import Record
 
 class EditRecordScreen(BaseScreen):
     home_clicked = pyqtSignal()
-    continue_clicked = pyqtSignal()
+    continue_clicked = pyqtSignal(Record)
     cancel_clicked = pyqtSignal()
 
     def __init__(self):
         super().__init__()
-        self.date = None
-        self.location = None
-        self.category = None
-        self.amount = None
         self.category_options = ['test1','test2']
 
         self.initUI()
@@ -79,7 +75,7 @@ class EditRecordScreen(BaseScreen):
         self.content_layout.addLayout(layout)
 
         self.content_layout.addStretch()
-        self.add_continue_cancel_buttons(self.content_layout, self.continue_clicked.emit, self.cancel_clicked.emit)
+        self.add_continue_cancel_buttons(self.content_layout, self.on_continue_clicked, self.cancel_clicked.emit)
 
         keys_functions = [
             ('test','test'),
@@ -87,10 +83,10 @@ class EditRecordScreen(BaseScreen):
         self.add_footer(self.base_layout, keys_functions)
 
         #self.add_debug_borders()
-        self.enable_category_only(True)
+        #self.enable_category_only(True)
         self.display_record(Record('2025-08-30','test','test1','20'))
 
-    def set_category_options(self, categories):
+    def update_category_options(self, categories):
         self.category_edit.clear()
         self.category_edit.addItems(categories)
 
@@ -115,6 +111,13 @@ class EditRecordScreen(BaseScreen):
 
     def on_amount_changed(self, value):
         print(value)
+
+    def on_continue_clicked(self):
+        new_date = self.date_edit.date().toPyDate()
+        new_location = self.location_edit.text()
+        new_category = self.category_edit.currentText()
+        new_amount = self.amount_edit.value()
+        self.continue_clicked.emit(Record(new_date, new_location, new_category, new_amount))
 
     def enable_category_only(self, enable: bool):
         enable = not enable

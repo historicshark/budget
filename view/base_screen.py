@@ -85,7 +85,7 @@ class BaseScreen(QWidget):
         self.footer = QLabel(' • '.join([f'{function}: {key}' for key, function in keys_functions]))
         self.footer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
         self.footer.setObjectName('footer')
-        owner_layout.addWidget(self.footer)
+        owner_layout.addWidget(self.footer, alignment=Qt.AlignBottom)
 
     def update_footer(self, keys_functions: list[tuple[str, str]]):
         self.footer.setText(' • '.join([f'{function}: {key}' for key, function in keys_functions]))

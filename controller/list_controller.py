@@ -26,7 +26,7 @@ class ListController(QObject):
         self.list_screen.delete_clicked.connect(self.on_delete_clicked)
 
     def update_table(self):
-        self.db.print_records(self.records)
+        self.db.print_records(self.records) #XXX debug
         self.list_screen.update_table(self.records)
 
     def sort_records(self, sort_by: str):
@@ -58,7 +58,8 @@ class ListController(QObject):
 
     def on_edit_clicked(self, indices_selected):
         records_to_edit = [self.records[i] for i in indices_selected]
-        self.main.list_screen_to_edit_record_screen(records_to_edit)
+        if len(records_to_edit) > 0:
+            self.main.list_screen_to_edit_record_screen(records_to_edit)
 
     def on_delete_clicked(self, indices_selected):
         for i in indices_selected:

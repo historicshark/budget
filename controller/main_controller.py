@@ -93,16 +93,17 @@ class MainController:
 
     def set_records_and_go_to_list_screen(self):
         self.controllers['list'].records = self.controllers['filter'].records
-        self.go_to_screen('list')
         self.controllers['list'].sort_records_by_date()
         self.controllers['list'].update_table()
+        self.go_to_screen('list')
 
     def list_screen_to_edit_record_screen(self, records_to_edit: list[Record]):
-        for record in records_to_edit:
-            print(record)
+        self.controllers['edit_record'].records_to_edit = records_to_edit
+        self.controllers['edit_record'].display_record()
+        self.go_to_screen('edit_record')
 
     def update_records_in_list_controller_screen(self):
-        """ after deleting records from the list, use the filters to get the
+        """ after updating or deleting records from the list, use the filters to get the
         updated records from the database """
         self.controllers['list'].records = self.db.select_filter(self.controllers['filter'].filter)
         self.controllers['list'].sort_records(self.screens['list'].drop_down.currentText())

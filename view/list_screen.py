@@ -51,7 +51,7 @@ class ListScreen(BaseScreen):
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         self.table.cellDoubleClicked.connect(self.on_table_cell_double_clicked)
-        self.table.itemChanged.connect(self.on_table_item_changed)
+        #self.table.itemChanged.connect(self.on_table_item_changed)
 
         self.content_layout.addWidget(self.table) # adding alignment makes the table small
 
@@ -165,16 +165,24 @@ class ListScreen(BaseScreen):
 
         height = self.table.verticalHeader().length() + self.table.horizontalHeader().height()
         self.table.setMaximumHeight(height + 2)
+        self.get_selected_indices()
 
     def set_row_check_state(self, row, state):
         assert row >= 0 and row < self.table.rowCount()
         item = self.table.item(row, 0)
         item.setCheckState(Qt.Checked if state else Qt.Unchecked)
 
+    def get_selected_indices(self):
+        self.indices_selected.clear()
+        for row in range(self.table.rowCount()):
+            item = self.table.item(row, 0)
+            if item.checkState() == Qt.Checked:
+                self.indices_selected.append(row)
+
     def on_table_cell_double_clicked(self, row, col):
         """ Only edit the record that is clicked """
-        self.indices_selected.clear()
-        self.indices_selected.append(row)
+        self.on_select_none_clicked()
+        self.set_row_check_state(row, True)
         self.on_edit_clicked()
 
     def on_table_item_changed(self, item: QTableWidgetItem):
@@ -195,12 +203,14 @@ class ListScreen(BaseScreen):
             self.set_row_check_state(row, False)
 
     def on_edit_clicked(self):
+        self.get_selected_indices()
+        print(self.indices_selected)
         self.edit_clicked.emit(self.indices_selected)
-        print('edit selected')
 
     def on_delete_clicked(self):
+        self.get_selected_indices()
+        print(self.indices_selected)
         self.delete_clicked.emit(self.indices_selected)
-        print('delete selected')
 
     def on_sort_by_changed(self, text):
         self.sort_by_changed.emit(text)

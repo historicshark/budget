@@ -16,4 +16,42 @@ class EditRecordController(QObject):
         self.db = db
         self.categories = categories
 
-    
+        self.records_to_edit: list[Record] = []
+        self.records_edited: list[Record] = []
+        self.index = 0
+
+        self.update_category_options()
+
+        self.edit_record_screen.continue_clicked.connect(self.advance)
+        self.edit_record_screen.cancel_clicked.connect(self.on_cancel_clicked)
+
+    def update_category_options(self):
+        self.edit_record_screen.update_category_options(self.categories)
+
+    def display_record(self):
+        assert len(self.records_to_edit) > 0
+        record = self.records_to_edit[self.index]
+        self.edit_record_screen.display_record(record)
+
+    def advance(self, new_record: Record):
+        self.records_edited.append(new_record)
+        self.index += 1
+
+        if self.index < len(self.records_to_edit):
+            self.display_record()
+        else:
+            assert len(self.records_to_edit) == len(self.records_edited)
+            for old_record, new_record in zip(self.records_to_edit, self.records_edited):
+                self.db.update_record(old_record, new_record)
+            self.reset()
+            self.main.update_records_in_list_controller_screen()
+            self.main.go_to_screen('list')
+
+    def on_cancel_clicked(self):
+        self.reset()
+        self.main.go_to_screen('list')
+
+    def reset(self):
+        self.records_to_edit = []
+        self.records_edited = []
+        self.index = 0

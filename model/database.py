@@ -134,6 +134,10 @@ class DatabaseManager:
         self.cur.execute(command)
         self.con.commit()
 
+    def update_record(self, old_record: Record, new_record: Record):
+        self.update(old_record.date, old_record.location, old_record.category, old_record.amount,
+                    new_record.date, new_record.location, new_record.category, new_record.amount)
+
     def add_and(self, use_and):
         if use_and:
             self.where += ' AND '
@@ -175,8 +179,10 @@ class DatabaseManager:
             use_and = self.add_and(use_and)
             if isinstance(amount, (list, tuple)):
                 self.where += f'abs(Amount) BETWEEN {amount[0]} AND {amount[1]}'
-            else:
+            elif isinstance(amount, str):
                 self.where += f'Amount="{amount}"'
+            else:
+                self.where += f'Amount="{amount:.2f}"'
 
     def print_records(self, records):
         """
