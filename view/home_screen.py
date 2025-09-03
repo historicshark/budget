@@ -13,13 +13,15 @@ class HomeScreen(BaseScreen):
     import_clicked = pyqtSignal()
     expenses_clicked = pyqtSignal()
     list_clicked = pyqtSignal()
+    create_clicked = pyqtSignal()
 
     def __init__(self):
         super().__init__()    
         self.button_labels_descriptions_methods_keys = [
             ('import', 'Import a file on your computer', self.import_clicked.emit, 'i'),
             ('expenses', 'Visualize expenses', self.expenses_clicked.emit, 'e'),
-            ('list', 'List transactions', self.list_clicked.emit, 'l'),
+            ('list', 'List, edit, and delete transactions', self.list_clicked.emit, 'l'),
+            ('create', 'Manually create a transaction', self.create_clicked.emit, 'c'),
         ]
 
         self.initUI()

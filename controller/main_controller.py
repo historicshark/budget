@@ -19,6 +19,7 @@ class MainController:
             'expenses': ExpensesScreen(),
             'list': ListScreen(),
             'edit_record': EditRecordScreen(),
+            'create_record': CreateRecordScreen(),
         }
         self.screen_indexes = {}
         self.register_screens()
@@ -30,12 +31,14 @@ class MainController:
             'expenses': ExpensesController(self, self.screens['expenses'], self.db),
             'list': ListController(self, self.screens['list'], self.db),
             'edit_record': EditRecordController(self, self.screens['edit_record'], self.db, self.categories),
+            'create_record': CreateRecordController(self, self.screens['create_record'], self.db, self.categories),
         }
 
         # connections
         self.screens['home'].import_clicked.connect(lambda: self.go_to_screen('import'))
         self.screens['home'].expenses_clicked.connect(self.start_expenses)
         self.screens['home'].list_clicked.connect(self.start_list)
+        self.screens['home'].create_clicked.connect(lambda: self.go_to_screen('create_record'))
 
     def register_screens(self):
         for name, screen in self.screens.items():
@@ -55,7 +58,7 @@ class MainController:
     def start(self):
         self.main_window.show()
         self.go_to_screen('home')
-        self.debug() #XXX debug
+        #self.debug() #XXX debug
 
     def go_to_screen(self, name):
         if name in self.screens.keys():
@@ -78,6 +81,7 @@ class MainController:
         self.controllers['filter'].disconnect_all()
         self.controllers['filter'].cancel_clicked.connect(lambda: self.go_to_screen('home'))
         self.controllers['filter'].continue_clicked.connect(self.set_records_and_go_to_expenses_screen)
+        self.controllers['filter'].update_category_buttons()
 
     def start_list(self):
         print('start list')
@@ -85,6 +89,7 @@ class MainController:
         self.controllers['filter'].disconnect_all()
         self.controllers['filter'].cancel_clicked.connect(lambda: self.go_to_screen('home'))
         self.controllers['filter'].continue_clicked.connect(self.set_records_and_go_to_list_screen)
+        self.controllers['filter'].update_category_buttons()
 
     def set_records_and_go_to_expenses_screen(self):
         self.controllers['expenses'].records = self.controllers['filter'].records

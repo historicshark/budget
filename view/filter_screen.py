@@ -28,6 +28,7 @@ class FilterScreen(BaseScreen):
         self.update_category_buttons([f'test{x}' for x in range(8)])
 
     def initUI(self):
+        self.content_layout.setSpacing(25)
         self.add_title(self.content_layout, 'Filter', self.home_clicked.emit, 10)
 
         # Date row

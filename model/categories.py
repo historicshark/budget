@@ -66,4 +66,3 @@ class Categories(Sequence):
         self.rules[keyword.lower()] = category
         self.dump_category_rules()
         return
-

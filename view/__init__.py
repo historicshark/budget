@@ -15,6 +15,8 @@ from .filter_screen import FilterScreen
 from .expenses_screen import ExpensesScreen
 from .list_screen import ListScreen
 from .edit_record_screen import EditRecordScreen
+from .create_record_screen import CreateRecordScreen
+from .add_new_category_screen import AddNewCategoryScreen
 
 __all__ = [
     'MainWindow',
@@ -27,4 +29,6 @@ __all__ = [
     'ExpensesScreen',
     'ListScreen',
     'EditRecordScreen',
+    'CreateRecordScreen',
+    'AddNewCategoryScreen',
 ]

@@ -30,10 +30,10 @@ class FilterController(QObject):
         self.filter_screen.continue_clicked.connect(self.on_continue_clicked)
         self.filter_screen.filter_changed.connect(self.on_filter_changed)
 
-        self.filter_screen.update_category_buttons(self.categories)
+        self.update_category_buttons()
 
-    def start(self):
-        pass
+    def update_category_buttons(self):
+        self.filter_screen.update_category_buttons(self.categories)
 
     def on_filter_changed(self, filters):
         """
