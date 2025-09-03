@@ -10,8 +10,6 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
 
-import datetime
-
 from view import BaseScreen, colors
 from view.widgets import DateEditFix, ComboBoxFix
 from model import Record
@@ -78,7 +76,8 @@ class EditRecordScreen(BaseScreen):
         self.add_continue_cancel_buttons(self.content_layout, self.on_continue_clicked, self.cancel_clicked.emit)
 
         keys_functions = [
-            ('test','test'),
+            ('<return>','continue'),
+            ('<esc>', 'cancel'),
         ]
         self.add_footer(self.base_layout, keys_functions)
 

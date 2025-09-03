@@ -51,7 +51,6 @@ class ListScreen(BaseScreen):
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         self.table.cellDoubleClicked.connect(self.on_table_cell_double_clicked)
-        #self.table.itemChanged.connect(self.on_table_item_changed)
 
         self.content_layout.addWidget(self.table) # adding alignment makes the table small
 
@@ -75,12 +74,14 @@ class ListScreen(BaseScreen):
         select_all_button.setFixedSize(50, 30)
         select_all_button.setStyleSheet('font-size: 14px;')
         select_all_button.clicked.connect(self.on_select_all_clicked)
+        select_all_button.setShortcut('Ctrl+A')
         all_none_layout.addWidget(select_all_button)
 
         select_none_button = QPushButton('none')
         select_none_button.setFixedSize(50, 30)
         select_none_button.setStyleSheet('font-size: 14px;')
         select_none_button.clicked.connect(self.on_select_none_clicked)
+        select_none_button.setShortcut('Ctrl+N')
         all_none_layout.addWidget(select_none_button)
 
         select_layout.addLayout(all_none_layout)
@@ -92,6 +93,7 @@ class ListScreen(BaseScreen):
         edit_button = QPushButton('edit')
         edit_button.setFixedSize(100, 50)
         edit_button.clicked.connect(self.on_edit_clicked)
+        edit_button.setShortcut('e')
         button_layout.addWidget(edit_button)
         button_layout.addStretch()
 
@@ -99,6 +101,7 @@ class ListScreen(BaseScreen):
         delete_button = QPushButton('delete')
         delete_button.setFixedSize(100, 50)
         delete_button.clicked.connect(self.on_delete_clicked)
+        delete_button.setShortcut('d')
         button_layout.addWidget(delete_button)
         button_layout.addStretch()
 
@@ -136,7 +139,10 @@ class ListScreen(BaseScreen):
         self.content_layout.addLayout(button_layout)
 
         keys_functions = [
-            ('test', 'test'),
+            ('<cmd>+A/N', 'select all/none'),
+            ('e', 'edit'),
+            ('d', 'delete'),
+            ('n', 'new search'),
         ]
         self.add_footer(self.base_layout, keys_functions)
 
