@@ -63,12 +63,12 @@ class CategorizeController:
         self.check_activate_continue_button()
 
     def on_continue_clicked(self):
-        if self.category != self.guessed_category:
-            self.go_to_add_new_rule_screen()
+        if self.category == 'New Category':
+            self.go_to_add_new_category_screen()
             return
 
-        elif self.category == 'New Category':
-            self.go_to_add_new_category_screen()
+        elif self.category != self.guessed_category:
+            self.go_to_add_new_rule_screen()
             return
 
         self.set_category_and_advance()
