@@ -62,7 +62,8 @@ class ListController(QObject):
             self.main.list_screen_to_edit_record_screen(records_to_edit)
 
     def on_delete_clicked(self, indices_selected):
-        for i in indices_selected:
-            record = self.records[i]
-            self.db.delete(date=record.date_str(), location=record.location, category=record.category, amount=record.amount_str())
-        self.main.update_records_in_list_controller_screen()
+        if len(indices_selected) > 0:
+            for i in indices_selected:
+                record = self.records[i]
+                self.db.delete(date=record.date_str(), location=record.location, category=record.category, amount=record.amount_str())
+            self.main.update_records_in_list_controller_screen()

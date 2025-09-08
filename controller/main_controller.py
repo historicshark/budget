@@ -40,7 +40,7 @@ class MainController:
         self.screens['home'].import_clicked.connect(self.start_import)
         self.screens['home'].expenses_clicked.connect(self.start_expenses)
         self.screens['home'].list_clicked.connect(self.start_list)
-        self.screens['home'].create_clicked.connect(lambda: self.go_to_screen('create_record'))
+        self.screens['home'].create_clicked.connect(self.start_create_record)
 
     def register_screens(self):
         for name, screen in self.screens.items():
@@ -96,6 +96,11 @@ class MainController:
         self.controllers['add_new_category'].connect_continue_cancel(self.add_new_category_continue_to_edit_record_screen,
                                                                      self.add_new_category_cancel_to_edit_record_screen)
 
+    def start_create_record(self):
+        self.go_to_screen('create_record')
+        self.controllers['add_new_category'].connect_continue_cancel(self.add_new_category_continue_to_create_record_screen,
+                                                                     self.add_new_category_cancel_to_create_record_screen)
+
     def set_records_and_go_to_expenses_screen(self):
         self.controllers['expenses'].records = self.controllers['filter'].records
         self.go_to_screen('expenses')
@@ -131,6 +136,13 @@ class MainController:
     def add_new_category_cancel_to_edit_record_screen(self):
         self.controllers['edit_record'].display_record()
         self.go_to_screen('edit_record')
+
+    def add_new_category_continue_to_create_record_screen(self, new_category):
+        self.controllers['create_record'].on_new_category_added(new_category)
+        self.go_to_screen('create_record')
+
+    def add_new_category_cancel_to_create_record_screen(self):
+        self.go_to_screen('create_record')
 
     def update_records_in_list_controller_screen(self):
         """ after updating or deleting records from the list, use the filters to get the

@@ -51,6 +51,7 @@ class CreateRecordScreen(BaseScreen):
         self.category_edit.addItems(['test1','test2'])
         self.category_edit.setFixedWidth(200)
         self.category_edit.view().setMinimumWidth(self.category_edit.width() + 6)
+        self.category_edit.currentTextChanged.connect(self.on_category_changed)
         layout.addWidget(self.category_label, 2, 0)
         layout.addWidget(self.category_edit, 2, 1)
 
@@ -98,13 +99,17 @@ class CreateRecordScreen(BaseScreen):
         if text == 'New Category':
             self.new_category_clicked.emit()
 
-    def on_continue_clicked(self):
+    def get_record(self) -> Record:
         new_date = self.date_edit.date().toPyDate()
         new_location = self.location_edit.text()
         new_category = self.category_edit.currentText()
         new_amount = self.amount_edit.value()
+        return Record(new_date, new_location, new_category, new_amount)
+
+    def on_continue_clicked(self):
+        record = self.get_record()
         self.reset()
-        self.continue_clicked.emit(Record(new_date, new_location, new_category, new_amount))
+        self.continue_clicked.emit(record)
 
     def on_cancel_clicked(self):
         self.reset()

@@ -16,8 +16,6 @@ class CreateRecordController(QObject):
         self.db = db
         self.categories = categories
 
-        self.update_category_options()
-
         self.create_record_screen.continue_clicked.connect(self.create_record)
         self.create_record_screen.cancel_clicked.connect(self.on_cancel_clicked)
         self.create_record_screen.new_category_clicked.connect(self.on_new_category_selected)
@@ -26,8 +24,14 @@ class CreateRecordController(QObject):
     def update_category_options(self):
         self.create_record_screen.update_category_options(self.categories)
 
+    def get_record(self):
+        return self.create_record_screen.get_record()
+
     def on_new_category_selected(self):
-        self.main.go_to_screen('add_new_category')
+        self.main.go_to_add_new_category_screen(self.get_record())
+
+    def on_new_category_added(self, new_category):
+        self.create_record_screen.set_category(new_category)
 
     def display_record(self, record: Record):
         self.edit_record_screen.display_record(record)
