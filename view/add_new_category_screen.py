@@ -18,7 +18,6 @@ class AddNewCategoryScreen(BaseScreen):
     home_clicked = pyqtSignal()
     continue_clicked = pyqtSignal(str)
     cancel_clicked = pyqtSignal()
-    new_category_clicked = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -85,7 +84,7 @@ class AddNewCategoryScreen(BaseScreen):
         self.amount_edit.setValue(record.amount)
 
     def on_continue_clicked(self):
-        new_category = self.category_edit.currentText()
+        new_category = self.category_edit.text()
         self.reset()
         self.continue_clicked.emit(new_category)
 

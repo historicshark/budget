@@ -49,7 +49,7 @@ class CreateRecordScreen(BaseScreen):
         self.category_label = QLabel('Category:')
         self.category_edit = ComboBoxFix()
         self.category_edit.addItems(['test1','test2'])
-        self.category_edit.setFixedWidth(150)
+        self.category_edit.setFixedWidth(200)
         self.category_edit.view().setMinimumWidth(self.category_edit.width() + 6)
         layout.addWidget(self.category_label, 2, 0)
         layout.addWidget(self.category_edit, 2, 1)

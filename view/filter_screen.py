@@ -25,7 +25,7 @@ class FilterScreen(BaseScreen):
         self.checked_categories = []
         self.filter = {'Date': None, 'Category': None, 'Amount': None}
         self.initUI()
-        self.update_category_buttons([f'test{x}' for x in range(8)])
+        self.update_category_options([f'test{x}' for x in range(8)])
 
     def initUI(self):
         self.content_layout.setSpacing(25)
@@ -122,7 +122,7 @@ class FilterScreen(BaseScreen):
         ]
         self.add_footer(self.base_layout, keys_functions)
 
-    def update_category_buttons(self, categories: list[str]):
+    def update_category_options(self, categories: list[str]):
         ratio_nrow_ncol = 2.5
         n = len(categories)
         n_rows = round(math.sqrt(ratio_nrow_ncol * n))
@@ -190,4 +190,3 @@ class FilterScreen(BaseScreen):
         self.amount_check_box.setChecked(True)
         self.category_check_box.setChecked(True)
         self.check_all_categories()
-

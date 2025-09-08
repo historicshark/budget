@@ -22,11 +22,20 @@ class EditRecordController(QObject):
 
         self.update_category_options()
 
+        # wiring
         self.edit_record_screen.continue_clicked.connect(self.advance)
         self.edit_record_screen.cancel_clicked.connect(self.on_cancel_clicked)
+        self.edit_record_screen.new_category_clicked.connect(self.on_new_category_selected)
+        self.categories.categories_updated.connect(self.update_category_options)
 
     def update_category_options(self):
         self.edit_record_screen.update_category_options(self.categories)
+
+    def on_new_category_selected(self):
+        self.main.go_to_add_new_category_screen(self.records_to_edit[self.index])
+
+    def on_new_category_added(self, new_category):
+        self.edit_record_screen.set_selected_category(new_category)
 
     def display_record(self):
         assert len(self.records_to_edit) > 0

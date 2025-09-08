@@ -50,10 +50,7 @@ class ImportController:
         self.main.import_to_categorize_screen()
 
     def on_cancel_clicked(self):
-        self.screen.reset()
-        self.file = ''
-        self.file_exists = False
-        # self.main.go_to_screen('home')
+        self.reset()
         self.screen.home_clicked.emit()
 
     def reset(self):
@@ -61,3 +58,5 @@ class ImportController:
         self.file = ''
         self.file_exists = False
         self.account = ''
+        self.check_activate_continue_button()
+        self.check_activate_account_buttons()

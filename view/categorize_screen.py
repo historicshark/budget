@@ -94,13 +94,13 @@ class CategorizeScreen(BaseScreen):
         ]
         self.add_footer(self.base_layout, keys_functions)
 
-    def display_transaction(self, record: Record, index, length):
+    def display_record(self, record: Record, index, length):
         self.index_label.setText(f'Categorize transaction {index+1} of {length}:')
         self.location_label.setText(f'Transaction: {record.location}')
         self.date_label.setText(f'Date: {record.date}')
         self.amount_label.setText(f'Amount: ${record.amount_str()}')
 
-    def update_category_buttons(self, categories: list[str]):
+    def update_category_options(self, categories: list[str]):
         self.clear_layout(self.button_layout)
         self.buttons.clear()
         style = f'''
@@ -125,9 +125,9 @@ class CategorizeScreen(BaseScreen):
         button.setStyleSheet(style)
         self.button_layout.addRow(key_label, button)
 
-    def guess_category(self, guessed_category: str):
-        if guessed_category in self.buttons.keys():
-            self.buttons[guessed_category].setChecked(True)
+    def set_category(self, category: str):
+        if category in self.buttons.keys():
+            self.buttons[category].setChecked(True)
         else:
             print('Warning: guessed category {guessed_category} not in available buttons on screen') #XXX debug
 

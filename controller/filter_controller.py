@@ -25,15 +25,16 @@ class FilterController(QObject):
         self.filter = {'Date': None, 'Amount': None, 'Category': None}
         self.records: list[Record] = []
 
-        # button wiring
+        # wiring
         self.filter_screen.cancel_clicked.connect(self.on_cancel_clicked)
         self.filter_screen.continue_clicked.connect(self.on_continue_clicked)
         self.filter_screen.filter_changed.connect(self.on_filter_changed)
+        self.categories.categories_updated.connect(self.update_category_options)
 
-        self.update_category_buttons()
+        self.update_category_options()
 
-    def update_category_buttons(self):
-        self.filter_screen.update_category_buttons(self.categories)
+    def update_category_options(self):
+        self.filter_screen.update_category_options(self.categories)
 
     def on_filter_changed(self, filters):
         """
@@ -53,18 +54,21 @@ class FilterController(QObject):
         self.cancel_clicked.emit()
 
     def disconnect_all(self):
-        """ Try disconnecting all slots. if they aren't connected, disconnect() gives an error,
-        so use try/except to ignore the error
-        """
+        # disconnect() raises a TypeError if there are no connections but I don't care
         try:
             self.continue_clicked.disconnect()
-        except:
+        except TypeError:
             pass
 
         try:
             self.cancel_clicked.disconnect()
-        except:
+        except TypeError:
             pass
+
+    def connect_continue_cancel(self, continue_connect, cancel_connect):
+        self.disconnect_all()
+        self.continue_clicked.connect(continue_connect)
+        self.cancel_clicked.connect(cancel_connect)
 
     def reset(self):
         self.filter_screen.reset()

@@ -18,6 +18,7 @@ class EditRecordScreen(BaseScreen):
     home_clicked = pyqtSignal()
     continue_clicked = pyqtSignal(Record)
     cancel_clicked = pyqtSignal()
+    new_category_clicked = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -36,7 +37,6 @@ class EditRecordScreen(BaseScreen):
         self.date_label = QLabel('Date:')
         self.date_edit = DateEditFix()
         self.date_edit.setFixedWidth(120)
-        self.date_edit.dateChanged.connect(self.on_date_changed)
         layout.addWidget(self.date_label, 0, 0)
         layout.addWidget(self.date_edit, 0, 1)
 
@@ -44,14 +44,13 @@ class EditRecordScreen(BaseScreen):
         self.location_edit = QLineEdit()
         self.location_edit.setFixedWidth(500)
         self.location_edit.setStyleSheet('font-size: 14px;')
-        self.location_edit.textChanged.connect(self.on_location_changed)
         layout.addWidget(self.location_label, 1, 0)
         layout.addWidget(self.location_edit, 1, 1)
 
         self.category_label = QLabel('Category:')
         self.category_edit = ComboBoxFix()
         self.category_edit.addItems(self.category_options)
-        self.category_edit.setFixedWidth(150)
+        self.category_edit.setFixedWidth(200)
         self.category_edit.view().setMinimumWidth(self.category_edit.width() + 6)
         self.category_edit.currentTextChanged.connect(self.on_category_changed)
         layout.addWidget(self.category_label, 2, 0)
@@ -64,7 +63,6 @@ class EditRecordScreen(BaseScreen):
         self.amount_edit.setMinimum(-1e5)
         self.amount_edit.setMaximum(1e5)
         self.amount_edit.setMaximumWidth(200)
-        self.amount_edit.valueChanged.connect(self.on_amount_changed)
         layout.addWidget(self.amount_label, 3, 0)
         layout.addWidget(self.amount_edit, 3, 1)
 
@@ -88,28 +86,24 @@ class EditRecordScreen(BaseScreen):
     def update_category_options(self, categories):
         self.category_edit.clear()
         self.category_edit.addItems(categories)
+        self.category_edit.addItem('New Category')
+
+    def set_selected_category(self, category):
+        category_index = self.category_edit.findText(category)
+        if category_index < 0:
+            print(f'{category} is not listed!')
+            category_index = 0
+        self.category_edit.setCurrentIndex(category_index)
 
     def display_record(self, record: Record):
         self.date_edit.setDate(QDate().fromString(str(record.date_str()), Qt.ISODate))
         self.location_edit.setText(record.location)
         self.amount_edit.setValue(record.amount)
-
-        category_index = self.category_edit.findText(record.category)
-        if category_index < 0:
-            raise IndexError(f'{record} has a category that is not listed!')
-        self.category_edit.setCurrentIndex(category_index)
-
-    def on_date_changed(self, date):
-        print(date)
-
-    def on_location_changed(self, text):
-        print(text)
+        self.set_selected_category(record.category)
 
     def on_category_changed(self, text):
-        print(text)
-
-    def on_amount_changed(self, value):
-        print(value)
+        if text == 'New Category':
+            self.new_category_clicked.emit()
 
     def on_continue_clicked(self):
         new_date = self.date_edit.date().toPyDate()
