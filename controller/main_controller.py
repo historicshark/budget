@@ -142,6 +142,7 @@ class MainController:
         self.go_to_screen('create_record')
 
     def add_new_category_cancel_to_create_record_screen(self):
+        self.controllers['create_record'].reset_category_dropdown()
         self.go_to_screen('create_record')
 
     def update_records_in_list_controller_screen(self):

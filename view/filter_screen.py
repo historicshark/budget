@@ -82,8 +82,8 @@ class FilterScreen(BaseScreen):
         left_column.addWidget(self.category_check_box)
 
         button_layout = QVBoxLayout()
-        button_layout.setContentsMargins(40, 0, 0, 0)
-        button_layout.addSpacing(20)
+        button_layout.setContentsMargins(20, 0, 0, 0)
+        button_layout.addSpacing(10)
 
         self.all_categories_button = QPushButton('all')
         self.all_categories_button.clicked.connect(lambda: self.check_all_categories()) # this emits false because the button isn't checkable so use a lambda to ignore it
@@ -91,7 +91,7 @@ class FilterScreen(BaseScreen):
         self.all_categories_button.setStyleSheet('font-size: 13px;')
         button_layout.addWidget(self.all_categories_button)
 
-        button_layout.addSpacing(15)
+        button_layout.addSpacing(5)
 
         self.no_categories_button = QPushButton('none')
         self.no_categories_button.clicked.connect(lambda: self.check_all_categories(False))
