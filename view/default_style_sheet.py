@@ -1,11 +1,11 @@
 from view import colors
 from model import get_asset_path
 
-pencil_square = get_asset_path('assets/pencil-square.svg')
+pencil_square = get_asset_path('assets/pencil-square.svg').as_posix()
 
 default_style_sheet = f'''
 QWidget {{
-font-family: Monaco;
+font-family: "Arial";
 background-color: {colors['bg']};
 color: {colors['fg']};
 }}
@@ -50,6 +50,7 @@ color: {colors['gray']};
 QPushButton#home {{
 font-size: 14px;
 }}
+
 QPushButton#home:hover {{
 background-color: {colors['aqua-faded']};
 }}
