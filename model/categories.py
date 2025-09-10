@@ -3,14 +3,15 @@ from PyQt5.QtCore import pyqtSignal, QObject
 from collections.abc import Sequence
 import json
 from pathlib import Path
+from model.file_handling import get_data_path
 
 class Categories(QObject):
     categories_updated = pyqtSignal()
 
     def __init__(self):
         super().__init__()
-        self.rules_file = 'model/category_rules.json'
-        self.categories_file = 'model/categories.json'
+        self.rules_file = get_data_path('category_rules.json')
+        self.categories_file = get_data_path('categories.json')
 
         self.rules = self.load_category_rules()
         self.categories = self.load_categories()
@@ -40,7 +41,7 @@ class Categories(QObject):
         """
         Load json file containing category rules of {"keyword": "category"}
         """
-        if Path(self.rules_file).exists():
+        if self.rules_file.exists():
             with open(self.rules_file, 'r') as f:
                 return json.load(f)
         else:
@@ -51,14 +52,20 @@ class Categories(QObject):
         with open(self.rules_file, 'w') as f:
             json.dump(self.rules, f, indent=2)
 
+    def create_categories_file(self):
+        default_categories = ['Rent', 'Income', 'Groceries', 'Transportation', 'Other']
+        self.categories = default_categories
+        self.dump_categories()
+        return default_categories
+
     # Load json file containing a list of categories
     def load_categories(self) -> list[str]:
-        if Path(self.categories_file).exists():
+        if self.categories_file.exists():
             with open(self.categories_file, 'r') as f:
                 category_options = json.load(f)
             return category_options
         else:
-            raise FileNotFoundError(self.categories_file)
+            return self.create_categories_file()
 
     def dump_categories(self) -> None:
         #print('dumping categories!')

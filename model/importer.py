@@ -1,6 +1,5 @@
 from collections.abc import Sequence
 import datetime
-import pandas as pd
 from pathlib import Path
 from ofxparse import OfxParser
 
@@ -57,48 +56,48 @@ class Importer(Sequence):
     # Functions to load a csv file. Different processing is needed for each account because the format is different.
     def import_file_csv(self, account: str) -> None:
         raise NotImplementedError('todo') #TODO dict -> Record
-        match account:
-            case 'credit':
-                self.data = self.import_credit_csv()
-            case 'debit':
-                self.data = self.import_debit_csv()
-            case _:
-                raise ValueError(f'Invalid account import option {account}')
+        #match account:
+        #    case 'credit':
+        #        self.data = self.import_credit_csv()
+        #    case 'debit':
+        #        self.data = self.import_debit_csv()
+        #    case _:
+        #        raise ValueError(f'Invalid account import option {account}')
     
-    def import_debit_csv(self) -> list[Record]:
-        data = pd.read_csv(self.file, dtype=str)
-
-        # Combine credit and debit columns
-        data['Amount'] = data['Debit'].fillna(data['Credit'])
-
-        data = data.rename(columns={'Description': 'Location'})
-        data.drop(columns=['Account', 'Memo', 'Check #', 'Credit', 'Debit', 'Category'], inplace=True) #XXX dropping category
-
-        # Remove slash at the end of debit category
-        # data['Category'] = data['Category'].map(lambda x: x[:-1])
-
-        # Remove credit card payments from debit
-        data = data[~data['Location'].str.contains('CARDMEMBER SERV  WEB PYMT')]
-
-        # Change date format from 'MM/DD/YYYY' (or MM/DD/YY' if add_year=True) to 'YYYY-MM-DD'
-        data['Date'] = data['Date'].apply(self.date_to_iso)
-
-        # Negative of debit amounts so that spending is positive
-        # data.Amount = data.Amount.map(lambda x: -x)
-
-        #return data.to_dict('records')
-        return [Record(row.Date, row.Location, '', row.Amount) for row in data.itertuples(index=False)]
-
-    def import_credit_csv(self) -> list[dict[str, str]]:
-        data = pd.read_csv(self.file, dtype=str)
-
-        # Change date format from 'MM/DD/YYYY' (or MM/DD/YY' if add_year=True) to 'YYYY-MM-DD'
-        # credit_data['Date'] = credit_data['Date'].apply(util.date_to_iso, args=(True,))
-
-        data = data[~data['Name'].str.contains('INTERNET PAYMENT THANK YOU')]
-        data = data.drop(columns=['Transaction', 'Memo'])
-        data = data.rename(columns={'Name': 'Location'})
-        return data.to_dict('records')
+#    def import_debit_csv(self) -> list[Record]:
+#        data = pd.read_csv(self.file, dtype=str)
+#
+#        # Combine credit and debit columns
+#        data['Amount'] = data['Debit'].fillna(data['Credit'])
+#
+#        data = data.rename(columns={'Description': 'Location'})
+#        data.drop(columns=['Account', 'Memo', 'Check #', 'Credit', 'Debit', 'Category'], inplace=True) #XXX dropping category
+#
+#        # Remove slash at the end of debit category
+#        # data['Category'] = data['Category'].map(lambda x: x[:-1])
+#
+#        # Remove credit card payments from debit
+#        data = data[~data['Location'].str.contains('CARDMEMBER SERV  WEB PYMT')]
+#
+#        # Change date format from 'MM/DD/YYYY' (or MM/DD/YY' if add_year=True) to 'YYYY-MM-DD'
+#        data['Date'] = data['Date'].apply(self.date_to_iso)
+#
+#        # Negative of debit amounts so that spending is positive
+#        # data.Amount = data.Amount.map(lambda x: -x)
+#
+#        #return data.to_dict('records')
+#        return [Record(row.Date, row.Location, '', row.Amount) for row in data.itertuples(index=False)]
+#
+#    def import_credit_csv(self) -> list[dict[str, str]]:
+#        data = pd.read_csv(self.file, dtype=str)
+#
+#        # Change date format from 'MM/DD/YYYY' (or MM/DD/YY' if add_year=True) to 'YYYY-MM-DD'
+#        # credit_data['Date'] = credit_data['Date'].apply(util.date_to_iso, args=(True,))
+#
+#        data = data[~data['Name'].str.contains('INTERNET PAYMENT THANK YOU')]
+#        data = data.drop(columns=['Transaction', 'Memo'])
+#        data = data.rename(columns={'Name': 'Location'})
+#        return data.to_dict('records')
     
     # Function to import ofx-type files.
     def import_file_ofx(self) -> None:

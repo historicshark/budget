@@ -1,23 +1,19 @@
-from dataclasses import asdict
-import datetime
 from decimal import Decimal
-import numbers
-import numpy as np
-import pandas as pd
-from pathlib import Path
 import sqlite3
 
+from model.file_handling import get_data_path
 from model.record import Record
 
 class DatabaseManager:
     def __init__(self, db_name):
-        if not Path(db_name).exists():
-            print(f'Creating new database {db_name}')
-            self.con = sqlite3.connect(db_name)
+        db_file = get_data_path(db_name)
+        if not db_file.exists():
+            print(f'Creating new database {db_file}')
+            self.con = sqlite3.connect(db_file)
             self.cur = self.con.cursor()
             self.cur.execute('CREATE TABLE transactions(Date, Location, Category, Amount)')
         else:
-            self.con = sqlite3.connect(db_name)
+            self.con = sqlite3.connect(db_file)
             self.cur = self.con.cursor()
 
         # Get table name
@@ -214,13 +210,3 @@ class DatabaseManager:
         command = "SELECT DISTINCT Category FROM " + self.table_name
         res = self.cur.execute(command)
         return [category[0] for category in res.fetchall()]
-
-    def totals_by_category(self, date_range=None) -> tuple[list[str], np.array]:
-        ''' date_range: list of str for a range (YYYY-MM-DD YYYY-MM-DD) '''
-        categories = self.list_categories()
-        totals = []
-        for category in categories:
-            self.cur.execute(f'SELECT SUM("Amount") FROM {self.table_name} WHERE Category = ?', (category,))
-            totals.append(self.cur.fetchone()[0])
-
-        return categories, np.array(totals)

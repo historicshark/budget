@@ -5,6 +5,8 @@ from PyQt5.QtWidgets import (
 
 from PyQt5.QtGui import QPalette, QColor
 
+from model import get_asset_path
+
 import json
 
 class MainWindow(QMainWindow):
@@ -16,7 +18,7 @@ class MainWindow(QMainWindow):
         self.stack = QStackedWidget()
         self.setCentralWidget(self.stack)
 
-        with open('view/colors.json', 'r') as f:
+        with open(get_asset_path('assets/colors.json'), 'r') as f:
             colors = json.load(f)
 
         self.setAutoFillBackground(True)

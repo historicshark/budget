@@ -1,6 +1,7 @@
 import json
+from model import get_asset_path
 
-with open('view/colors.json', 'r') as f:
+with open(get_asset_path('assets/colors.json'), 'r') as f:
     colors = json.load(f)
 from .default_style_sheet import default_style_sheet
 

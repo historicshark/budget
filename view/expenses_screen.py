@@ -72,7 +72,7 @@ class ExpensesScreen(BaseScreen):
 
         self.content_layout.addWidget(self.plot_view_container)
 
-        self.plot.plot_pie(['test1','test2'], [2,3])
+        #self.plot.plot_pie(['test1','test2'], [2,3])
 
         # Layout with tabs and table by category
         list_view_layout = QHBoxLayout()
@@ -116,6 +116,9 @@ class ExpensesScreen(BaseScreen):
             ('n', 'new search'),
         ]
         self.add_footer(self.base_layout, keys_functions)
+
+    def load_widgets(self):
+        self.plot.load()
 
     def update_plot_view(self, categories: list[str], totals: list[Decimal]):
         self.plot.plot_pie(categories, totals)

@@ -1,4 +1,7 @@
 from view import colors
+from model import get_asset_path
+
+pencil_square = get_asset_path('assets/pencil-square.svg')
 
 default_style_sheet = f'''
 QWidget {{
@@ -141,7 +144,7 @@ color: {colors['fg0']};
 */
 
 QDateEdit::drop-down {{
-image: url(assets/pencil-square.svg);
+image: url({pencil_square});
 background-color: {colors['purple']};
 subcontrol-origin: padding;
 subcontrol-position: right;

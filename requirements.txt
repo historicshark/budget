@@ -1,5 +1,5 @@
+pyinstaller
 PyQt5
 matplotlib
 numpy
 ofxparse
-pandas

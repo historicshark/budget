@@ -6,3 +6,6 @@ tags
 *.swp
 .DS_Store
 .vscode
+build/
+dist/
+data/
