@@ -91,7 +91,7 @@ class FilterScreen(BaseScreen):
         self.all_categories_button.setStyleSheet('font-size: 13px;')
         button_layout.addWidget(self.all_categories_button)
 
-        button_layout.addSpacing(5)
+        button_layout.addSpacing(10)
 
         self.no_categories_button = QPushButton('none')
         self.no_categories_button.clicked.connect(lambda: self.check_all_categories(False))
