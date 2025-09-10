@@ -129,13 +129,14 @@ class CategorizeScreen(BaseScreen):
         if category in self.buttons.keys():
             self.buttons[category].setChecked(True)
         else:
-            print('Warning: guessed category {guessed_category} not in available buttons on screen') #XXX debug
+            pass
+            #print('Warning: guessed category {guessed_category} not in available buttons on screen') #XXX debug
 
     def category_button_toggled(self):
         sender = self.sender()
         if sender.isChecked():
             tmp = sender.text().replace('&&','&')
-            print(f'in categorize screen, category is {tmp}') #XXX debug
+            #print(f'in categorize screen, category is {tmp}') #XXX debug
             self.category_chosen.emit(tmp)
 
     def set_continue_button_enabled(self, enable: bool):

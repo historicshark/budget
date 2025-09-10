@@ -61,7 +61,7 @@ class Categories(QObject):
             raise FileNotFoundError(self.categories_file)
 
     def dump_categories(self) -> None:
-        print('dumping categories!')
+        #print('dumping categories!')
         with open(self.categories_file, 'w') as f:
             json.dump(self.categories, f, indent=2)
    
@@ -81,10 +81,15 @@ class Categories(QObject):
         self.categories_updated.emit()
 
     def remove_category(self, category: str):
-        if category in self.categories:
-            self.categories.remove(category)
-            self.dump_categories()
-            self.categories_updated.emit()
+        self.categories.remove(category)
+        self.dump_categories()
+        self.categories_updated.emit()
+
+    def update_category(self, old_category: str, new_category: str):
+        i = self.categories.index(old_category)
+        self.categories[i] = new_category
+        self.dump_categories()
+        self.categories_updated.emit()
 
     def add_new_category_rule(self, keyword: str, category: str) -> None:
         self.rules[keyword.lower()] = category

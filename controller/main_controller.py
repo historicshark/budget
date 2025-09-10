@@ -21,6 +21,7 @@ class MainController:
             'edit_record': EditRecordScreen(),
             'create_record': CreateRecordScreen(),
             'add_new_category': AddNewCategoryScreen(),
+            'edit_categories': EditCategoriesScreen(),
         }
         self.screen_indexes = {}
         self.register_screens()
@@ -34,6 +35,7 @@ class MainController:
             'edit_record': EditRecordController(self, self.screens['edit_record'], self.db, self.categories),
             'create_record': CreateRecordController(self, self.screens['create_record'], self.db, self.categories),
             'add_new_category': AddNewCategoryController(self, self.screens['add_new_category'], self.categories),
+            'edit_categories': EditCategoriesController(self, self.screens['edit_categories'], self.db, self.categories),
         }
 
         # connections
@@ -41,6 +43,7 @@ class MainController:
         self.screens['home'].expenses_clicked.connect(self.start_expenses)
         self.screens['home'].list_clicked.connect(self.start_list)
         self.screens['home'].create_clicked.connect(self.start_create_record)
+        self.screens['home'].categories_clicked.connect(lambda: self.go_to_screen('edit_categories'))
 
     def register_screens(self):
         for name, screen in self.screens.items():
@@ -51,11 +54,7 @@ class MainController:
                 screen.home_clicked.connect(lambda: self.go_to_screen('home'))
     
     def debug(self):
-        self.start_list()
-        self.screens['filter'].date_filter.menu.setCurrentIndex(1)
-        self.screens['filter'].amount_check_box.setChecked(False)
-        self.screens['filter'].category_check_box.setChecked(False)
-        self.controllers['filter'].on_continue_clicked()
+        self.go_to_screen('edit_categories')
 
     def start(self):
         self.main_window.show()
@@ -65,7 +64,7 @@ class MainController:
 
     def go_to_screen(self, name):
         if name in self.screens.keys():
-            print(f'go to {name}')
+            #print(f'go to {name}') XXX debug
             self.main_window.stack.setCurrentIndex(self.screen_indexes[name])
         else:
             print(f'screen {name} not implemented')

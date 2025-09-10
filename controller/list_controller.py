@@ -26,7 +26,7 @@ class ListController(QObject):
         self.list_screen.delete_clicked.connect(self.on_delete_clicked)
 
     def update_table(self):
-        self.db.print_records(self.records) #XXX debug
+        #self.db.print_records(self.records) #XXX debug
         self.list_screen.update_table(self.records)
 
     def sort_records(self, sort_by: str):

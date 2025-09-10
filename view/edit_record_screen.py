@@ -91,7 +91,7 @@ class EditRecordScreen(BaseScreen):
     def set_selected_category(self, category):
         category_index = self.category_edit.findText(category)
         if category_index < 0:
-            print(f'{category} is not listed!')
+            #print(f'{category} is not listed!')
             category_index = 0
         self.category_edit.setCurrentIndex(category_index)
 

@@ -3,6 +3,8 @@ from view import colors
 default_style_sheet = f'''
 QWidget {{
 font-family: Monaco;
+background-color: {colors['bg']};
+color: {colors['fg']};
 }}
 
 QLabel {{

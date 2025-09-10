@@ -49,10 +49,10 @@ class DatabaseManager:
 
         self.build_where(date, location, category, amount)
 
-        # for debugging
+        #XXX debug
         # print(command + self.where + order)
-        print('deleting the following records:')
-        self.select_and_print(date=date, location=location, category=category, amount=amount)
+        #print('deleting the following records:')
+        #self.select_and_print(date=date, location=location, category=category, amount=amount)
 
         self.cur.execute(command + self.where)
         self.con.commit()
@@ -92,7 +92,7 @@ class DatabaseManager:
         else:
             order = ''
 
-        print(command + self.where + order) #XXX debug
+        #print(command + self.where + order) #XXX debug
 
         res = self.cur.execute(command + self.where + order)
         output = res.fetchall() # list of tuples
@@ -130,7 +130,7 @@ class DatabaseManager:
         set_statement = set_statement[:-1]
 
         command = f'UPDATE {self.table_name}\n{set_statement}\n{self.where}'
-        print(command) #XXX debug
+        #print(command) #XXX debug
         self.cur.execute(command)
         self.con.commit()
 

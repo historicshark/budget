@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (
     QLayout,
     QSizePolicy,
 )
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QKeySequence
 
 from view import colors
@@ -22,6 +22,12 @@ class BaseScreen(QWidget):
     """
     def __init__(self):
         super().__init__()
+
+        self.warning_timer = QTimer()
+        self.warning_timer.setSingleShot(True)
+        self.warning_timer.timeout.connect(self.restore_footer)
+        self.footer_text = ''
+        self.footer_style = ''
 
         self.base_layout = QVBoxLayout()
         self.content_layout = QVBoxLayout()
@@ -59,6 +65,7 @@ class BaseScreen(QWidget):
         returns the layout containing the buttons
         """
         layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
 
         self.continue_button = QPushButton('Continue')
         self.continue_button.setFixedSize(150, 50)
@@ -82,33 +89,37 @@ class BaseScreen(QWidget):
         return layout
 
     def add_footer(self, owner_layout, keys_functions: list[tuple[str, str]]):
-        self.footer = QLabel(' • '.join([f'{function}: {key}' for key, function in keys_functions]))
+        self.footer_text = ' • '.join([f'{function}: {key}' for key, function in keys_functions])
+        self.footer = QLabel(self.footer_text)
         self.footer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
         self.footer.setObjectName('footer')
         owner_layout.addWidget(self.footer, alignment=Qt.AlignBottom)
+        self.footer_style = self.footer.styleSheet()
 
     def update_footer(self, keys_functions: list[tuple[str, str]]):
-        self.footer.setText(' • '.join([f'{function}: {key}' for key, function in keys_functions]))
+        self.footer_text = ' • '.join([f'{function}: {key}' for key, function in keys_functions])
+        self.footer.setText(self.footer_text)
+        self.footer_style = self.footer.styleSheet()
+
+    def restore_footer(self):
+        self.footer.setText(self.footer_text)
+        self.footer.setStyleSheet(self.footer_style)
 
     def clear_layout(self, layout: QLayout):
         """
         https://stackoverflow.com/questions/4528347/clear-all-widgets-in-a-layout-in-pyqt
         """
-        print(f'--- clearing layout {layout}')
         for i in reversed(range(layout.count())):
             layout_item = layout.itemAt(i)
             if layout_item.widget() is not None:
                 widget_to_remove = layout_item.widget()
-                print(f'removing widget {widget_to_remove}')
                 widget_to_remove.setParent(None)
                 layout.removeWidget(widget_to_remove)
             elif layout_item.spacerItem() is not None:
-                print(f'removing spacer {layout_item.spacerItem()}')
+                pass
             else:
                 layout_to_remove = layout.itemAt(i)
-                print(f'-- found Layout: {layout_to_remove}')
                 self.clear_layout(layout_to_remove)
-        print('--- clear complete')
 
     def reset(self):
         print(f'In {self.__class__.__name__}, reset not implemented!') #XXX debug
@@ -131,3 +142,10 @@ class BaseScreen(QWidget):
 
         apply_borders(self)
 
+    def show_warning(self, msg: str, duration=5000):
+        self.footer.setText(msg)
+        self.footer.setStyleSheet(f'''
+                                  background-color: {colors['red']};
+                                  color: {colors['fg']};
+                                  ''')
+        self.warning_timer.start(duration)

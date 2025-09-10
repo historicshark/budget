@@ -181,7 +181,7 @@ class FilterScreen(BaseScreen):
         self.filter['Amount'] = self.get_amount_range() if self.amount_check_box.isChecked() else None
         self.filter['Category'] = self.checked_categories if self.category_check_box.isChecked() else None
         self.filter_changed.emit(self.filter)
-        print(self.filter) #XXX debug
+        #print(self.filter) #XXX debug
 
     def reset(self):
         self.checked_categories = []

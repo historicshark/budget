@@ -120,7 +120,6 @@ class DateFilter(QWidget):
         self.setLayout(self.main_layout)
 
     def on_menu_item_selected(self, option):
-        print('menu changed')
         self.date_range_widget.hide()
         self.one_month_widget.hide()
         match option:

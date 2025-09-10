@@ -118,7 +118,7 @@ class Importer(Sequence):
 
     def set_category(self, index: int, category: str):
         assert 0 <= index < len(self.data)
-        print(f'categorized transaction {self.data[index].location} as {category}') #XXX debug
+        #print(f'categorized transaction {self.data[index].location} as {category}') #XXX debug
         self.data[index].category = category
 
     def date_to_iso(self, date: str, add_year=False) -> str:

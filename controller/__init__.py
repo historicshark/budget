@@ -6,3 +6,4 @@ from .list_controller import ListController
 from .edit_record_controller import EditRecordController
 from .create_record_controller import CreateRecordController
 from .add_new_category_controller import AddNewCategoryController
+from .edit_categories_controller import EditCategoriesController

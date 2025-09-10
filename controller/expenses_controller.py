@@ -24,8 +24,7 @@ class ExpensesController(QObject):
         self.expenses_screen.new_search_clicked.connect(self.on_new_search_clicked)
 
     def update_views(self):
-        self.db.print_records(self.records) #XXX debug
-
+        #self.db.print_records(self.records) #XXX debug
         # sort records by category
         totals = {}
         dates = {}
