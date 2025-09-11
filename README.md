@@ -4,11 +4,11 @@
 
 Go to [releases](https://github.com/historicshark/budget/releases).
 
-![step1](docs/step1.png)
+![step1](doc/step1.png)
 
 I have a Windows version and a Mac ARM version of the program that can be downloaded.
 
-![step2](docs/step2.png)
+![step2](doc/step2.png)
 
 Download the zip file. If you are on Windows, it will work best if you extract the zip file in your Documents folder. On Mac, extracting in your home folder will work best. After extracting, there should be a `budget_program` folder containing the executable `budget_program` and a folder called `_internal`, which contains files needed for the program. Now you can double-click the executable and run it to start the program.
 
