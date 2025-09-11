@@ -65,6 +65,8 @@ class ExpensesScreen(BaseScreen):
         self.summary_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.summary_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
+        self.protect_last_column(self.summary_table)
+
         summary_table_layout.addWidget(self.summary_table)
         summary_table_layout.addStretch()
 
@@ -145,7 +147,7 @@ class ExpensesScreen(BaseScreen):
         self.summary_table.setItem(n_rows - 1, 1, total_item)
         self.summary_table.setItem(n_rows - 1, 2, percentage_item)
 
-        for col in range(self.summary_table.columnCount()):
+        for col in range(self.summary_table.columnCount() - 1): # minus 1 since there is a dummy column to protect the scroll bar from overlapping
             item = self.summary_table.item(n_rows - 1, col)
             font = item.font()
             font.setBold(True)

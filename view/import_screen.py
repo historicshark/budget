@@ -110,7 +110,7 @@ class ImportScreen(BaseScreen):
         self.update_footer(keys_functions)
 
     def open_file_dialog(self):
-        file, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'Statement Files (*.ofx *.qbo *.qfx *.csv)')
+        file, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'Statement Files (*.ofx *.qbo *.qfx')
         if file:
             if Path(file).exists():
                 self.import_label.setText(f'{file}')
@@ -125,7 +125,7 @@ class ImportScreen(BaseScreen):
                                 color: {colors['red']};
                                 ''')
             self.file_chosen.emit(file)
-    
+
     def set_continue_button_enabled(self, enable: bool):
         self.continue_button.setEnabled(enable)
 

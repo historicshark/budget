@@ -8,6 +8,8 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QLayout,
     QSizePolicy,
+    QTableWidget,
+    QTableWidgetItem,
 )
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QKeySequence
@@ -149,3 +151,23 @@ class BaseScreen(QWidget):
                                   color: {colors['fg']};
                                   ''')
         self.warning_timer.start(duration)
+
+    def protect_last_column(self, table: QTableWidget):
+        if table.horizontalHeaderItem(table.columnCount() - 1) is not None:
+            table.insertColumn(table.columnCount())
+            table.setHorizontalHeaderItem(table.columnCount() - 1, QTableWidgetItem(''))
+
+        def adjust_width():
+            sb = table.verticalScrollBar()
+            if sb.isVisible():
+                w = sb.sizeHint().width()
+                table.setColumnWidth(table.columnCount() - 1, w)
+                table.setColumnHidden(table.columnCount() - 1, False)
+            else:
+                table.setColumnHidden(table.columnCount() - 1, True)
+
+        def schedule_forced_adjust():
+            QTimer.singleShot(1, adjust_width)
+
+        table.verticalScrollBar().rangeChanged.connect(lambda *_: schedule_forced_adjust())
+        schedule_forced_adjust()

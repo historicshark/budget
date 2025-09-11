@@ -52,6 +52,8 @@ class ListScreen(BaseScreen):
 
         self.table.cellDoubleClicked.connect(self.on_table_cell_double_clicked)
 
+        self.protect_last_column(self.table)
+
         self.content_layout.addWidget(self.table) # adding alignment makes the table small
 
         # bottom row layout
