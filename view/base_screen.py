@@ -14,6 +14,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QKeySequence
 
+import os
+
 from view import colors
 
 class BaseScreen(QWidget):
@@ -159,8 +161,8 @@ class BaseScreen(QWidget):
 
         def adjust_width():
             sb = table.verticalScrollBar()
-            if sb.isVisible():
-                w = sb.sizeHint().width()
+            if os.name == 'posix' and sb.isVisible():
+                w = sb.width()
                 table.setColumnWidth(table.columnCount() - 1, w)
                 table.setColumnHidden(table.columnCount() - 1, False)
             else:
