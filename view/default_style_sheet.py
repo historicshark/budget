@@ -1,11 +1,17 @@
+import sys
 from view import colors
 from model import get_asset_path
 
 pencil_square = get_asset_path('assets/pencil-square.svg').as_posix()
 
+if sys.platform == 'darwin':
+    font = 'Monaco'
+else:
+    font = 'Arial'
+
 default_style_sheet = f'''
 QWidget {{
-font-family: "Arial";
+font-family: "{font}";
 background-color: {colors['bg']};
 color: {colors['fg']};
 }}
