@@ -23,10 +23,10 @@ class EditCategoriesController(QObject):
 
         self.categories.categories_updated.connect(self.update_category_options)
 
-    def on_continue_clicked(self, category_changes: list[tuple[str, str]]):
+    def on_continue_clicked(self, category_changes: list[tuple[str, str, str]]):
         # Check that no text boxes are empty or contain wrong characters
-        for old_category, new_category in category_changes:
-            if not new_category:  
+        for old_category, new_category, old_type, new_type in category_changes:
+            if not new_category:
                 self.edit_categories_screen.show_warning('Error: Category names cannot be empty!')
                 return
             if any(char in new_category for char in ['"', "'"]):
@@ -34,13 +34,16 @@ class EditCategoriesController(QObject):
                 return
 
         # Update records in database and add to categories
-        for old_category, new_category in category_changes:
+        for old_category, new_category, old_type, new_type in category_changes:
             if old_category == 'New Category':
-                self.categories.add_new_category(new_category)
+                self.categories.add_new_category(new_category, new_type)
 
             elif old_category != new_category:
                 self.db.update(old_category=old_category, new_category=new_category)
-                self.categories.update_category(old_category, new_category)
+                self.categories.update_category(old_category, new_category, new_type)
+
+            elif old_type != new_type:
+                self.categories.update_category(old_category, new_category, new_type)
 
     def on_cancel_clicked(self):
         self.update_category_options()
@@ -57,4 +60,6 @@ class EditCategoriesController(QObject):
             self.categories.remove_category(category)
 
     def update_category_options(self):
-        self.edit_categories_screen.update_category_options(self.categories)
+        self.edit_categories_screen.update_category_options(self.categories,
+                                                            self.categories.types,
+                                                            self.categories.available_types)

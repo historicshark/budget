@@ -7,6 +7,7 @@ from model.file_handling import get_data_path
 
 class Categories(QObject):
     categories_updated = pyqtSignal()
+    available_types = ['expense', 'income', 'savings']
 
     def __init__(self):
         super().__init__()
@@ -14,7 +15,7 @@ class Categories(QObject):
         self.categories_file = get_data_path('categories.json')
 
         self.rules = self.load_category_rules()
-        self.categories = self.load_categories()
+        self.categories, self.types = self.load_categories()
 
     def __getitem__(self, i):
         return self.categories[i]
@@ -54,23 +55,26 @@ class Categories(QObject):
 
     def create_categories_file(self):
         default_categories = ['Rent', 'Income', 'Groceries', 'Transportation', 'Other']
+        default_types = ['expense', 'income', 'expense', 'expense', 'expense']
         self.categories = default_categories
+        self.types = default_types
         self.dump_categories()
         return default_categories
 
     # Load json file containing a list of categories
-    def load_categories(self) -> list[str]:
+    def load_categories(self) -> tuple[list[str], list[str]]:
         if self.categories_file.exists():
             with open(self.categories_file, 'r') as f:
-                category_options = json.load(f)
-            return category_options
+                category_options_types = json.load(f)
+            return list(category_options_types.keys()), list(category_options_types.values())
         else:
             return self.create_categories_file()
 
     def dump_categories(self) -> None:
         #print('dumping categories!')
         with open(self.categories_file, 'w') as f:
-            json.dump(self.categories, f, indent=2)
+            category_options_types = {c: t for c, t in zip(self.categories, self.types)}
+            json.dump(category_options_types, f, indent=2)
    
     def guess_category(self, location: str) -> str:
         location = location.lower()
@@ -79,22 +83,29 @@ class Categories(QObject):
                 return self.rules[keyword]
         return self.categories[0]
  
-    def add_new_category(self, new_category: str) -> None:
+    def add_new_category(self, new_category: str, new_type: str) -> None:
         if new_category in self.categories:
             raise ValueError(f'Category {new_category} already exists!')
+        assert new_type in self.available_types
 
         self.categories.append(new_category)
+        self.types.append(new_type)
         self.dump_categories()
         self.categories_updated.emit()
 
     def remove_category(self, category: str):
-        self.categories.remove(category)
+        i = self.categories.index(category)
+        self.categories.pop(i)
+        self.types.pop(i)
         self.dump_categories()
         self.categories_updated.emit()
 
-    def update_category(self, old_category: str, new_category: str):
+    def update_category(self, old_category: str, new_category: str, new_type: str):
+        assert new_type in self.available_types
+
         i = self.categories.index(old_category)
         self.categories[i] = new_category
+        self.types[i] = new_type
         self.dump_categories()
         self.categories_updated.emit()
 
