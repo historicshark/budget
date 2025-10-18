@@ -66,7 +66,7 @@ class Categories(QObject):
         if self.categories_file.exists():
             with open(self.categories_file, 'r') as f:
                 category_options_types = json.load(f)
-            return list(category_options_types.keys()), list(category_options_types.values())
+            return (list(category_options_types.keys()), list(category_options_types.values()))
         else:
             return self.create_categories_file()
 
