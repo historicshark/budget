@@ -22,6 +22,7 @@ class MainController:
             'create_record': CreateRecordScreen(),
             'add_new_category': AddNewCategoryScreen(),
             'edit_categories': EditCategoriesScreen(),
+            'edit_budget': EditBudgetScreen(),
         }
         self.screen_indexes = {}
         self.register_screens()
@@ -44,6 +45,7 @@ class MainController:
         self.screens['home'].list_clicked.connect(self.start_list)
         self.screens['home'].create_clicked.connect(self.start_create_record)
         self.screens['home'].categories_clicked.connect(lambda: self.go_to_screen('edit_categories'))
+        self.screens['home'].edit_budget_clicked.connect(lambda: self.go_to_screen('edit_budget'))
 
     def register_screens(self):
         for name, screen in self.screens.items():
