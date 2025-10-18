@@ -63,7 +63,7 @@ class CategorizeScreen(BaseScreen):
 
         left_layout.addStretch()
 
-        continue_cancel_layout = self.add_continue_cancel_buttons(left_layout, self.continue_clicked.emit, self.cancel_clicked.emit, add_stretch=False)
+        continue_cancel_layout = self.add_continue_cancel_buttons(left_layout, self.continue_clicked.emit, self.cancel_clicked.emit, add_stretch='none')
         skip_button = QPushButton('Skip')
         skip_button.setFixedSize(150, 50)
         skip_button.clicked.connect(self.skip_clicked.emit)

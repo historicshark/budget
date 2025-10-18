@@ -62,10 +62,10 @@ class BaseScreen(QWidget):
         owner_layout.addLayout(title_layout)
         owner_layout.addSpacing(spacing)
 
-    def add_continue_cancel_buttons(self, owner_layout, continue_clicked_connect, cancel_clicked_connect, add_stretch=True) -> QHBoxLayout:
+    def add_continue_cancel_buttons(self, owner_layout, continue_clicked_connect, cancel_clicked_connect, add_stretch='right') -> QHBoxLayout:
         """
         adds shortcuts 'Return' and 'Escape' to Continue and Cancel buttons
-        add_stretch: add stretch to the end of the QHBoxLayout containing the buttons
+        add_stretch: add stretch to the left/right/both/none of the QHBoxLayout containing the buttons
         returns the layout containing the buttons
         """
         layout = QHBoxLayout()
@@ -84,11 +84,15 @@ class BaseScreen(QWidget):
         cancel_shortcut.activated.connect(self.cancel_button.click)
         self.cancel_button.setStyleSheet(f'QPushButton:hover {{ background-color: {colors["orange-faded"]}; }}')
 
+        if 'left' in add_stretch or 'both' in add_stretch:
+            layout.addStretch()
+
         layout.addWidget(self.continue_button)
         layout.addSpacing(20)
         layout.addWidget(self.cancel_button)
-        if add_stretch:
+        if 'right' in add_stretch or 'both' in add_stretch:
             layout.addStretch()
+
         owner_layout.addLayout(layout)
         return layout
 
