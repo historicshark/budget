@@ -156,7 +156,7 @@ class ExpensesScreen(BaseScreen):
 
         # set the table maximum height
         height = self.summary_table.verticalHeader().length() + self.summary_table.horizontalHeader().height()
-        self.summary_table.setMinimumHeight(height + 2)
+        self.summary_table.setMaximumHeight(height + 2)
 
     def update_list_view(self,
                          categories: list[str],

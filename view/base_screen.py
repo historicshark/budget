@@ -159,6 +159,9 @@ class BaseScreen(QWidget):
         self.warning_timer.start(duration)
 
     def protect_last_column(self, table: QTableWidget):
+        """ function to add a dummy column to prevent the scroll bar from
+        overlapping the last column
+        """
         if table.horizontalHeaderItem(table.columnCount() - 1) is not None:
             table.insertColumn(table.columnCount())
             table.setHorizontalHeaderItem(table.columnCount() - 1, QTableWidgetItem(''))
