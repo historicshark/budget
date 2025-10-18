@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
     QScrollArea,
     QLineEdit,
     QApplication,
+    QSizePolicy,
 )
 from PyQt5.QtCore import Qt, pyqtSignal, QTimer
 
@@ -77,11 +78,16 @@ class EditCategoriesScreen(BaseScreen):
         self.combo_boxes.clear()
         self.clear_layout(self.list_layout)
 
-        self.list_layout.addWidget(QLabel('Category'), 0, 1)
-        self.list_layout.addWidget(QLabel('Type'), 0, 2)
+        label = QLabel('Category')
+        label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.list_layout.addWidget(label, 0, 1)
+
+        label = QLabel('Type')
+        label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.list_layout.addWidget(label, 0, 2)
 
         for row, (category, category_type) in enumerate(zip(categories, types)):
-            row += 1
+            row += 1 # first row is the labels XXX fix?
             check_box = QCheckBox()
             line_edit = QLineEdit(category)
             line_edit.setStyleSheet('font-size: 15px;')
@@ -100,7 +106,7 @@ class EditCategoriesScreen(BaseScreen):
             self.combo_boxes.append(combo_box)
 
         n_rows = len(categories)
-        self.list_layout.setColumnStretch(n_rows + 1, 3)
+        self.list_layout.setColumnStretch(3, 3)
         self.list_layout.setRowStretch(n_rows + 1, 3)
         self.get_selected_indices()
 
@@ -143,9 +149,11 @@ class EditCategoriesScreen(BaseScreen):
         combo_box.addItems(available_types)
 
         n_rows = len(self.categories)
+        self.list_layout.setRowStretch(n_rows + 1, 0) # remove stretch from last row
         self.list_layout.addWidget(check_box, n_rows + 1, 0)
         self.list_layout.addWidget(line_edit, n_rows + 1, 1)
         self.list_layout.addWidget(combo_box, n_rows + 1, 2)
+        self.list_layout.setRowStretch(n_rows + 2, 3) # add stretch to new last row
 
         self.categories.append('New Category')
         self.old_types.append(combo_box.currentText())
