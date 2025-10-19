@@ -21,11 +21,12 @@ class EditBudgetScreen(BaseScreen):
     home_clicked = pyqtSignal()
     continue_clicked = pyqtSignal()
     cancel_clicked = pyqtSignal()
+    amounts_changed = pyqtSignal(list)
 
     def __init__(self):
         super().__init__()
         self.categories: list[str] = []
-        self.amounts: list[QDoubleSpinBox] = []
+        self.boxes: list[QDoubleSpinBox] = []
         self.initUI()
 
     def initUI(self):
@@ -61,26 +62,25 @@ class EditBudgetScreen(BaseScreen):
         self.summary_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.summary_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.summary_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.summary_table.setStyleSheet('font-size: 16px;')
         self.protect_last_column(self.summary_table)
 
+        summary_table_layout.addStretch()
         summary_table_layout.addWidget(self.summary_table, alignment=Qt.AlignCenter)
         summary_table_layout.addStretch()
 
         button_layout = self.add_continue_cancel_buttons(summary_table_layout, self.on_continue_clicked, self.on_cancel_clicked, add_stretch='both')
+        self.continue_button.setText('Confirm')
         layout.addLayout(summary_table_layout)
 
         keys_functions = [
-            ('<return>', 'continue'),
+            ('<return>', 'confirm'),
             ('<esc>', 'cancel'),
         ]
         self.add_footer(self.base_layout, keys_functions)
 
-        #self.update_category_options([f'test{x}' for x in range(5)],
-        #                             [10*x for x in range(5)])
-        #self.update_summary_table(['income', 'expense', 'savings', 'net'],
-        #                          [6000.0, 5400.0, 200.0, 400.0])
-
     def update_category_options(self, categories: list[str], amounts: list[float]):
+        self.boxes.clear()
         for row, (category, amount) in enumerate(zip(categories, amounts)):
             label = QLabel(category.replace('&', '&&'))
 
@@ -90,6 +90,8 @@ class EditBudgetScreen(BaseScreen):
             box.setMinimum(0)
             box.setMaximum(1e5)
             box.setValue(amount)
+            box.valueChanged.connect(self.on_amounts_changed)
+            self.boxes.append(box)
 
             self.list_layout.addWidget(label, row, 0)
             self.list_layout.addWidget(box, row, 1)
@@ -124,7 +126,16 @@ class EditBudgetScreen(BaseScreen):
         self.summary_table.setFixedHeight(height + 2)
         self.summary_table.setMaximumWidth(width + 2)
 
+    def get_amounts(self) -> list[float]:
+        amounts = [box.value() for box in self.boxes]
+        return amounts
+    
+    def on_amounts_changed(self):
+        """ function to send values in boxes to controller as they are changed. Not used when continue is clicked. """
+        self.amounts_changed.emit(self.get_amounts())
+
     def on_continue_clicked(self):
+        """ commits the changes made and writes to file """
         self.continue_clicked.emit()
 
     def on_cancel_clicked(self):

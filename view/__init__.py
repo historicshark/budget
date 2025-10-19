@@ -19,7 +19,7 @@ from .edit_record_screen import EditRecordScreen
 from .create_record_screen import CreateRecordScreen
 from .add_new_category_screen import AddNewCategoryScreen
 from .edit_categories_screen import EditCategoriesScreen
-from .edit_budget import EditBudgetScreen
+from .edit_budget_screen import EditBudgetScreen
 
 __all__ = [
     'MainWindow',

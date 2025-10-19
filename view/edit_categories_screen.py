@@ -59,13 +59,14 @@ class EditCategoriesScreen(BaseScreen):
         del_button.setStyleSheet('font-size: 16px;')
 
         button_layout = self.add_continue_cancel_buttons(self.content_layout, self.on_continue_clicked, self.cancel_clicked.emit)
+        self.continue_button.setText('Confirm')
         button_layout.insertWidget(0, add_button)
         button_layout.insertSpacing(1, 20)
         button_layout.insertWidget(2, del_button)
         button_layout.insertStretch(3, 10)
 
         keys_functions = [
-            ('<return>', 'continue'),
+            ('<return>', 'confirm'),
             ('<esc>', 'cancel'),
         ]
         self.add_footer(self.base_layout, keys_functions)

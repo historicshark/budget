@@ -37,6 +37,7 @@ class MainController:
             'create_record': CreateRecordController(self, self.screens['create_record'], self.db, self.categories),
             'add_new_category': AddNewCategoryController(self, self.screens['add_new_category'], self.categories),
             'edit_categories': EditCategoriesController(self, self.screens['edit_categories'], self.db, self.categories),
+            'edit_budget': EditBudgetController(self, self.screens['edit_budget'], self.categories),
         }
 
         # connections

@@ -62,4 +62,4 @@ class EditCategoriesController(QObject):
     def update_category_options(self):
         self.edit_categories_screen.update_category_options(self.categories,
                                                             self.categories.types,
-                                                            self.categories.available_types)
+                                                            self.categories.available_types.keys())

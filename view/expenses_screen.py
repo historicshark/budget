@@ -155,8 +155,11 @@ class ExpensesScreen(BaseScreen):
             item.setBackground(QColor(colors['purple-faded']))
 
         # set the table maximum height
-        height = self.summary_table.verticalHeader().length() + self.summary_table.horizontalHeader().height()
-        self.summary_table.setMaximumHeight(height + 2)
+        height = self.summary_table.horizontalHeader().height()
+        for row in range(self.summary_table.rowCount()):
+            height += self.summary_table.rowHeight(row)
+
+        self.summary_table.setFixedHeight(height + 2)
 
     def update_list_view(self,
                          categories: list[str],
