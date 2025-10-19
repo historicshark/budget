@@ -16,6 +16,7 @@ class HomeScreen(BaseScreen):
     create_clicked = pyqtSignal()
     categories_clicked = pyqtSignal()
     edit_budget_clicked = pyqtSignal()
+    budget_clicked = pyqtSignal()
 
     def __init__(self):
         super().__init__()    
@@ -24,8 +25,9 @@ class HomeScreen(BaseScreen):
             ('expenses', 'Visualize expenses', self.expenses_clicked.emit, 'e'),
             ('list', 'List, edit, and delete transactions', self.list_clicked.emit, 'l'),
             ('create', 'Manually create a transaction', self.create_clicked.emit, 'c'),
-            ('categories', 'Add, delete, and change categories', self.categories_clicked.emit, 'd'),
-            ('edit budget', 'Edit monthly budget by category', self.edit_budget_clicked.emit, 'b'),
+            ('categories', 'Add, delete, and change categories', self.categories_clicked.emit, 'a'),
+            ('edit budget', 'Edit monthly budget by category', self.edit_budget_clicked.emit, 'd'),
+            ('budget', 'View budget', self.budget_clicked.emit, 'b'),
         ]
 
         self.initUI()

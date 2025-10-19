@@ -20,6 +20,7 @@ from .create_record_screen import CreateRecordScreen
 from .add_new_category_screen import AddNewCategoryScreen
 from .edit_categories_screen import EditCategoriesScreen
 from .edit_budget_screen import EditBudgetScreen
+from .budget_screen import BudgetScreen
 
 __all__ = [
     'MainWindow',
@@ -36,4 +37,5 @@ __all__ = [
     'AddNewCategoryScreen',
     'EditCategoriesScreen',
     'EditBudgetScreen',
+    'BudgetScreen',
 ]
