@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, pyqtSignal
 import math
 
-from view.widgets import CollapsibleGroupBox, DateFilter
+from view.widgets import DateFilter
 from view import BaseScreen, colors
 
 class FilterScreen(BaseScreen):

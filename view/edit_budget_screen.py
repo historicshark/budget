@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import (
     QAbstractItemView,
     QHeaderView,
 )
-from PyQt5.QtCore import pyqtSignal, Qt, QTimer
+from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QFont, QColor
 
 from view import BaseScreen, colors
@@ -63,7 +63,7 @@ class EditBudgetScreen(BaseScreen):
         self.summary_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.summary_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.summary_table.setStyleSheet('font-size: 16px;')
-        self.protect_last_column(self.summary_table)
+        #self.protect_last_column(self.summary_table)
 
         summary_table_layout.addStretch()
         summary_table_layout.addWidget(self.summary_table, alignment=Qt.AlignCenter)
@@ -81,6 +81,7 @@ class EditBudgetScreen(BaseScreen):
 
     def update_category_options(self, categories: list[str], amounts: list[float]):
         self.boxes.clear()
+        self.clear_layout(self.list_layout)
         for row, (category, amount) in enumerate(zip(categories, amounts)):
             label = QLabel(category.replace('&', '&&'))
 
@@ -111,8 +112,9 @@ class EditBudgetScreen(BaseScreen):
             self.summary_table.setItem(row, 0, category_type_item)
             self.summary_table.setItem(row, 1, amount_item)
 
+        # set the table size
         width = 0
-        for col in range(self.summary_table.columnCount() - 1): # minus 1 since there is a dummy column to protect the scroll bar from overlapping
+        for col in range(self.summary_table.columnCount()): # if adding dummy column -1
             item = self.summary_table.item(n_rows - 1, col)
             font = item.font()
             font.setBold(True)
@@ -121,7 +123,6 @@ class EditBudgetScreen(BaseScreen):
 
             width += self.summary_table.columnWidth(col)
 
-        # set the table size
         height = self.summary_table.verticalHeader().length() + self.summary_table.horizontalHeader().height()
         self.summary_table.setFixedHeight(height + 2)
         self.summary_table.setMaximumWidth(width + 2)
