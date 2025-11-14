@@ -126,7 +126,7 @@ class CategorizeScreen(BaseScreen):
         self.button_layout.addRow(key_label, button)
 
     def set_category(self, category: str):
-        if category in self.buttons.keys():
+        if category in self.buttons:
             self.buttons[category].setChecked(True)
         else:
             pass

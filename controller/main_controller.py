@@ -68,7 +68,7 @@ class MainController:
         #self.debug() #XXX debug
 
     def go_to_screen(self, name):
-        if name in self.screens.keys():
+        if name in self.screens:
             #print(f'go to {name}') XXX debug
             self.main_window.stack.setCurrentIndex(self.screen_indexes[name])
         else:

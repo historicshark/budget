@@ -32,7 +32,7 @@ class ExpensesController(QObject):
         amounts = {}
         for record in self.records:
             category = record.category
-            if category not in totals.keys():
+            if category not in totals:
                 totals[category] = Decimal('0')
                 dates[category] = []
                 locations[category] = []
@@ -43,7 +43,7 @@ class ExpensesController(QObject):
             amounts[category].append(record.amount_str())
 
         # sort lists by date
-        for category in dates.keys():
+        for category in dates:
             sorted_indexes = [p[0] for p in sorted(enumerate(dates[category]), key=lambda x: datetime.date.fromisoformat(x[1]))]
             dates[category] = [dates[category][i] for i in sorted_indexes]
             locations[category] = [locations[category][i] for i in sorted_indexes]

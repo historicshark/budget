@@ -89,7 +89,7 @@ class Categories(QObject):
    
     def guess_category(self, location: str) -> str:
         location = location.lower()
-        for keyword in self.rules.keys():
+        for keyword in self.rules:
             if keyword in location:
                 return self.rules[keyword]
         return self.categories[0]
@@ -97,7 +97,7 @@ class Categories(QObject):
     def add_new_category(self, new_category: str, new_type: str, new_amount=0.0) -> None:
         if new_category in self.categories:
             raise ValueError(f'Category {new_category} already exists!')
-        assert new_type in self.available_types.keys()
+        assert new_type in self.available_types
 
         self.categories.append(new_category)
         self.types.append(new_type)
@@ -116,7 +116,7 @@ class Categories(QObject):
         self.categories_updated.emit()
 
     def update_category(self, old_category: str, new_category: str, new_type: str):
-        assert new_type in self.available_types.keys()
+        assert new_type in self.available_types
 
         i = self.categories.index(old_category)
         self.categories[i] = new_category
