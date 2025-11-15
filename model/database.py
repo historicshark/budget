@@ -94,7 +94,24 @@ class DatabaseManager:
         output = res.fetchall() # list of tuples
         #return [dict(zip(['Date','Location','Category','Amount'], values)) for values in output]
         return [Record(date=values[0], location=values[1], category=values[2], amount=values[3]) for values in output]
-    
+
+    def totals_by_category(self, date=None) -> list[tuple[str, float]]:
+        """ Date: list containing two datetime.date for a date range """
+        command = f'''SELECT
+    Category,
+    SUM(Amount) as total
+FROM {self.table_name}
+'''
+
+        if date:
+            command += f'WHERE Date BETWEEN "{date[0]}" AND "{date[1]}"\n'
+
+        command += 'GROUP BY Category\nORDER BY total DESC;'
+
+        res = self.cur.execute(command)
+        output = res.fetchall()
+        return output
+
     def update(self,
                old_date=None, old_location=None, old_category=None, old_amount=None,
                new_date=None, new_location=None, new_category=None, new_amount=None):
