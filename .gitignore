@@ -9,3 +9,6 @@ tags
 build/
 dist/
 data/
+*.spec
+icon.iconset
+icon.png
