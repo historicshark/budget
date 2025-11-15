@@ -32,13 +32,14 @@ class MainController:
             'import': ImportController(self, self.screens['import'], self.importer),
             'categorize': CategorizeController(self, self.screens['categorize'], self.screens['add_new_rule'], self.screens['import_complete'], self.importer, self.categories),
             'filter': FilterController(self, self.screens['filter'], self.db, self.categories),
-            'expenses': ExpensesController(self, self.screens['expenses'], self.db),
+            'expenses': ExpensesController(self, self.screens['expenses'], self.categories, self.db),
             'list': ListController(self, self.screens['list'], self.db),
             'edit_record': EditRecordController(self, self.screens['edit_record'], self.db, self.categories),
             'create_record': CreateRecordController(self, self.screens['create_record'], self.db, self.categories),
             'add_new_category': AddNewCategoryController(self, self.screens['add_new_category'], self.categories),
             'edit_categories': EditCategoriesController(self, self.screens['edit_categories'], self.db, self.categories),
             'edit_budget': EditBudgetController(self, self.screens['edit_budget'], self.categories),
+            'budget': BudgetController(self, self.screens['budget'], self.categories, self.db),
         }
 
         # connections
@@ -48,7 +49,7 @@ class MainController:
         self.screens['home'].create_clicked.connect(self.start_create_record)
         self.screens['home'].categories_clicked.connect(lambda: self.go_to_screen('edit_categories'))
         self.screens['home'].edit_budget_clicked.connect(lambda: self.go_to_screen('edit_budget'))
-        self.screens['home'].budget_clicked.connect(lambda: self.go_to_screen('budget'))
+        self.screens['home'].budget_clicked.connect(self.start_budget)
 
     def register_screens(self):
         for name, screen in self.screens.items():
@@ -105,6 +106,11 @@ class MainController:
         self.go_to_screen('create_record')
         self.controllers['add_new_category'].connect_continue_cancel(self.add_new_category_continue_to_create_record_screen,
                                                                      self.add_new_category_cancel_to_create_record_screen)
+
+    def start_budget(self):
+        #self.controllers['budget'].load_bars()
+        #self.controllers['budget'].update_screen()
+        self.go_to_screen('budget')
 
     def set_records_and_go_to_expenses_screen(self):
         self.controllers['expenses'].records = self.controllers['filter'].records

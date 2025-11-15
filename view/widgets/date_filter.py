@@ -18,10 +18,12 @@ import datetime
 class DateFilter(QWidget):
     stateChanged = pyqtSignal(Qt.CheckState)
     date_range_changed = pyqtSignal(list)
+    default_options = ['last month', 'last 3 months', 'last 6 months', 'last year', 'range', 'one month', 'all time']
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, use_check_box=True):
         super().__init__(parent)
-        self.options = ['last month', 'last 3 months', 'last 6 months', 'last year', 'range', 'one month', 'all time']
+        self.use_check_box = use_check_box
+        self.options = self.default_options.copy()
         self.date_range = [datetime.date.today()] * 2
         self.set_range_last_n_months(1)
 
@@ -32,9 +34,12 @@ class DateFilter(QWidget):
         self.header_layout = QHBoxLayout()
         self.header_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.check_box = QCheckBox('Date:')
-        self.check_box.setChecked(True)
-        self.check_box.stateChanged.connect(lambda state: self.stateChanged.emit(state))
+        if self.use_check_box:
+            self.check_box = QCheckBox('Date:')
+            self.check_box.setChecked(True)
+            self.check_box.stateChanged.connect(lambda state: self.stateChanged.emit(state))
+            self.header_layout.addWidget(self.check_box)
+            self.header_layout.addSpacing(10)
 
         self.menu = ComboBoxFix()
         self.menu.addItems(self.options)
@@ -43,8 +48,6 @@ class DateFilter(QWidget):
         self.menu.setCurrentIndex(0)
         self.menu.currentTextChanged.connect(self.on_menu_item_selected)
 
-        self.header_layout.addWidget(self.check_box)
-        self.header_layout.addSpacing(10)
         self.header_layout.addWidget(self.menu)
         self.header_layout.addStretch()
         self.main_layout.addLayout(self.header_layout)
@@ -182,8 +185,9 @@ class DateFilter(QWidget):
         self.date_range = [datetime.date.today()] * 2
         self.set_range_last_n_months(1)
         
-        self.check_box.setChecked(True)
-        self.menu.setCurrentIndex(0)
+        if self.use_check_box:
+            self.check_box.setChecked(True)
+            self.menu.setCurrentIndex(0)
 
         self.from_date.setDate(QDate().fromString(str(self.date_range[0]), Qt.ISODate))
         self.to_date.setDate(QDate().fromString(str(self.date_range[1]), Qt.ISODate))
@@ -191,4 +195,15 @@ class DateFilter(QWidget):
 
         self.month_box.setCurrentIndex(datetime.date.today().month-1)
         self.year_box.setValue(datetime.date.today().year)
-
+    
+    def disable_options(self, options):
+        """ options is a str or list of str """
+        self.options = self.default_options
+        if isinstance(options, str):
+            self.options.remove(options)
+        else:
+            for option in options:
+                self.options.remove(option)
+        self.menu.clear()
+        self.menu.addItems(self.options)
+        self.menu.setCurrentIndex(0)

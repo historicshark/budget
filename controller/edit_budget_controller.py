@@ -14,6 +14,9 @@ class EditBudgetController(QObject):
         self.main = main
         self.edit_budget_screen = edit_budget_screen
         self.categories = categories
+
+        # temporary amounts that are being edited on this screen. Holds changes before they
+        # are saved by self.categories
         self.tmp_amounts = self.categories.amounts.copy()
 
         # wiring

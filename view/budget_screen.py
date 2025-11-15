@@ -9,12 +9,13 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import pyqtSignal, Qt
 
 from view import BaseScreen, colors
-from view.widgets import BudgetProgressBar
+from view.widgets import BudgetProgressBar, DateFilter
 
 class BudgetScreen(BaseScreen):
     home_clicked = pyqtSignal()
     continue_clicked = pyqtSignal()
     cancel_clicked = pyqtSignal()
+    date_range_changed = pyqtSignal(list)
 
     def __init__(self):
         super().__init__()
@@ -37,6 +38,19 @@ class BudgetScreen(BaseScreen):
         self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.content_layout.addWidget(self.scroll_area)
 
+        button_layout = self.add_continue_cancel_buttons(self.content_layout, self.on_continue_clicked, self.on_cancel_clicked)
+
+        self.date_filter = DateFilter(use_check_box=False)
+        self.date_filter.disable_options(['last 3 months', 'last 6 months', 'last year', 'range', 'all time'])
+        self.date_filter.date_range_changed.connect(self.on_date_range_changed)
+        button_layout.addWidget(self.date_filter)
+
+        keys_functions = [
+            ('<return>', 'continue'),
+            ('<esc>', 'cancel'),
+        ]
+        self.add_footer(self.base_layout, keys_functions)
+
     def update_budget(self, categories: list[str], amounts_budgeted: list[float], values: list[float], types: list[str]):
         self.bars.clear()
         self.clear_layout(self.budget_layout)
@@ -53,6 +67,7 @@ class BudgetScreen(BaseScreen):
             self.budget_layout.addLayout(label_layout, row, 0)
 
             progress_bar = BudgetProgressBar()
+            progress_bar.load()
             color = colors['green'] if category_type == 'income' else None
             progress_bar.plot_bar(amount_budgeted, value, color)
             self.bars.append(progress_bar)
@@ -62,6 +77,15 @@ class BudgetScreen(BaseScreen):
         self.budget_layout.setColumnStretch(2, 3)
         self.budget_layout.setRowStretch(n_rows, 3)
 
+    def on_date_range_changed(self, date_range: list):
+        self.date_range_changed.emit(date_range)
+
     def load_bars(self):
         for bar in self.bars:
             bar.load()
+
+    def on_continue_clicked(self):
+        self.continue_clicked.emit()
+
+    def on_cancel_clicked(self):
+        self.cancel_clicked.emit()
