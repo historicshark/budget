@@ -11,11 +11,12 @@ if TYPE_CHECKING:
     from controller.main_controller import MainController
 
 class ExpensesController(QObject):
-    def __init__(self, main: "MainController", expenses_screen: ExpensesScreen, db: DatabaseManager):
+    def __init__(self, main: "MainController", expenses_screen: ExpensesScreen, categories: Categories, db: DatabaseManager):
         super().__init__()
 
         self.main = main
         self.expenses_screen = expenses_screen
+        self.categories = categories
         self.db = db
 
         # list of records to be plotted. set this from main controller
@@ -26,6 +27,7 @@ class ExpensesController(QObject):
     def update_views(self):
         #self.db.print_records(self.records) #XXX debug
         # sort records by category
+        #TODO use database sql instead of this
         totals = {}
         dates = {}
         locations = {}
@@ -50,8 +52,8 @@ class ExpensesController(QObject):
             amounts[category] = [amounts[category][i] for i in sorted_indexes]
 
         # separate into income and expenses
-        income = {category: amount for category, amount in totals.items() if amount > 0}
-        expenses = {category: -amount for category, amount in totals.items() if amount <= 0}
+        income = {category: amount for category, amount in totals.items() if self.categories.get_category_type_multiplier(category) == 1}
+        expenses = {category: amount for category, amount in totals.items() if self.categories.get_category_type_multiplier(category) == -1}
 
         self.expenses_screen.update_plot_view(expenses.keys(), expenses.values())
         self.expenses_screen.update_list_view(expenses.keys(), dates, locations, amounts, expenses)

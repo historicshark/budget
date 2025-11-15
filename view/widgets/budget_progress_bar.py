@@ -4,6 +4,7 @@ from matplotlib.figure import Figure
 from view import colors
 
 class BudgetProgressBar(QWidget):
+    """ This keeps track of whether it has been loaded """
     def __init__(self, parent=None):
         super().__init__(parent)
         self.loaded = False
@@ -33,7 +34,8 @@ class BudgetProgressBar(QWidget):
             if color is None:
                 color = colors['green'] if value < maximum else colors['red']
             self.ax.barh('1', maximum, height=1.0, color='none', edgecolor=colors['fg'])
-            self.ax.barh('1', value-0.2, left=0.2, height=0.6, color=color, edgecolor='none')
+            if value > 0:
+                self.ax.barh('1', value-0.2, left=0.2, height=0.6, color=color, edgecolor='none')
             self.ax.axis('off')
             self.ax.axis('tight')
             self.canvas.draw()

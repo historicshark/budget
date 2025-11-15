@@ -86,14 +86,21 @@ class Categories(QObject):
         with open(self.categories_file, 'w') as f:
             output = {c: (t, a) for c, t, a in zip(self.categories, self.types, self.amounts)}
             json.dump(output, f, indent=2)
-   
+
     def guess_category(self, location: str) -> str:
         location = location.lower()
         for keyword in self.rules:
             if keyword in location:
                 return self.rules[keyword]
         return self.categories[0]
- 
+
+    def get_category_type(self, category: str) -> str:
+        i = self.categories.index(category)
+        return self.types[i]
+
+    def get_category_type_multiplier(self, category: str) -> int:
+        return self.available_types[self.get_category_type(category)]
+
     def add_new_category(self, new_category: str, new_type: str, new_amount=0.0) -> None:
         if new_category in self.categories:
             raise ValueError(f'Category {new_category} already exists!')

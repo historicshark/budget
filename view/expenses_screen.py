@@ -123,7 +123,15 @@ class ExpensesScreen(BaseScreen):
         self.plot.load()
 
     def update_plot_view(self, categories: list[str], totals: list[Decimal]):
-        self.plot.plot_pie(categories, totals)
+        # expenses are negative, so take the negative of them to plot
+        # then only keep positive values because negative values can't be plotted
+        categories_plot = []
+        totals_plot = []
+        for c, t in zip(categories, totals):
+            if t < 0:
+                categories_plot.append(c)
+                totals_plot.append(-t)
+        self.plot.plot_pie(categories_plot, totals_plot)
 
         total_all_categories = sum(totals)
         percentages = [total / total_all_categories * 100 for total in totals]
