@@ -65,6 +65,11 @@ class CreateRecordScreen(BaseScreen):
         layout.addWidget(self.amount_label, 3, 0)
         layout.addWidget(self.amount_edit, 3, 1)
 
+        instruction_label = QLabel('\n\nNote: Savings and expenses should be input as negative amounts, and income should be input as positive amounts.')
+        instruction_label.setStyleSheet('font-size: 12px;')
+        instruction_label.setWordWrap(True)
+        layout.addWidget(instruction_label, 4, 0, 4, 2)
+
         layout.setColumnStretch(2, 100)
 
         self.content_layout.addLayout(layout)
