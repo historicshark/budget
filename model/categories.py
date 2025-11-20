@@ -63,7 +63,7 @@ class Categories(QObject):
     def create_categories_file(self):
         self.categories = ['Rent', 'Income', 'Groceries', 'Transportation', 'Other']
         self.types = ['expense', 'income', 'expense', 'expense', 'expense']
-        self.amounts = [0.0 for x in default_categories]
+        self.amounts = [0.0 for x in self.categories]
         self.dump_categories()
 
     def load_categories(self) -> None:
