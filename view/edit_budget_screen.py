@@ -83,7 +83,7 @@ class EditBudgetScreen(BaseScreen):
         self.boxes.clear()
         self.clear_layout(self.list_layout)
         for row, (category, amount) in enumerate(zip(categories, amounts)):
-            label = QLabel(category.replace('&', '&&'))
+            label = QLabel(category)
 
             box = QDoubleSpinBox()
             box.setSingleStep(10)
