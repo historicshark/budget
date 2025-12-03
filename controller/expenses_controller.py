@@ -53,9 +53,10 @@ class ExpensesController(QObject):
 
         # separate into income and expenses
         income = {category: amount for category, amount in totals.items() if self.categories.get_category_type_multiplier(category) == 1}
+        total_income = sum([val for val in income.values()])
         expenses = {category: amount for category, amount in totals.items() if self.categories.get_category_type_multiplier(category) == -1}
 
-        self.expenses_screen.update_plot_view(expenses.keys(), expenses.values())
+        self.expenses_screen.update_plot_view(expenses.keys(), expenses.values(), total_income)
         self.expenses_screen.update_list_view(expenses.keys(), dates, locations, amounts, expenses)
 
     def on_new_search_clicked(self):

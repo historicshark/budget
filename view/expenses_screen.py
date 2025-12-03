@@ -122,7 +122,7 @@ class ExpensesScreen(BaseScreen):
     def load_widgets(self):
         self.plot.load()
 
-    def update_plot_view(self, categories: list[str], totals: list[Decimal]):
+    def update_plot_view(self, categories: list[str], totals: list[Decimal], total_income: Decimal):
         # expenses are negative, so take the negative of them to plot
         # then only keep positive values because negative values can't be plotted
         categories_plot = []
@@ -136,7 +136,7 @@ class ExpensesScreen(BaseScreen):
         total_all_categories = sum(totals)
         percentages = [total / total_all_categories * 100 for total in totals]
 
-        n_rows = len(categories) + 1
+        n_rows = len(categories) + 2
         self.summary_table.setRowCount(n_rows)
         for row, (category, total, percentage) in enumerate(zip(categories, totals, percentages)):
             category_item = QTableWidgetItem(category)
@@ -151,6 +151,14 @@ class ExpensesScreen(BaseScreen):
         total_item = QTableWidgetItem(f'{total_all_categories:.0f}')
         total_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         percentage_item = QTableWidgetItem('100%')
+        self.summary_table.setItem(n_rows - 2, 0, category_item)
+        self.summary_table.setItem(n_rows - 2, 1, total_item)
+        self.summary_table.setItem(n_rows - 2, 2, percentage_item)
+
+        category_item = QTableWidgetItem('Income')
+        total_item = QTableWidgetItem(f'{total_income:.0f}')
+        total_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        percentage_item = QTableWidgetItem('---')
         self.summary_table.setItem(n_rows - 1, 0, category_item)
         self.summary_table.setItem(n_rows - 1, 1, total_item)
         self.summary_table.setItem(n_rows - 1, 2, percentage_item)
@@ -161,6 +169,12 @@ class ExpensesScreen(BaseScreen):
             font.setBold(True)
             item.setFont(font)
             item.setBackground(QColor(colors['purple-faded']))
+
+            item = self.summary_table.item(n_rows - 2, col)
+            font = item.font()
+            font.setBold(True)
+            item.setFont(font)
+            item.setBackground(QColor(colors['blue-faded']))
 
         # set the table maximum height
         height = self.summary_table.horizontalHeader().height()
