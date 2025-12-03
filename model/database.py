@@ -96,7 +96,11 @@ class DatabaseManager:
         return [Record(date=values[0], location=values[1], category=values[2], amount=values[3]) for values in output]
 
     def totals_by_category(self, date=None) -> list[tuple[str, float]]:
-        """ Date: list containing two datetime.date for a date range """
+        """ Date: list containing two datetime.date for a date range 
+        Output: list of tuples, where the first element is the category, and second is the
+        total. To unpack in one line, do: 
+            categories, values = [list(x) for x in zip(*categories_values)]
+        """
         command = f'''SELECT
     Category,
     SUM(Amount) as total
