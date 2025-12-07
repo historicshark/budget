@@ -92,7 +92,6 @@ class MainController:
         self.go_to_screen('filter')
         self.controllers['filter'].connect_continue_cancel(self.set_records_and_go_to_expenses_screen,
                                                            lambda: self.go_to_screen('home'))
-        self.screens['expenses'].load_widgets()
 
     def start_list(self):
         self.go_to_screen('filter')

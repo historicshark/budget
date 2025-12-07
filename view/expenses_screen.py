@@ -19,7 +19,7 @@ from PyQt5.QtGui import QFont, QColor
 from decimal import Decimal
 
 from view import BaseScreen, colors
-from view.widgets import PlotCategory
+from view.widgets import PieChart
 
 class ExpensesScreen(BaseScreen):
     home_clicked = pyqtSignal()
@@ -42,7 +42,7 @@ class ExpensesScreen(BaseScreen):
         plot_layout = QVBoxLayout()
         plot_layout.setSpacing(0)
         plot_layout.setContentsMargins(0, 0, 0, 0)
-        self.plot = PlotCategory()
+        self.plot = PieChart()
         plot_layout.addWidget(self.plot, alignment=Qt.AlignHCenter)
         plot_layout.addStretch()
         plot_view_layout.addLayout(plot_layout)
@@ -65,7 +65,7 @@ class ExpensesScreen(BaseScreen):
         self.summary_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.summary_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
-        self.protect_last_column(self.summary_table)
+        #self.protect_last_column(self.summary_table)
 
         summary_table_layout.addWidget(self.summary_table)
         summary_table_layout.addStretch()
@@ -73,8 +73,6 @@ class ExpensesScreen(BaseScreen):
         plot_view_layout.addLayout(summary_table_layout)
 
         self.content_layout.addWidget(self.plot_view_container)
-
-        #self.plot.plot_pie(['test1','test2'], [2,3])
 
         # Layout with tabs and table by category
         list_view_layout = QHBoxLayout()
@@ -119,9 +117,6 @@ class ExpensesScreen(BaseScreen):
         ]
         self.add_footer(self.base_layout, keys_functions)
 
-    def load_widgets(self):
-        self.plot.load()
-
     def update_plot_view(self, categories: list[str], totals: list[Decimal], total_income: Decimal):
         # expenses are negative, so take the negative of them to plot
         # then only keep positive values because negative values can't be plotted
@@ -131,7 +126,8 @@ class ExpensesScreen(BaseScreen):
             if t < 0:
                 categories_plot.append(c)
                 totals_plot.append(-t)
-        self.plot.plot_pie(categories_plot, totals_plot)
+        #self.plot.plot_pie(categories_plot, totals_plot)
+        self.plot.plot(categories_plot, totals_plot)
 
         total_all_categories = sum(totals)
         percentages = [total / total_all_categories * 100 for total in totals]
