@@ -126,12 +126,12 @@ class ExpensesScreen(BaseScreen):
             if t < 0:
                 categories_plot.append(c)
                 totals_plot.append(-t)
-        #self.plot.plot_pie(categories_plot, totals_plot)
         self.plot.plot(categories_plot, totals_plot)
 
         total_all_categories = sum(totals)
         percentages = [total / total_all_categories * 100 for total in totals]
 
+        # update table
         n_rows = len(categories) + 2
         self.summary_table.setRowCount(n_rows)
         for row, (category, total, percentage) in enumerate(zip(categories, totals, percentages)):
@@ -143,6 +143,7 @@ class ExpensesScreen(BaseScreen):
             self.summary_table.setItem(row, 1, total_item)
             self.summary_table.setItem(row, 2, percentage_item)
 
+        # totals at bottom of table
         category_item = QTableWidgetItem('Total')
         total_item = QTableWidgetItem(f'{total_all_categories:.0f}')
         total_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
@@ -159,7 +160,8 @@ class ExpensesScreen(BaseScreen):
         self.summary_table.setItem(n_rows - 1, 1, total_item)
         self.summary_table.setItem(n_rows - 1, 2, percentage_item)
 
-        for col in range(self.summary_table.columnCount() - 1): # minus 1 since there is a dummy column to protect the scroll bar from overlapping
+        # setting bottom row colors
+        for col in range(self.summary_table.columnCount()): # not minus 1 since there is not a dummy column to protect the scroll bar from overlapping
             item = self.summary_table.item(n_rows - 1, col)
             font = item.font()
             font.setBold(True)
@@ -244,4 +246,3 @@ class ExpensesScreen(BaseScreen):
             self.switch_view_button.setText('list view')
             self.switch_view_button.setShortcut('v')
         self.is_plot_view = not self.is_plot_view
-
