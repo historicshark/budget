@@ -54,7 +54,28 @@ class BudgetScreen(BaseScreen):
     def update_budget(self, categories: list[str], amounts_budgeted: list[float], values: list[float], types: list[str]):
         self.bars.clear()
         self.clear_layout(self.budget_layout)
+
+        # initialize row for net in/out since QGridLayout doesn't have a way to insert rows
+        net_in = 0
+        net_out = 0
+
+        label_layout = QVBoxLayout()
+        label_layout.setContentsMargins(0, 0, 0, 0)
+        label_layout.addWidget(QLabel('Total'), alignment=Qt.AlignCenter)
+        value_label_net = QLabel(f'{net_out:.2f} / {net_in:.2f}')
+        value_label_net.setStyleSheet('font-size: 15px;')
+        label_layout.addWidget(value_label_net, alignment=Qt.AlignCenter)
+
+        progress_bar_net = BudgetProgressBar()
+        progress_bar_net.load()
+
+        self.bars.append(progress_bar_net)
+        self.budget_layout.addLayout(label_layout, 0, 0)
+        self.budget_layout.addWidget(progress_bar_net, 0, 1)
+
         for row, (category, amount_budgeted, value, category_type) in enumerate(zip(categories, amounts_budgeted, values, types)):
+            row += 1 # since I already added 1 row for the total
+
             category_label = QLabel(category)
             value_label = QLabel(f'{value:.2f} / {amount_budgeted:.2f}')
             value_label.setStyleSheet('font-size: 15px;')
@@ -73,6 +94,18 @@ class BudgetScreen(BaseScreen):
             self.bars.append(progress_bar)
             self.budget_layout.addWidget(progress_bar, row, 1)
 
+            if category_type == 'income': 
+                net_in += value
+            else:
+                net_out += value
+
+        # add values to total bar
+        value_label_net.setText(f'{net_out:.2f} / {net_in:.2f}')
+
+        color = colors['green'] if net_out <= net_in else None
+        progress_bar_net.plot_bar(net_in, net_out, color)
+
+        # add stretch
         n_rows = row + 1
         self.budget_layout.setColumnStretch(2, 3)
         self.budget_layout.setRowStretch(n_rows, 3)
