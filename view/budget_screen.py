@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import pyqtSignal, Qt
 
 from view import BaseScreen, colors
-from view.widgets import BudgetProgressBar, DateFilter
+from view.widgets import DateFilter, ProgressBar
 
 class BudgetScreen(BaseScreen):
     home_clicked = pyqtSignal()
@@ -66,8 +66,7 @@ class BudgetScreen(BaseScreen):
         value_label_net.setStyleSheet('font-size: 15px;')
         label_layout.addWidget(value_label_net, alignment=Qt.AlignCenter)
 
-        progress_bar_net = BudgetProgressBar()
-        progress_bar_net.load()
+        progress_bar_net = ProgressBar()
 
         self.bars.append(progress_bar_net)
         self.budget_layout.addLayout(label_layout, 0, 0)
@@ -87,10 +86,9 @@ class BudgetScreen(BaseScreen):
 
             self.budget_layout.addLayout(label_layout, row, 0)
 
-            progress_bar = BudgetProgressBar()
-            progress_bar.load()
+            progress_bar = ProgressBar()
             color = colors['green'] if category_type == 'income' else None
-            progress_bar.plot_bar(amount_budgeted, value, color)
+            progress_bar.plot(amount_budgeted, value, color)
             self.bars.append(progress_bar)
             self.budget_layout.addWidget(progress_bar, row, 1)
 
@@ -103,7 +101,7 @@ class BudgetScreen(BaseScreen):
         value_label_net.setText(f'{net_out:.2f} / {net_in:.2f}')
 
         color = colors['green'] if net_out <= net_in else None
-        progress_bar_net.plot_bar(net_in, net_out, color)
+        progress_bar_net.plot(net_in, net_out, color)
 
         # add stretch
         n_rows = row + 1
@@ -112,10 +110,6 @@ class BudgetScreen(BaseScreen):
 
     def on_date_range_changed(self, date_range: list):
         self.date_range_changed.emit(date_range)
-
-    def load_bars(self):
-        for bar in self.bars:
-            bar.load()
 
     def on_continue_clicked(self):
         self.continue_clicked.emit()

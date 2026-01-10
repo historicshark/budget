@@ -107,7 +107,6 @@ class MainController:
                                                                      self.add_new_category_cancel_to_create_record_screen)
 
     def start_budget(self):
-        #self.controllers['budget'].load_bars()
         #self.controllers['budget'].update_screen()
         self.go_to_screen('budget')
 

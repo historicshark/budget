@@ -1,44 +1,59 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
+from PyQt5.QtWidgets import QWidget, QSizePolicy
+from PyQt5.QtGui import QPainter, QColor, QPen, QPainterPath
+from PyQt5.QtCore import QSize
 from view import colors
 
-class BudgetProgressBar(QWidget):
-    """ This keeps track of whether it has been loaded """
+class ProgressBar(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.loaded = False
-        self.plot_later = None
+        self.setMinimumHeight(30)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
-    def load(self):
-        if not self.loaded:
-            import matplotlib
-            matplotlib.use('Qt5Agg', force=True)
-            self.figure = Figure(figsize=(8,0.4), facecolor='none')
-            self.ax = self.figure.subplots(1, 1)
-            self.canvas = FigureCanvas(self.figure)
-            self.canvas.setStyleSheet('background-color: transparent;')
-            self.layout = QVBoxLayout()
-            self.layout.setContentsMargins(0, 0, 0, 0)
-            self.layout.addWidget(self.canvas)
-            self.setLayout(self.layout)
-            self.loaded = True
+        self.color = colors['green']
+        self.maximum = 100
+        self.value = 25
+        self.radius = 5
 
-            if self.plot_later:
-                self.plot_bar(**self.plot_later)
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
 
-    def plot_bar(self, maximum: float, value: float, color=None):
-        """ Specify color, otherwise it is green if value < maximum and red if value > maximum """
-        if self.loaded:
-            self.ax.clear()
-            if color is None:
-                color = colors['green'] if value < maximum else colors['red']
-            self.ax.barh('1', maximum, height=1.0, color='none', edgecolor=colors['fg'])
-            if value > 0:
-                self.ax.barh('1', value-0.2, left=0.2, height=0.6, color=color, edgecolor='none')
-            self.ax.axis('off')
-            self.ax.axis('tight')
-            self.canvas.draw()
-            self.plot_later = None
+        w = self.width()
+        h = self.height()
+
+        pen = QPen(QColor(colors['fg']), 2)
+        painter.setPen(pen)
+        if self.value <= self.maximum:
+            painter.drawRoundedRect(1, 1, w-2, h-2, self.radius, self.radius)
+
+            fill_ratio = self.value / self.maximum
+            fill_width = int(fill_ratio*(w-4))
+
+            clip_path = QPainterPath()
+            r = self.radius - 1 if self.radius > 1 else 0
+            clip_path.addRoundedRect(2, 2, fill_width, h-4, r, r)
+            painter.setClipPath(clip_path)
+
+            painter.fillRect(2, 2, fill_width, h-4, QColor(self.color))
+
         else:
-            self.plot_later = {'maximum': maximum, 'value': value, 'color': color}
+            border_ratio = self.maximum / self.value
+
+            clip_path = QPainterPath()
+            r = self.radius - 1 if self.radius > 1 else 0
+            clip_path.addRoundedRect(2, 2, w-4, h-4, r, r)
+            painter.setClipPath(clip_path)
+            painter.fillRect(2, 2, w-4, h-4, QColor(self.color))
+
+            painter.setClipping(False)
+            painter.drawRoundedRect(1, 1, int(border_ratio*(w-2)), h-2, self.radius, self.radius)
+
+    def sizeHint(self):
+        return QSize(500, 20)
+
+    def plot(self, maximum: float, value: float, color=None):
+        if color is None:
+            self.color = colors['green'] if value < maximum else colors['red']
+        self.maximum = maximum
+        self.value = value
+        self.update()
