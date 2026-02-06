@@ -1,8 +1,5 @@
 from PyQt5.QtWidgets import (
-    QWidget,
     QLabel,
-    QVBoxLayout,
-    QHBoxLayout,
 )
 from PyQt5.QtCore import pyqtSignal
 

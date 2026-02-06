@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QObject
 
 from view import ExpensesScreen
-from model import DatabaseManager, Categories, Record
+from model import DatabaseManager, Categories
 
 import datetime
 from decimal import Decimal
@@ -53,7 +53,7 @@ class ExpensesController(QObject):
 
         # separate into income and expenses
         income = {category: amount for category, amount in totals.items() if self.categories.get_category_type_multiplier(category) == 1}
-        total_income = sum([val for val in income.values()])
+        total_income = sum([val for val in income.values()]) #TODO this shouldn't be a list comprehension
         expenses = {category: amount for category, amount in totals.items() if self.categories.get_category_type_multiplier(category) == -1}
 
         self.expenses_screen.update_plot_view(expenses.keys(), expenses.values(), total_income)

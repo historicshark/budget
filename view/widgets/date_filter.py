@@ -3,13 +3,11 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QVBoxLayout,
     QGridLayout,
-    QComboBox,
     QLabel,
     QSpinBox,
     QCheckBox,
 )
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
-from PyQt5.QtGui import QKeySequence
 from view.widgets.date_edit_fix import DateEditFix
 from view.widgets.combo_box_fix import ComboBoxFix
 
@@ -184,7 +182,7 @@ class DateFilter(QWidget):
     def reset(self):
         self.date_range = [datetime.date.today()] * 2
         self.set_range_last_n_months(1)
-        
+
         if self.use_check_box:
             self.check_box.setChecked(True)
             self.menu.setCurrentIndex(0)
@@ -195,7 +193,7 @@ class DateFilter(QWidget):
 
         self.month_box.setCurrentIndex(datetime.date.today().month-1)
         self.year_box.setValue(datetime.date.today().year)
-    
+
     def disable_options(self, options):
         """ options is a str or list of str """
         self.options = self.default_options

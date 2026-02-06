@@ -1,8 +1,6 @@
 from PyQt5.QtWidgets import (
     QPushButton,
     QLabel,
-    QVBoxLayout,
-    QHBoxLayout,
     QFormLayout,
 )
 from PyQt5.QtCore import Qt, pyqtSignal
@@ -19,7 +17,7 @@ class HomeScreen(BaseScreen):
     budget_clicked = pyqtSignal()
 
     def __init__(self):
-        super().__init__()    
+        super().__init__()   
         self.button_labels_descriptions_methods_keys = [
             ('import', 'Import a file on your computer', self.import_clicked.emit, 'i'),
             ('expenses', 'Visualize expenses', self.expenses_clicked.emit, 'e'),
@@ -59,4 +57,3 @@ class HomeScreen(BaseScreen):
 
         self.content_layout.addStretch()
         self.add_footer(self.base_layout, [(key, function) for function, _, _, key in self.button_labels_descriptions_methods_keys])
-

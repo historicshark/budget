@@ -1,16 +1,12 @@
 from PyQt5.QtWidgets import (
     QLabel,
-    QPushButton,
-    QVBoxLayout,
-    QHBoxLayout,
     QGridLayout,
     QDoubleSpinBox,
     QLineEdit,
-    QSizePolicy,
 )
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
 
-from view import BaseScreen, colors
+from view import BaseScreen
 from view.widgets import DateEditFix, ComboBoxFix
 from model import Record
 

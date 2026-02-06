@@ -15,6 +15,9 @@ class ProgressBar(QWidget):
         self.radius = 5
 
     def paintEvent(self, event):
+        if self.maximum <= 0:
+            return
+
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
@@ -23,6 +26,7 @@ class ProgressBar(QWidget):
 
         pen = QPen(QColor(colors['fg']), 2)
         painter.setPen(pen)
+
         if self.value <= self.maximum:
             painter.drawRoundedRect(1, 1, w-2, h-2, self.radius, self.radius)
 

@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import (
     QWidget,
-    QStackedWidget,
     QPushButton,
     QShortcut,
     QLabel,

@@ -40,7 +40,7 @@ class DatabaseManager:
 
         #if amount:
         #    if len(amount) != 2: raise ValueError('Provide amount range as a list of two numbers!')
- 
+
         command = f"DELETE FROM {self.table_name}"
 
         self.build_where(date, location, category, amount)
@@ -78,7 +78,7 @@ class DatabaseManager:
 
         #if amount:
         #    if len(amount) != 2: raise ValueError('Provide amount range as a list of two numbers!')
-        
+
         command = f"SELECT Date, Location, Category, Amount FROM {self.table_name}"
 
         self.build_where(date, location, category, amount)

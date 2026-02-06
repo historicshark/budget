@@ -16,14 +16,14 @@ class Record:
         if not isinstance(self.date, datetime.date):
             try:
                 self.date = datetime.date.fromisoformat(self.date)
-            except:
-                raise ValueError(f'Invalid date initialization: {self.date}')
+            except Exception as exc:
+                raise ValueError(f'Invalid date initialization: {self.date}') from exc
 
         if not isinstance(self.amount, Decimal):
             try:
                 self.amount = Decimal(str(self.amount))
-            except:
-                raise ValueError(f'Invalid amount initialization: {self.amount}')
+            except Exceptions as exc:
+                raise ValueError(f'Invalid amount initialization: {self.amount}') from exc
 
     def is_expense(self) -> bool:
         return self.amount < 0

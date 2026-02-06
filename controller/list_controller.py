@@ -1,9 +1,7 @@
 from PyQt5.QtCore import QObject
 
 from view import ListScreen
-from model import DatabaseManager, Record
-
-import datetime
+from model import DatabaseManager
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

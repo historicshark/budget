@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtCore import Qt, QTimer, QEvent
-from PyQt5.QtGui import QMouseEvent
+from PyQt5.QtCore import Qt, QTimer
 
 class ComboBoxFix(QComboBox):
     """
@@ -28,4 +27,3 @@ class ComboBoxFix(QComboBox):
         self.style().unpolish(self)
         self.style().polish(self)
         self.update()
-

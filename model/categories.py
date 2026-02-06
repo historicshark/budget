@@ -1,6 +1,5 @@
 from PyQt5.QtCore import pyqtSignal, QObject
 
-from collections.abc import Sequence
 import json
 from model.file_handling import get_data_path
 
@@ -41,7 +40,7 @@ class Categories(QObject):
 
     def count(self, value):
         return self.categories.count(value)
-    
+
     def items(self):
         return zip(self.categories, self.types, self.amounts)
 

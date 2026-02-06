@@ -1,5 +1,4 @@
 from PyQt5.QtWidgets import (
-    QWidget,
     QLabel,
     QPushButton,
     QVBoxLayout,
@@ -12,7 +11,7 @@ from PyQt5.QtCore import pyqtSignal
 from string import ascii_lowercase
 
 from view import BaseScreen, colors
-from model import Categories, Record
+from model import Record
 
 class CategorizeScreen(BaseScreen):
     home_clicked = pyqtSignal()
@@ -116,7 +115,7 @@ class CategorizeScreen(BaseScreen):
             key_label.setStyleSheet(style)
             button.setStyleSheet(style)
             self.button_layout.addRow(key_label, button)
-        
+
         key_label = QLabel(3*' ')
         button = QRadioButton('New Category')
         button.toggled.connect(self.category_button_toggled)

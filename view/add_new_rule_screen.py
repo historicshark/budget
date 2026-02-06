@@ -1,15 +1,11 @@
 from PyQt5.QtWidgets import (
-    QWidget,
     QLabel,
-    QPushButton,
     QVBoxLayout,
     QHBoxLayout,
-    QRadioButton,
-    QFormLayout,
     QLineEdit,
 )
 from PyQt5.QtCore import pyqtSignal
-from view import BaseScreen, colors
+from view import BaseScreen
 from model import Record
 
 class AddNewRuleScreen(BaseScreen):

@@ -63,7 +63,7 @@ class Importer(Sequence):
         #        self.data = self.import_debit_csv()
         #    case _:
         #        raise ValueError(f'Invalid account import option {account}')
-    
+
 #    def import_debit_csv(self) -> list[Record]:
 #        data = pd.read_csv(self.file, dtype=str)
 #
@@ -98,7 +98,7 @@ class Importer(Sequence):
 #        data = data.drop(columns=['Transaction', 'Memo'])
 #        data = data.rename(columns={'Name': 'Location'})
 #        return data.to_dict('records')
-    
+
     # Function to import ofx-type files.
     def import_file_ofx(self) -> None:
         with open(self.file) as f:

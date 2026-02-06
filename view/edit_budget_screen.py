@@ -10,10 +10,9 @@ from PyQt5.QtWidgets import (
     QTableWidget,
     QTableWidgetItem,
     QAbstractItemView,
-    QHeaderView,
 )
 from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtGui import QFont, QColor
+from PyQt5.QtGui import QColor
 
 from view import BaseScreen, colors
 
@@ -130,7 +129,7 @@ class EditBudgetScreen(BaseScreen):
     def get_amounts(self) -> list[float]:
         amounts = [box.value() for box in self.boxes]
         return amounts
-    
+
     def on_amounts_changed(self):
         """ function to send values in boxes to controller as they are changed. Not used when continue is clicked. """
         self.amounts_changed.emit(self.get_amounts())

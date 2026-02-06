@@ -73,7 +73,7 @@ class CategorizeController:
             self.main.go_to_add_new_category_screen(self.importer[self.index])
             return
 
-        elif self.category != self.guessed_category:
+        if self.category != self.guessed_category:
             self.go_to_add_new_rule_screen()
             return
 

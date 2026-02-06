@@ -1,8 +1,8 @@
-from PyQt5.QtWidgets import QDateEdit, QStyleOptionSpinBox, QTableView
-from PyQt5.QtCore import Qt, QTimer, QEvent, QDate
-from PyQt5.QtGui import QMouseEvent, QColor
+from PyQt5.QtWidgets import QDateEdit, QStyleOptionSpinBox
+from PyQt5.QtCore import Qt, QTimer, QDate
+from PyQt5.QtGui import QColor
 import datetime
-from view.default_style_sheet import colors
+from view import colors
 
 class DateEditFix(QDateEdit):
     """
@@ -64,6 +64,6 @@ class DateEditFix(QDateEdit):
 #    def focusOutEvent(self, event):
 #        super().focusOutEvent(event)
 #        self.start_timer()
-    
+
     def set_date_today(self):
         self.setDate(QDate().fromString(str(datetime.date.today()), Qt.ISODate))

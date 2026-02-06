@@ -37,7 +37,7 @@ class ImportScreen(BaseScreen):
         open_button.clicked.connect(self.open_file_dialog)
         open_button.setShortcut('o')
 
-        self.import_label = QLabel('Choose a file to import') #XXX long filename make the window bigger
+        self.import_label = QLabel('Choose a file to import')
         self.import_label.setStyleSheet(f'''
                             font-size: 14px;
                             color: {colors['gray']};
@@ -88,7 +88,7 @@ class ImportScreen(BaseScreen):
         sender = self.sender()
         if sender.isChecked():
             self.account_clicked.emit(sender.text())
-    
+
     def set_account_buttons_visibility(self, is_visible: bool):
         self.label_description.setVisible(is_visible)
         self.credit_button.setVisible(is_visible)
@@ -140,4 +140,3 @@ class ImportScreen(BaseScreen):
                             ''')
         self.set_account_buttons_visibility(False)
         self.set_continue_button_enabled(False)
-

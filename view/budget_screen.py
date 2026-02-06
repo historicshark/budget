@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import (
     QVBoxLayout,
-    QHBoxLayout,
     QGridLayout,
     QLabel,
     QScrollArea,
@@ -19,7 +18,7 @@ class BudgetScreen(BaseScreen):
 
     def __init__(self):
         super().__init__()
-        self.bars: list[BudgetProgressBar] = []
+        self.bars: list[ProgressBar] = []
         self.initUI()
 
     def initUI(self):
@@ -52,8 +51,22 @@ class BudgetScreen(BaseScreen):
         self.add_footer(self.base_layout, keys_functions)
 
     def update_budget(self, categories: list[str], amounts_budgeted: list[float], values: list[float], types: list[str]):
+        """ values are assumed to be all positive. Don't input spending as negative. """
         self.bars.clear()
         self.clear_layout(self.budget_layout)
+
+        # inputs should not be empty
+        if not (categories and amounts_budgeted and values and types):
+            print('In budget_screen.py, one or more input to update_budget was empty')
+            return
+
+        # all lists should be the same length
+        if any(len(l) != len(categories) for l in [categories, amounts_budgeted, values, types]):
+            print('In budget_screen.py, not all inputs were the same length')
+            return
+
+        if all(v <= 0 for v in values):
+            return
 
         # initialize row for net in/out since QGridLayout doesn't have a way to insert rows
         net_in = 0
@@ -92,7 +105,7 @@ class BudgetScreen(BaseScreen):
             self.bars.append(progress_bar)
             self.budget_layout.addWidget(progress_bar, row, 1)
 
-            if category_type == 'income': 
+            if category_type == 'income':
                 net_in += value
             else:
                 net_out += value

@@ -26,7 +26,7 @@ class CreateRecordController(QObject):
 
     def get_record(self):
         return self.create_record_screen.get_record()
-    
+
     def reset_category_dropdown(self):
         self.create_record_screen.category_edit.setCurrentIndex(0)
 

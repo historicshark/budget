@@ -1,16 +1,12 @@
 from PyQt5.QtWidgets import (
     QLabel,
-    QPushButton,
-    QVBoxLayout,
-    QHBoxLayout,
     QGridLayout,
     QDoubleSpinBox,
     QLineEdit,
-    QSizePolicy,
 )
 from PyQt5.QtCore import Qt, pyqtSignal, QDate
 
-from view import BaseScreen, colors
+from view import BaseScreen
 from view.widgets import DateEditFix, ComboBoxFix
 from model import Record
 
@@ -90,9 +86,7 @@ class EditRecordScreen(BaseScreen):
 
     def set_selected_category(self, category):
         category_index = self.category_edit.findText(category)
-        if category_index < 0:
-            #print(f'{category} is not listed!')
-            category_index = 0
+        category_index = max(category_index, 0)
         self.category_edit.setCurrentIndex(category_index)
 
     def display_record(self, record: Record):

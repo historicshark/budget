@@ -3,16 +3,15 @@ from PyQt5.QtWidgets import (
     QLabel,
     QCheckBox,
     QGridLayout,
-    QHBoxLayout,
     QPushButton,
     QScrollArea,
     QLineEdit,
     QApplication,
     QSizePolicy,
 )
-from PyQt5.QtCore import Qt, pyqtSignal, QTimer
+from PyQt5.QtCore import pyqtSignal, QTimer
 
-from view import BaseScreen, colors
+from view import BaseScreen
 from view.widgets import ComboBoxFix
 
 class EditCategoriesScreen(BaseScreen):
@@ -128,7 +127,7 @@ class EditCategoriesScreen(BaseScreen):
             if check_box.isChecked():
                 selected_categories.append(category)
         return selected_categories
-    
+
     def get_category_changes(self) -> list[tuple[str, str, str, str]]:
         """ 
         returns all rows as a list of tuples of (old, new, old_type, new_type) categories.

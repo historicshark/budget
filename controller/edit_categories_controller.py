@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QObject
 
 from view import EditCategoriesScreen
-from model import DatabaseManager, Categories, Record
+from model import DatabaseManager, Categories
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

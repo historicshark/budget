@@ -27,7 +27,7 @@ class AddNewCategoryController(QObject):
 
     def display_record(self, record: Record):
         self.add_new_category_screen.display_record(record)
-    
+
     def on_continue_clicked(self, new_category: str):
         self.categories.add_new_category(new_category)
         self.continue_clicked.emit(new_category)

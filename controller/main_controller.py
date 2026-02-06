@@ -58,7 +58,7 @@ class MainController:
 
             if hasattr(screen, 'home_clicked'):
                 screen.home_clicked.connect(lambda: self.go_to_screen('home'))
-    
+
     def debug(self):
         self.go_to_screen('edit_categories')
 

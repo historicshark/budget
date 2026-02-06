@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QShortcut,
 )
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QKeySequence
 
 class CollapsibleGroupBox(QGroupBox):
@@ -73,4 +72,3 @@ class CollapsibleGroupBox(QGroupBox):
 
     def addLayout(self, layout):
         self.content_layout.addLayout(layout)
-

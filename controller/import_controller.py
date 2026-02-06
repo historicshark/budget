@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from model import Categories, Importer
+from model import Importer
 from view import ImportScreen
 
 from typing import TYPE_CHECKING
@@ -22,7 +22,7 @@ class ImportController:
         self.screen.file_chosen.connect(self.on_file_chosen)
         self.screen.continue_clicked.connect(self.on_continue_clicked)
         self.screen.cancel_clicked.connect(self.on_cancel_clicked)
-    
+
     def on_file_chosen(self, file: str):
         self.file_exists = Path(file).exists()
         if self.file_exists:
@@ -33,7 +33,7 @@ class ImportController:
     def on_account_button_toggled(self, account: str):
         self.account = account
         self.check_activate_continue_button()
-        
+
     def check_activate_account_buttons(self):
         if self.file_exists and self.file.lower().endswith('.csv'):
             self.screen.set_account_buttons_visibility(True)

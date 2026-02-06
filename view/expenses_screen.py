@@ -3,18 +3,15 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
     QPushButton,
-    QLayout,
-    QLabel,
     QTabWidget,
     QTableWidget,
     QTableWidgetItem,
     QHeaderView,
     QSizePolicy,
     QAbstractItemView,
-    QSpacerItem,
 )
-from PyQt5.QtCore import pyqtSignal, Qt, QTimer
-from PyQt5.QtGui import QFont, QColor
+from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtGui import QColor
 
 from decimal import Decimal
 
