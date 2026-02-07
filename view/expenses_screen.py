@@ -126,7 +126,11 @@ class ExpensesScreen(BaseScreen):
         self.plot.plot(categories_plot, totals_plot)
 
         total_all_categories = sum(totals)
-        percentages = [abs(total / total_income * 100) for total in totals]
+
+        if total_income > 0:
+            percentages = [abs(total / total_income * 100) for total in totals]
+        else:
+            percentages = [100 for total in totals]
 
         # update table
         n_rows = len(categories) + 2
@@ -144,7 +148,11 @@ class ExpensesScreen(BaseScreen):
         category_item = QTableWidgetItem('Total')
         total_item = QTableWidgetItem(f'{total_all_categories:.0f}')
         total_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        percentage_item = QTableWidgetItem(f'{abs(total_all_categories / total_income * 100):.1f}%')
+        if total_income > 0:
+            percentage = abs(total_all_categories / total_income * 100)
+        else:
+            percentage = 100
+        percentage_item = QTableWidgetItem(f'{percentage:.1f}%')
         self.summary_table.setItem(n_rows - 2, 0, category_item)
         self.summary_table.setItem(n_rows - 2, 1, total_item)
         self.summary_table.setItem(n_rows - 2, 2, percentage_item)
