@@ -1,0 +1,70 @@
+name: Build Windows Executable
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "v1.2"
+        required: true
+        default: "v1.0.0"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      # ── Option A: use icon.ico if you have one ──────────────
+      # If you add a icon.ico to your repo, this step is all you need.
+      - name: Build executable
+        run: |
+          pyinstaller --windowed --name "BudgetProgram" --icon=icon.png --add-data="assets;assets" main.py
+
+      # ── Option B: auto-convert icon.icns → icon.ico ─────────
+      # Uncomment this block (and comment out the step above) if you
+      # only have icon.icns and want the workflow to convert it for you.
+      #
+      # - name: Install Pillow for icon conversion
+      #   run: pip install pillow
+      #
+      # - name: Convert icon.icns to icon.ico
+      #   run: |
+      #     python - <<'EOF'
+      #     from PIL import Image
+      #     img = Image.open("icon.icns")
+      #     sizes = [(16,16),(32,32),(48,48),(64,64),(128,128),(256,256)]
+      #     frames = [img.resize(s, Image.LANCZOS) for s in sizes]
+      #     frames[0].save("icon.ico", format="ICO", append_images=frames[1:])
+      #     print("icon.ico created successfully.")
+      #     EOF
+      #
+      # - name: Build executable
+      #   run: |
+      #     pyinstaller --windowed --name "BudgetProgram" --icon=icon.ico --add-data="assets;assets" main.py
+
+      - name: Zip the executable
+        run: |
+          Compress-Archive -Path dist\BudgetProgram -DestinationPath BudgetProgram-windows.zip
+
+      - name: Create GitHub Release and upload asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          name: BudgetProgram ${{ github.event.inputs.version }}
+          files: BudgetProgram-windows.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
