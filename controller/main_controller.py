@@ -95,6 +95,9 @@ class MainController:
 
     def start_list(self):
         self.go_to_screen('filter')
+
+        # I just have one filter screen instance, so when I need it to filter for different
+        # screens, I connect it to the needed functions
         self.controllers['filter'].connect_continue_cancel(self.set_records_and_go_to_list_screen,
                                                            lambda: self.go_to_screen('home'))
 
@@ -117,7 +120,7 @@ class MainController:
 
     def set_records_and_go_to_list_screen(self):
         self.controllers['list'].records = self.controllers['filter'].records
-        self.controllers['list'].sort_records_by_date()
+        self.controllers['list'].sort_records(self.screens['list'].drop_down.currentText())
         self.controllers['list'].update_table()
         self.go_to_screen('list')
 
