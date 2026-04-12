@@ -2,5 +2,6 @@
 
 rm -rf build dist
 pyinstaller --windowed --name "BudgetProgram" --icon=icon.icns --add-data=assets:assets main.py
+rm -rf /Applications/BudgetProgram.app
 cp -r dist/BudgetProgram.app /Applications/BudgetProgram.app
 rm -rf build dist
