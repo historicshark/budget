@@ -110,7 +110,7 @@ class ImportScreen(BaseScreen):
         self.update_footer(keys_functions)
 
     def open_file_dialog(self):
-        file, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'Statement Files (*.ofx *.qbo *.qfx')
+        file, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'Statement Files (*.ofx *.qbo *.qfx)')
         if file:
             if Path(file).exists():
                 self.import_label.setText(f'{file}')
